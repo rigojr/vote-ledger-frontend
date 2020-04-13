@@ -1,0 +1,23 @@
+.loginCard{
+    padding: 16px;
+    width: 30%;
+    margin: auto;
+}
+
+.logoContainer{
+    width: 30%;
+    margin: auto;
+    margin-top: 80px;
+    text-align: center;
+}
+
+.titleLogo{
+    color: #434099;
+    font-size: 62px;
+    margin-bottom: 0px;
+}
+
+.subtitleLogo{
+    color: #434099;
+    font-size: 16px;
+}

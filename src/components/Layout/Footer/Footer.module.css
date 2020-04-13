@@ -1,0 +1,19 @@
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: right;
+    padding: 16px;
+    font-size: 10px;
+    color: #3b3b3b
+ }
+
+ .imgUcab{
+     height: 14px;
+ }
+
+ .pFooter{
+     display: inline;
+     margin-right: 8px;
+ }
