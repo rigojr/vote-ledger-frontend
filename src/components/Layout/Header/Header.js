@@ -12,16 +12,10 @@ const header = ( props ) => (
     <header>
         <Navbar collapseOnSelect expand="lg" bg="light" variant="light">
             <Navbar.Brand className={styles.purpleColor}>VoteLedger</Navbar.Brand>
-
-            {
-            props.authenticated ? 
             <Nav className="ml-auto">
                 <Nav.Link href="#" >Usuarios</Nav.Link>
                 <Nav.Link href="#" >Elecciones</Nav.Link>
-            </Nav>:
-            null
-            }
-            
+            </Nav>
         </Navbar>
     </header>
 );

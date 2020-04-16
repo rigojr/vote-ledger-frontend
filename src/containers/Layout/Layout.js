@@ -8,12 +8,15 @@ class Layout extends Component {
     state = {
          authenticated: false
     }
-
-
+    
     render(){
+
+        let HeaderComponent = this.state.authenticated ? <Header/> : null;
+
         return(
+            
             <Aux>
-                <Header authenticated={this.state.authenticated}/>
+                {HeaderComponent}
                 <div>
                     { this.props.children }
                 </div>
