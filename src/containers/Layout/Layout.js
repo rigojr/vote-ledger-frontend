@@ -5,13 +5,10 @@ import Header from '../../components/Layout/Header/Header';
 import Footer from '../../components/Layout/Footer/Footer'
 
 class Layout extends Component {
-    state = {
-         authenticated: false
-    }
     
     render(){
 
-        let HeaderComponent = this.state.authenticated ? <Header/> : null;
+        let HeaderComponent = this.props.isAuthed ? <Header/> : null;
 
         return(
             
