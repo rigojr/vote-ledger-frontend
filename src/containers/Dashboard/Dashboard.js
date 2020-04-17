@@ -3,18 +3,15 @@ import { Redirect } from 'react-router-dom';
 
 
 import Card from 'react-bootstrap/Card'
-import styles from './Dashboard.module.css' 
-import Aux from '../../hoc/Aux';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import Status from '../../components/Dashboard/Status/Status'
 import Table from 'react-bootstrap/Table'
+
+import styles from './Dashboard.module.css' 
+import Aux from '../../hoc/Aux';
+import Status from '../../components/Dashboard/Status/Status'
 import About from '../../components/Dashboard/About/About';
-
-
-
-
 
 class Dashboard extends Component {
 

@@ -4,6 +4,8 @@ import { Route, Redirect, Switch } from 'react-router-dom';
 import Layout from './containers/Layout/Layout';
 import Login from './containers/Login/Login'
 import Dashboard from './containers/Dashboard/Dashboard';
+import Users from './containers/Users/Users'
+import Elections from './containers/Elections/Elections';
 
 class App extends Component {
 
@@ -32,6 +34,12 @@ class App extends Component {
             <Route 
               path="/dashboard"
               render={ (props) => <Dashboard {...props} isAuthed={this.state.authenticated}/> } />
+            <Route
+              path="/users"
+              render={ (props) => <Users {...props} isAuthed={this.state.authenticated}/> }/>
+            <Route
+              path="/elections"
+              render={ (props) => <Elections {...props} isAuthed={this.state.authenticated}/> }/>
             <Redirect from="/" to="/login"/>
           </Switch>
         </Layout>

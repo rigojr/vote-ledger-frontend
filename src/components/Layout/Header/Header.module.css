@@ -1,3 +1,19 @@
 .purpleColor{
     color: #434099 !important;
 }
+
+.purpleColor:hover{
+    text-decoration: none;
+}
+
+.NavLink{
+    color: rgba(0,0,0,.5);
+    padding: .5rem 1rem;
+}
+
+.NavLink:hover,
+.NavLink:active,
+.Active{
+    color: rgba(0,0,0,.7);
+    text-decoration: none;
+}
