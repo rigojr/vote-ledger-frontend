@@ -10,6 +10,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Status from '../../components/Dashboard/Status/Status'
 import Table from 'react-bootstrap/Table'
+import About from '../../components/Dashboard/About/About';
 
 
 
@@ -37,53 +38,52 @@ class Dashboard extends Component {
     render (){
 
         let DashboardComponent = this.props.isAuthed ? 
-        <Card className={styles.DashboardCard}>
+            <Card className={styles.DashboardCard}>
 
-                <Container>
+                    <Container>
 
-                    <Row lg={2}>
-                        <Col xs lg="3">
-                            <Status 
-                                statusArray={this.state.status}/>
-                        </Col>
-                        <Col xs lg="9">
-                            <h1>Lista de Elecciones Activas</h1>
-                            <Table responsive>
-                                <thead>
-                                    <tr>
-                                        <th>Descripción</th>
-                                        <th>Fecha de Inicio</th>
-                                        <th>Fecha de Finalización</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        this.state.elections.map(
-                                            election => {
-                                                return election.statusElection ? 
-                                                    <tr key={election.id}>
-                                                        <td>{election.description}</td>
-                                                        <td>{election.startDate}</td>
-                                                        <td>{election.endDate}</td>
-                                                    </tr> : null
-                                            }
-                                        )
-                                    }
-                                </tbody>
-                            </Table>
-                        </Col>
-                    </Row>
+                        <Row lg={2}>
+                            <Col xs lg="3">
+                                <Status 
+                                    statusArray={this.state.status}/>
+                            </Col>
+                            <Col xs lg="9">
+                                <h1>Lista de Elecciones Activas</h1>
+                                <Table responsive>
+                                    <thead>
+                                        <tr>
+                                            <th>Descripción</th>
+                                            <th>Fecha de Inicio</th>
+                                            <th>Fecha de Finalización</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            this.state.elections.map(
+                                                election => {
+                                                    return election.statusElection ? 
+                                                        <tr key={election.id}>
+                                                            <td>{election.description}</td>
+                                                            <td>{election.startDate}</td>
+                                                            <td>{election.endDate}</td>
+                                                        </tr> : null
+                                                }
+                                            )
+                                        }
+                                    </tbody>
+                                </Table>
+                            </Col>
+                        </Row>
 
-                    <Row lg={2}>
-                        <Col xs lg="12">
-                            <h1>Sobre la Aplicación</h1>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean at libero diam. Pellentesque et mattis nisl. Aliquam facilisis sem sed pretium rhoncus. Suspendisse pharetra metus ex. Pellentesque suscipit lacus sed dui sodales, at suscipit ex tristique. Integer eget dapibus velit. In cursus lorem vel leo convallis, in fringilla lectus pharetra. Pellentesque vehicula et purus eget blandit. Phasellus a pulvinar ligula. Cras nec ipsum vitae est vehicula aliquet eu et mi. Mauris massa massa, molestie non dapibus id, iaculis vel eros. Vivamus leo elit, accumsan et posuere sit amet, eleifend non lectus. Phasellus metus purus, eleifend sit amet sem eleifend, placerat posuere risus. Praesent pulvinar mauris at ex dignissim malesuada et eget nulla. Duis nisi dui, congue et magna in, imperdiet sodales nibh. Nullam quis nulla leo.</p>
-                        </Col>
-                    </Row>
+                        <Row lg={2}>
+                            <Col xs lg="12">
+                                <About />
+                            </Col>
+                        </Row>
 
-                </Container>
-        </Card> : 
-        <Redirect from="/Dashboard" to="/login"/>;
+                    </Container>
+            </Card> : 
+            <Redirect from="/Dashboard" to="/login"/>;
 
         return (
             <Aux>
