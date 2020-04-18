@@ -8,7 +8,10 @@ class Layout extends Component {
     
     render(){
 
-        let HeaderComponent = this.props.isAuthed ? <Header/> : null;
+        let HeaderComponent = this.props.isAuthed ? 
+            <Header 
+                userName={this.props.userName}
+                authHandler={this.props.authHandler}/> : null;
 
         return(
             

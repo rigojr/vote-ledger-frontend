@@ -1,12 +1,12 @@
 import React from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
+import DropdownButton from 'react-bootstrap/DropdownButton'
+import Dropdown from 'react-bootstrap/Dropdown'
 
 import styles from './Header.module.css'
-
-
 
 const header = ( props ) => (
 
@@ -16,8 +16,46 @@ const header = ( props ) => (
                 <Link to="/dashboard" className={styles.purpleColor}>VoteLedger</Link>
             </Navbar.Brand>
             <Nav className="ml-auto">
-                <NavLink to="/users" className={styles.NavLink} activeClassName={styles.Active}>Usuarios</NavLink>
-                <NavLink to="/elections" className={styles.NavLink} activeClassName={styles.Active}>Elecciones</NavLink>
+
+                <DropdownButton 
+                    id="dropdown-item-button" 
+                    title={"Bienvenido, " + props.userName}
+                    drop="left">
+                    <Dropdown.Item as="button">
+                        <Link 
+                            to="/users" 
+                            className={styles.NavLink} 
+                            activeClassName={styles.Active}>
+                                Usuarios
+                        </Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item as="button">
+                        <Link 
+                            to="/elections" 
+                            className={styles.NavLink}
+                            activeClassName={styles.Active}>
+                                Elecciones
+                        </Link>
+                    </Dropdown.Item>
+                    <div className="dropdown-divider"></div>
+                    <Dropdown.Item as="button">
+                        <Link 
+                            to="/login" 
+                            onClick={props.authHandler} 
+                            className={styles.NavLink}>
+                                Mi Información
+                        </Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item as="button">
+                        <Link 
+                            to="/login" 
+                            onClick={props.authHandler} 
+                            className={styles.NavLink}>
+                                Cerrar Sesión
+                        </Link>
+                    </Dropdown.Item>
+                </DropdownButton>
+
             </Nav>
         </Navbar>
     </header>

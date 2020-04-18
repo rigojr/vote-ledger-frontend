@@ -10,7 +10,8 @@ import Elections from './containers/Elections/Elections';
 class App extends Component {
 
   state = {
-    authenticated: false
+    authenticated: false,
+    username: "Rigojr"
   }
 
   authenticationHandler = () => {
@@ -25,7 +26,10 @@ class App extends Component {
   render() {
 
     return (
-        <Layout isAuthed={this.state.authenticated}>
+        <Layout 
+          isAuthed={this.state.authenticated}
+          userName={this.state.username}
+          authHandler={this.authenticationHandler}>
           <Switch>
             <Route 
               path="/login"
