@@ -24,16 +24,14 @@ const header = ( props ) => (
                     <Dropdown.Item as="button">
                         <Link 
                             to="/users" 
-                            className={styles.NavLink} 
-                            activeClassName={styles.Active}>
+                            className={styles.NavLink}>
                                 Usuarios
                         </Link>
                     </Dropdown.Item>
                     <Dropdown.Item as="button">
                         <Link 
                             to="/elections" 
-                            className={styles.NavLink}
-                            activeClassName={styles.Active}>
+                            className={styles.NavLink}>
                                 Elecciones
                         </Link>
                     </Dropdown.Item>

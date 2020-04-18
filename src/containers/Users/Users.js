@@ -8,7 +8,8 @@ import Col from 'react-bootstrap/Col'
 import Table from 'react-bootstrap/Table'
 
 import Aux from '../../hoc/Aux';
-import styles from './Users.module.css' 
+import styles from './Users.module.css'
+import SubHeader from '../../components/Layout/Subheader/Subheader'
 
 class User extends Component {
 
@@ -27,6 +28,14 @@ class User extends Component {
         // Here we ask for the initial data
     }
 
+    createUserHandler = () => {
+        console.log("Creating New User");
+    }
+
+    searchUserHandler = () => {
+        console.log("Searching an User");
+    }
+
     render(){
 
         let UsersComponent = this.props.isAuthed ?
@@ -34,7 +43,6 @@ class User extends Component {
                 <Container>
                     <Row lg={2}>
                         <Col xs lg="12">
-                        <h1>Lista de Usuarios del Sistema</h1>
                             <Table responsive>
                                 <thead>
                                     <tr>
@@ -69,6 +77,10 @@ class User extends Component {
 
         return(
             <Aux>
+                <SubHeader 
+                    subHeaderTitle="Lista de Usuarios del Sistema"
+                    subHeaderSearchingHandler={this.searchUserHandler}
+                    elementName="Usuario"/>
                 {UsersComponent}
             </Aux>
         )
