@@ -25,7 +25,6 @@ class App extends Component {
   render() {
 
     return (
-      <div className="App">
         <Layout isAuthed={this.state.authenticated}>
           <Switch>
             <Route 
@@ -43,7 +42,6 @@ class App extends Component {
             <Redirect from="/" to="/login"/>
           </Switch>
         </Layout>
-      </div>
     )
 
   }
