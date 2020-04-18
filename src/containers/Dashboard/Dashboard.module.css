@@ -9,3 +9,26 @@
 .DashboardCard h1{
     font-size: 1.5rem;
 }
+
+.ActiveElectionTable{
+    text-align: center;
+}
+
+.ActiveElectionThead{
+    width: 100%;
+    display: table;
+    table-layout:fixed;
+    width: calc( 100% - 1em );
+}
+
+.ActiveElectionTbody{
+    max-height: 142.5px;
+    display: block;
+    overflow-y: scroll;
+}
+
+.ActiveElectionTr{
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}

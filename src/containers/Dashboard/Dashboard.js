@@ -18,7 +18,7 @@ class Dashboard extends Component {
     state = {
         status: ["Activo","Activo","Activo","Activo"],
         elections: [
-            { id: "1", description: "Electora Election 1", startDate: "17/02/2020", endDate: "17/02/2020", statusElection: false},
+            { id: "1", description: "Electora Election 1", startDate: "17/02/2020", endDate: "17/02/2020", statusElection: true},
             { id: "2", description: "Electora Election 2", startDate: "18/02/2020", endDate: "18/02/2020", statusElection: true},
             { id: "3", description: "Electora Election 3", startDate: "19/02/2020", endDate: "19/02/2020", statusElection: false},
             { id: "4", description: "Electora Election 4", startDate: "20/02/2020", endDate: "20/02/2020", statusElection: true},
@@ -46,20 +46,26 @@ class Dashboard extends Component {
                             </Col>
                             <Col xs lg="9">
                                 <h1>Lista de Elecciones Activas</h1>
-                                <Table responsive>
-                                    <thead>
+                                <Table 
+                                    className={styles.ActiveElectionTable}
+                                    responsive>
+                                    <thead
+                                        className={styles.ActiveElectionThead}>
                                         <tr>
                                             <th>Descripción</th>
                                             <th>Fecha de Inicio</th>
                                             <th>Fecha de Finalización</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody
+                                        className={styles.ActiveElectionTbody}>
                                         {
                                             this.state.elections.map(
                                                 election => {
                                                     return election.statusElection ? 
-                                                        <tr key={election.id}>
+                                                        <tr 
+                                                            className={styles.ActiveElectionTr}
+                                                            key={election.id}>
                                                             <td>{election.description}</td>
                                                             <td>{election.startDate}</td>
                                                             <td>{election.endDate}</td>

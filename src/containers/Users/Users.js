@@ -7,6 +7,9 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Table from 'react-bootstrap/Table'
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye, faEdit} from '@fortawesome/free-solid-svg-icons'
+
 import Aux from '../../hoc/Aux';
 import styles from './Users.module.css'
 import SubHeader from '../../components/Layout/Subheader/Subheader'
@@ -19,7 +22,19 @@ class User extends Component {
             { id: "2", nombre: "Simón Esperanza", facultad: "Ingeniería", escuela: "Informática", email: "esperanzas@gmail.com"},
             { id: "3", nombre: "Ramón Bravo", facultad: "Ciencias Sociales", escuela: "Comunicación Social", email: "bravor@gmail.com"},
             { id: "4", nombre: "Victoria Ramirez", facultad: "Derecho", escuela: "Derecho", email: "ramirezv@gmail.com"},
-            { id: "5", nombre: "Fernanda Chacón", facultad: "Ciencias Sociales", escuela: "Letras", email: "chacof@gmail.com"}
+            { id: "5", nombre: "José Salas", facultad: "Ingeniería", escuela: "Informática", email: "jsalas@gmail.com"},
+            { id: "6", nombre: "Simón Esperanza", facultad: "Ingeniería", escuela: "Informática", email: "esperanzas@gmail.com"},
+            { id: "7", nombre: "Ramón Bravo", facultad: "Ciencias Sociales", escuela: "Comunicación Social", email: "bravor@gmail.com"},
+            { id: "8", nombre: "Victoria Ramirez", facultad: "Derecho", escuela: "Derecho", email: "ramirezv@gmail.com"},
+            { id: "9", nombre: "José Salas", facultad: "Ingeniería", escuela: "Informática", email: "jsalas@gmail.com"},
+            { id: "10", nombre: "Simón Esperanza", facultad: "Ingeniería", escuela: "Informática", email: "esperanzas@gmail.com"},
+            { id: "11", nombre: "Ramón Bravo", facultad: "Ciencias Sociales", escuela: "Comunicación Social", email: "bravor@gmail.com"},
+            { id: "12", nombre: "Victoria Ramirez", facultad: "Derecho", escuela: "Derecho", email: "ramirezv@gmail.com"},
+            { id: "13", nombre: "José Salas", facultad: "Ingeniería", escuela: "Informática", email: "jsalas@gmail.com"},
+            { id: "14", nombre: "Simón Esperanza", facultad: "Ingeniería", escuela: "Informática", email: "esperanzas@gmail.com"},
+            { id: "15", nombre: "Ramón Bravo", facultad: "Ciencias Sociales", escuela: "Comunicación Social", email: "bravor@gmail.com"},
+            { id: "16", nombre: "Victoria Ramirez", facultad: "Derecho", escuela: "Derecho", email: "ramirezv@gmail.com"},
+            { id: "17", nombre: "Fernanda Chacón", facultad: "Ciencias Sociales", escuela: "Letras", email: "chacof@gmail.com"}
         ]
     }
 
@@ -43,25 +58,41 @@ class User extends Component {
                 <Container>
                     <Row lg={2}>
                         <Col xs lg="12">
-                            <Table responsive>
-                                <thead>
+                            <Table 
+                                responsive
+                                className={styles.UserTable}>
+                                <thead
+                                    className={styles.UserThead}>
                                     <tr>
                                         <th>Nombre</th>
                                         <th>Facultad</th>
                                         <th>Escuela</th>
                                         <th>Email</th>
+                                        <th>Acción</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody
+                                    className={styles.UserTbody}>
                                     {
                                         this.state.users.map(
                                             user => {
                                                 return (
-                                                    <tr key={user.id}>
+                                                    <tr 
+                                                        key={user.id}
+                                                        className={styles.UserTr}>
                                                         <td>{user.nombre}</td>
                                                         <td>{user.facultad}</td>
                                                         <td>{user.escuela}</td>
                                                         <td>{user.email}</td>
+                                                        <td className={styles.AccionIcons}>
+                                                            <FontAwesomeIcon 
+                                                                icon={faEye}
+                                                                className={styles.AccionIcon}/> 
+
+                                                            <FontAwesomeIcon 
+                                                                icon={faEdit}
+                                                                className={styles.AccionIcon}/>
+                                                        </td>
                                                     </tr>
                                                 )
                                             }
