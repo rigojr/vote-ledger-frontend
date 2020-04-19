@@ -37,7 +37,8 @@ class User extends Component {
             { id: "16", nombre: "Victoria Ramirez", facultad: "Derecho", escuela: "Derecho", email: "ramirezv@gmail.com"},
             { id: "17", nombre: "Fernanda Chacón", facultad: "Ciencias Sociales", escuela: "Letras", email: "chacof@gmail.com"}
         ],
-        showModal: false
+        showModal: false,
+        showElection: false
     }
 
     componentDidMount () {
@@ -54,6 +55,13 @@ class User extends Component {
         const modalBoolean = this.state.showModal;
         const showModalUpdated = !modalBoolean;
         this.setState( { showModal: showModalUpdated } );
+    }
+
+    showElectionHandler = () => {
+        console.log("Show Election Handler");
+        const electionBoolean = this.state.showElection;
+        const showElectionUpdated = !electionBoolean;
+        this.setState( { showElection: showElectionUpdated } );
     }
 
     searchUserHandler = () => {
@@ -125,7 +133,10 @@ class User extends Component {
                 {UsersComponent}
                 <UserCreateModal 
                     showModal={this.modalHandler}
-                    modalBoolean={this.state.showModal}/>
+                    modalBoolean={this.state.showModal}
+                    showElection={this.showElectionHandler}
+                    electionBoolean={this.state.showElection}
+                    createUserHandler={this.createUserHandler}/>
             </Aux>
         )
     }

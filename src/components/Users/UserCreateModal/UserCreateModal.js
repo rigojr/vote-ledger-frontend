@@ -6,6 +6,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 
+import SelectOptionsEscuela from './SelectOptionsEscuela/SelectOptionsEscuela';
+import SelectOptionEleccion from './SelectOptionEleccion/SelectOptionEleccion';
+
 const usercreatemodal = ( props ) => (
     <Modal 
         show={props.modalBoolean}
@@ -25,14 +28,7 @@ const usercreatemodal = ( props ) => (
                             as="input" />
                     </Form.Group>
                     <Form.Group as={Col}>
-                        <Form.Label>Escuela</Form.Label>
-                        <Form.Control 
-                            as="select">
-                            <option>Civil</option>
-                            <option>Industrial</option>
-                            <option>Informática</option>
-                            <option>Telecomunicaciones</option>
-                        </Form.Control>
+                        <SelectOptionsEscuela />
                     </Form.Group>
                 </Row>
                 <Row>
@@ -47,13 +43,44 @@ const usercreatemodal = ( props ) => (
                                 type="password" />
                     </Form.Group>
                 </Row>
+                <Row>
+                    <Form.Group 
+                        as={Col}
+                        >
+                        <Form.Label>Tipo de Usuario</Form.Label>
+                        <Form.Check
+                            type="radio"
+                            label="Comisión Electoral"
+                            id="ceRadios"
+                            name="inputRadios"
+                            defaultChecked
+                            onChange={props.showElection}/>
+                        <Form.Check
+                            type="radio"
+                            label="Elector"
+                            id="electorRadios"
+                            name="inputRadios"
+                            onChange={props.showElection}/>
+                    </Form.Group>
+                    <Form.Group as={Col}>
+                        {
+                            props.electionBoolean ?
+                                <SelectOptionEleccion />:
+                            null
+                        }
+                    </Form.Group>
+                </Row>
             </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={props.showModal}>
+          <Button 
+            variant="secondary" 
+            onClick={props.showModal}>
             Cerrar
           </Button>
-          <Button variant="primary" onClick={props.showModal}>
+          <Button 
+            variant="primary" 
+            onClick={props.createUserHandler}>
             Crear
           </Button>
         </Modal.Footer>
