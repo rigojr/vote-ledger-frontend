@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import Card from 'react-bootstrap/Card'
-import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import Table from 'react-bootstrap/Table'
+import Card from 'react-bootstrap/Card';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Table from 'react-bootstrap/Table';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faEdit} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEdit} from '@fortawesome/free-solid-svg-icons';
 
 import Aux from '../../hoc/Aux';
-import styles from './Users.module.css'
-import SubHeader from '../../components/Layout/Subheader/Subheader'
+import styles from './Users.module.css';
+import SubHeader from '../../components/Layout/Subheader/Subheader';
+import UserCreateModal from '../../components/Users/UserCreateModal/UserCreateModal';
 
 class User extends Component {
 
@@ -35,7 +36,8 @@ class User extends Component {
             { id: "15", nombre: "Ramón Bravo", facultad: "Ciencias Sociales", escuela: "Comunicación Social", email: "bravor@gmail.com"},
             { id: "16", nombre: "Victoria Ramirez", facultad: "Derecho", escuela: "Derecho", email: "ramirezv@gmail.com"},
             { id: "17", nombre: "Fernanda Chacón", facultad: "Ciencias Sociales", escuela: "Letras", email: "chacof@gmail.com"}
-        ]
+        ],
+        showModal: false
     }
 
     componentDidMount () {
@@ -45,6 +47,13 @@ class User extends Component {
 
     createUserHandler = () => {
         console.log("Creating New User");
+    }
+
+    modalHandler = () => {
+        console.log("Modal Handler");
+        const modalBoolean = this.state.showModal;
+        const showModalUpdated = !modalBoolean;
+        this.setState( { showModal: showModalUpdated } );
     }
 
     searchUserHandler = () => {
@@ -111,8 +120,12 @@ class User extends Component {
                 <SubHeader 
                     subHeaderTitle="Lista de Usuarios del Sistema"
                     subHeaderSearchingHandler={this.searchUserHandler}
-                    elementName="Usuario"/>
+                    elementName="Usuario"
+                    showModal={this.modalHandler}/>
                 {UsersComponent}
+                <UserCreateModal 
+                    showModal={this.modalHandler}
+                    modalBoolean={this.state.showModal}/>
             </Aux>
         )
     }

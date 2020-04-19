@@ -27,7 +27,8 @@ const subheader = ( props ) => (
                             </Col>
                             <Col xs lg="3">
                                 <CreateBtn 
-                                    elementName={props.elementName}/>
+                                    elementName={props.elementName}
+                                    clicked={props.showModal}/>
                             </Col>
                         </Row>
                     </Container>
