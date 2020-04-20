@@ -9,3 +9,42 @@
 .ElectionsCard h1{
     font-size: 1.5rem;
 }
+
+.ElectionTable{
+    text-align: center;
+}
+
+.ElectionThead{
+    width: 100%;
+    display: table;
+    table-layout:fixed;
+    width: calc( 100% - 1em );
+}
+
+.ElectionTbody{
+    max-height: 400px;
+    display: block;
+    overflow-y: scroll;
+}
+
+.ElectionTr{
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.AccionIcons, .AccionIcons > *, .ReportIcon, .ReportIcon > *{
+    margin: 0px 5px;
+}
+
+.AccionIcon{
+    transition: all 0.5s ease-out;
+}
+
+.ReportIcon{
+    color: #434099;
+}
+
+.AccionIcon:hover{
+    color: rgba(0,0,0,.7);
+}

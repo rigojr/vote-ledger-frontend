@@ -126,7 +126,7 @@ class User extends Component {
         return(
             <Aux>
                 <SubHeader 
-                    subHeaderTitle="Lista de Usuarios del Sistema"
+                    subHeaderTitle="Usuarios del Sistema"
                     subHeaderSearchingHandler={this.searchUserHandler}
                     elementName="Usuario"
                     showModal={this.modalHandler}/>
