@@ -6,11 +6,9 @@ import Card from 'react-bootstrap/Card'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import Table from 'react-bootstrap/Table'
 
 import styles from './Dashboard.module.css' 
 import Aux from '../../hoc/Aux';
-import Status from '../../components/Dashboard/Status/Status'
 import About from '../../components/Dashboard/About/About';
 
 class Dashboard extends Component {
@@ -38,45 +36,6 @@ class Dashboard extends Component {
             <Card className={styles.DashboardCard}>
 
                     <Container>
-
-                        <Row lg={2}>
-                            <Col xs lg="3">
-                                <Status 
-                                    statusArray={this.state.status}/>
-                            </Col>
-                            <Col xs lg="9">
-                                <h1>Lista de Elecciones Activas</h1>
-                                <Table 
-                                    className={styles.ActiveElectionTable}
-                                    responsive>
-                                    <thead
-                                        className={styles.ActiveElectionThead}>
-                                        <tr>
-                                            <th>Descripción</th>
-                                            <th>Fecha de Inicio</th>
-                                            <th>Fecha de Finalización</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody
-                                        className={styles.ActiveElectionTbody}>
-                                        {
-                                            this.state.elections.map(
-                                                election => {
-                                                    return election.statusElection ? 
-                                                        <tr 
-                                                            className={styles.ActiveElectionTr}
-                                                            key={election.id}>
-                                                            <td>{election.description}</td>
-                                                            <td>{election.startDate}</td>
-                                                            <td>{election.endDate}</td>
-                                                        </tr> : null
-                                                }
-                                            )
-                                        }
-                                    </tbody>
-                                </Table>
-                            </Col>
-                        </Row>
 
                         <Row lg={2}>
                             <Col xs lg="12">
