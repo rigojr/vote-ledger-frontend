@@ -26,7 +26,8 @@ class Elections extends Component {
             { id: "5", description: "Electora Election 5", startDate: "21/02/2020", endDate: "21/02/2020", statusElection: true}
         ],
         showModal: false,
-        showElection: false
+        showElection: false,
+        searchOptionUser: ["id"]
     }
 
     componentDidMount () {
@@ -62,6 +63,7 @@ class Elections extends Component {
                                 <thead
                                     className={styles.ElectionThead}>
                                     <tr>
+                                        <th>Id</th>
                                         <th>Descripción</th>
                                         <th>Fecha de Inicio</th>
                                         <th>Fecha de Finalización</th>
@@ -77,6 +79,7 @@ class Elections extends Component {
                                                     <tr 
                                                         key={election.id}
                                                         className={styles.ElectionTr}>
+                                                        <td>{election.id}</td>
                                                         <td>{election.description}</td>
                                                         <td>{election.startDate}</td>
                                                         <td>{election.endDate}</td>
@@ -115,7 +118,8 @@ class Elections extends Component {
                     subHeaderTitle="Elecciones del Sistema"
                     subHeaderSearchingHandler={this.searchElectionHandler}
                     elementName="Elección"
-                    showModal={this.modalHandler}/>
+                    showModal={this.modalHandler}
+                    searchOptions={this.state.searchOptionUser}/>
                 {ElectionsComponent}
                 <ElectionCreateModal 
                     showModal={this.modalHandler}

@@ -17,8 +17,16 @@ const searchinput = ( props ) => (
 
         <Form.Control 
             as="select">
-            <option>Nombre</option>
-            <option>Cédula</option>
+                {props.searchOptions.map(
+                    option => {
+                        return(
+                            <option
+                                key={option}>
+                                {option}
+                            </option>
+                        )
+                    }
+                )}
         </Form.Control>
 
         <Button 

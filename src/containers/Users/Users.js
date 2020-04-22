@@ -38,7 +38,8 @@ class User extends Component {
             { id: "17", nombre: "Fernanda Chacón", facultad: "Ciencias Sociales", escuela: "Letras", email: "chacof@gmail.com"}
         ],
         showModal: false,
-        showElection: false
+        showElection: false,
+        searchOptionUser: ["Nombre","Cédula"]
     }
 
     componentDidMount () {
@@ -129,7 +130,8 @@ class User extends Component {
                     subHeaderTitle="Usuarios del Sistema"
                     subHeaderSearchingHandler={this.searchUserHandler}
                     elementName="Usuario"
-                    showModal={this.modalHandler}/>
+                    showModal={this.modalHandler}
+                    searchOptions={this.state.searchOptionUser}/>
                 {UsersComponent}
                 <UserCreateModal 
                     showModal={this.modalHandler}
