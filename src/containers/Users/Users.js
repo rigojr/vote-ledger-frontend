@@ -18,7 +18,7 @@ import UserCreateModal from '../../components/Users/UserCreateModal/UserCreateMo
 class User extends Component {
 
     state = {
-        usersFetch: [
+        users: [
             { id: "1", nombre: "José Salas", facultad: "Ingeniería", escuela: "Informática", email: "jsalas@gmail.com"},
             { id: "2", nombre: "Simón Esperanza", facultad: "Ingeniería", escuela: "Informática", email: "esperanzas@gmail.com"},
             { id: "3", nombre: "Ramón Bravo", facultad: "Ciencias Sociales", escuela: "Comunicación Social", email: "bravor@gmail.com"},
@@ -45,14 +45,6 @@ class User extends Component {
         searchOption: 'Nombre'
     }
 
-    componentWillMount (){
-        console.log("Users.js will mount");
-        const usersFetch = this.state.usersFetch
-        this.setState({
-            userFiltered: usersFetch
-        })
-    }
-
     componentDidMount () {
         console.log("Users.js is mount");
         // Here we ask for the initial data
@@ -77,31 +69,7 @@ class User extends Component {
     }
 
     searchUserHandler = () => {
-        console.log("Searching an User");
-
-        console.log(this.state.userFiltered);
-        switch(this.state.searchOption){
-            case "Nombre":
-                console.log("Búsqueda por nombre:" + this.state.search);
-                let userFiltered = this.state.usersFetch;
-                userFiltered = userFiltered.filter(
-                    (user) => {
-                        let userName = user.nombre.toLowerCase()
-                        return userName.indexOf(
-                            this.state.search.toLowerCase()) !== -1
-                    }
-                );
-                this.setState({
-                    userFiltered
-                });
-                break;
-            case "Cédula":
-                console.log("Busqueda por CI:" + this.state.search);
-                break;
-            default:
-                console.log("Error Handler");
-                break;
-        }
+       
     }
 
     handleOnInputSearchChange = (event) => {
@@ -136,7 +104,7 @@ class User extends Component {
                                 <tbody
                                     className={styles.UserTbody}>
                                     {
-                                        this.state.userFiltered.map(
+                                        this.state.users.map(
                                             user => {
                                                 return (
                                                     <tr 
