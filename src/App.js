@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Redirect, Switch } from 'react-router-dom';
 
-import Layout from './containers/Layout/Layout';
+import Layout from './components/Layout/Layout';
 import Login from './containers/Login/Login'
 import Dashboard from './containers/Dashboard/Dashboard';
 import Users from './containers/Users/Users'

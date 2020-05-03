@@ -13,10 +13,12 @@ const searchinput = ( props ) => (
         className={styles.SomePadding}>
         <FormControl 
             type="text"
-            placeholder="Búsqueda"/>
+            placeholder="Búsqueda"
+            onChange={props.onChange}/>
 
         <Form.Control 
-            as="select">
+            as="select"
+            onChange={props.onChangeSelect}>
                 {props.searchOptions.map(
                     option => {
                         return(

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
 import Aux from '../../hoc/Aux';
-import Header from '../../components/Layout/Header/Header';
-import Footer from '../../components/Layout/Footer/Footer'
+import Header from './Header/Header';
+import Footer from './Footer/Footer'
 
 class Layout extends Component {
     

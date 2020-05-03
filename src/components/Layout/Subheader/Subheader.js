@@ -24,7 +24,9 @@ const subheader = ( props ) => (
                             <Col xs lg="9"> 
                                 <SearchInput 
                                     subHeaderSearchingHandler={props.subHeaderSearchingHandler}
-                                    searchOptions={props.searchOptions}/>
+                                    searchOptions={props.searchOptions}
+                                    onChange={props.onChange}
+                                    onChangeSelect={props.onChangeSelect}/>
                             </Col>
                             <Col xs lg="3">
                                 <CreateBtn 
