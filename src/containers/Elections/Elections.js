@@ -27,7 +27,7 @@ class Elections extends Component {
         ],
         showModal: false,
         showElection: false,
-        searchOptionUser: ["id"]
+        search: ''
     }
 
     componentDidMount () {
@@ -37,7 +37,13 @@ class Elections extends Component {
 
     searchElectionHandler = () =>{
         console.log("Searching Election");
+        console.log(this.state.search);
     }
+
+    handleOnInputSearchChange = (event) => {
+        const search = event.target.value;
+        this.setState({ search } );
+    };
 
     modalHandler = () => {
         console.log("Modal Handler");
@@ -116,10 +122,12 @@ class Elections extends Component {
             <Aux>
                 <SubHeader 
                     subHeaderTitle="Elecciones del Sistema"
-                    subHeaderSearchingHandler={this.searchElectionHandler}
-                    elementName="Elección"
+                    searchHandler={this.searchElectionHandler}
+                    btnName="Elección"
+                    searchPlaceholder="Código de la Elección"
                     showModal={this.modalHandler}
-                    searchOptions={this.state.searchOptionUser}/>
+                    typeInput="drop"
+                    onChange={this.handleOnInputSearchChange}/>
                 {ElectionsComponent}
                 <ElectionCreateModal 
                     showModal={this.modalHandler}

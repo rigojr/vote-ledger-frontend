@@ -37,10 +37,9 @@ class User extends Component {
             { id: "16", nombre: "Victoria Ramirez", facultad: "Derecho", escuela: "Derecho", email: "ramirezv@gmail.com"},
             { id: "17", nombre: "Fernanda Chacón", facultad: "Ciencias Sociales", escuela: "Letras", email: "chacof@gmail.com"}
         ],
-        userFiltered: null,
         showModal: false,
         showElection: false,
-        search: '',
+        search: ''
     }
 
     componentDidMount () {
@@ -67,6 +66,7 @@ class User extends Component {
     }
 
     searchUserHandler = () => {
+        console.log("Searching User");
         console.log(this.state.search);
     }
 
@@ -134,7 +134,7 @@ class User extends Component {
             <Aux>
                 <SubHeader
                     subHeaderTitle="Usuarios"
-                    searchgHandler={this.searchUserHandler}
+                    searchHandler={this.searchUserHandler}
                     btnName="Usuario"
                     searchPlaceholder="Cédula de Identidad"
                     showModal={this.modalHandler}

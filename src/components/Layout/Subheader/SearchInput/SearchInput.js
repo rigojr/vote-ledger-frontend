@@ -19,7 +19,7 @@ const searchinput = ( props ) => (
 
         <Button 
             variant="outline-primary"
-            onClick={props.searchgHandler}>
+            onClick={props.searchHandler}>
             Buscar
         </Button>
     </Form>

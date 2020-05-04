@@ -45,7 +45,7 @@ const subheader = ( props ) => {
                         <Row
                             className={styles.InputRigth}>
                             <SearchInput 
-                                searchgHandler={props.searchgHandler}
+                                searchHandler={props.searchHandler}
                                 onChange={props.onChange}
                                 searchPlaceholder={props.searchPlaceholder}/>
                             {inputFiled}
