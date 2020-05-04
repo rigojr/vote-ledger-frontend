@@ -40,7 +40,7 @@ const subheader = ( props ) => {
             <Row>
                 <TitlePage 
                     subHeaderTitle={props.subHeaderTitle}/>
-                <Col xs lg="6">
+                <Col xs lg="8">
                     <Container>
                         <Row
                             className={styles.InputRigth}>

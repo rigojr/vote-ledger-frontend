@@ -6,6 +6,7 @@ import Login from './containers/Login/Login'
 import Dashboard from './containers/Dashboard/Dashboard';
 import Users from './containers/Users/Users'
 import Elections from './containers/Elections/Elections';
+import ElectoralEvents from './containers/ElectoralEvent/ElectoralEvent';
 
 class App extends Component {
 
@@ -40,6 +41,9 @@ class App extends Component {
             <Route
               path="/users"
               render={ (props) => <Users {...props} isAuthed={this.state.authenticated}/> }/>
+            <Route
+              path="/electoral-events"
+              render={ (props) => <ElectoralEvents {...props} isAuthed={this.state.authenticated}/> }/>
             <Route
               path="/elections"
               render={ (props) => <Elections {...props} isAuthed={this.state.authenticated}/> }/>

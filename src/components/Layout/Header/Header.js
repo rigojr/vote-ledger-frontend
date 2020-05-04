@@ -30,6 +30,13 @@ const header = ( props ) => (
                     </Dropdown.Item>
                     <Dropdown.Item as="button">
                         <Link 
+                            to="/electoral-events" 
+                            className={styles.NavLink}>
+                                Eventos Electorales
+                        </Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item as="button">
+                        <Link 
                             to="/elections" 
                             className={styles.NavLink}>
                                 Elecciones
