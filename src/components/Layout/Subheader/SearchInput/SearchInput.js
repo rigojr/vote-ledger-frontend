@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form'
 import FormControl from 'react-bootstrap/FormControl'
 import Button from 'react-bootstrap/Button'
 
-import styles from './SearchInput.module.css'
+import styles from '../Subheader.module.css'
 
 
 const searchinput = ( props ) => (

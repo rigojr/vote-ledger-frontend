@@ -12,7 +12,7 @@ import { faEye, faEdit} from '@fortawesome/free-solid-svg-icons';
 
 import Aux from '../../hoc/Aux';
 import styles from './Users.module.css';
-import SubHeaderButton from '../../components/Layout/Subheader/SubheaderButton';
+import SubHeader from '../../components/Layout/Subheader/Subheader';
 import UserCreateModal from '../../components/Users/UserCreateModal/UserCreateModal';
 
 class User extends Component {
@@ -132,13 +132,14 @@ class User extends Component {
 
         return(
             <Aux>
-                <SubHeaderButton 
+                <SubHeader
                     subHeaderTitle="Usuarios"
                     searchgHandler={this.searchUserHandler}
                     btnName="Usuario"
                     searchPlaceholder="Cédula de Identidad"
                     showModal={this.modalHandler}
-                    onChange={this.handleOnInputSearchChange}/>
+                    onChange={this.handleOnInputSearchChange}
+                    typeInput="drop"/>
                 {UsersComponent}
                 <UserCreateModal 
                     showModal={this.modalHandler}
