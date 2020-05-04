@@ -7,7 +7,7 @@ const createbtn = ( props ) => (
         variant="primary"
         onClick={props.clicked}
         block>
-        Crear {props.elementName}
+        Crear {props.btnName}
     </Button>
 );
 

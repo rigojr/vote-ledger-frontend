@@ -12,7 +12,7 @@ import { faEye, faEdit} from '@fortawesome/free-solid-svg-icons';
 
 import Aux from '../../hoc/Aux';
 import styles from './Users.module.css';
-import SubHeader from '../../components/Layout/Subheader/Subheader';
+import SubHeaderButton from '../../components/Layout/Subheader/SubheaderButton';
 import UserCreateModal from '../../components/Users/UserCreateModal/UserCreateModal';
 
 class User extends Component {
@@ -40,9 +40,7 @@ class User extends Component {
         userFiltered: null,
         showModal: false,
         showElection: false,
-        searchOptionUser: ["Nombre","Cédula"],
         search: '',
-        searchOption: 'Nombre'
     }
 
     componentDidMount () {
@@ -69,17 +67,13 @@ class User extends Component {
     }
 
     searchUserHandler = () => {
-       
+        console.log(this.state.search);
     }
 
     handleOnInputSearchChange = (event) => {
         const search = event.target.value;
         this.setState({ search } );
     };
-
-    handleOnChangeSearchSelect = (event) => {
-        this.setState({searchOption: event.target.value});
-    }
 
     render(){
 
@@ -138,14 +132,13 @@ class User extends Component {
 
         return(
             <Aux>
-                <SubHeader 
-                    subHeaderTitle="Usuarios del Sistema"
-                    subHeaderSearchingHandler={this.searchUserHandler}
-                    elementName="Usuario"
+                <SubHeaderButton 
+                    subHeaderTitle="Usuarios"
+                    searchgHandler={this.searchUserHandler}
+                    btnName="Usuario"
+                    searchPlaceholder="Cédula de Identidad"
                     showModal={this.modalHandler}
-                    searchOptions={this.state.searchOptionUser}
-                    onChange={this.handleOnInputSearchChange}
-                    onChangeSelect={this.handleOnChangeSearchSelect}/>
+                    onChange={this.handleOnInputSearchChange}/>
                 {UsersComponent}
                 <UserCreateModal 
                     showModal={this.modalHandler}
