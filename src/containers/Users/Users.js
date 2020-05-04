@@ -1,19 +1,10 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import Card from 'react-bootstrap/Card';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Table from 'react-bootstrap/Table';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEdit} from '@fortawesome/free-solid-svg-icons';
-
 import Aux from '../../hoc/Aux';
-import styles from './Users.module.css';
 import SubHeader from '../../components/Layout/Subheader/Subheader';
 import UserCreateModal from '../../components/Users/UserCreateModal/UserCreateModal';
+import AllTable from '../../components/AllTable/AllTable';
 
 class User extends Component {
 
@@ -37,6 +28,7 @@ class User extends Component {
             { id: "16", nombre: "Victoria Ramirez", facultad: "Derecho", escuela: "Derecho", email: "ramirezv@gmail.com"},
             { id: "17", nombre: "Fernanda Chacón", facultad: "Ciencias Sociales", escuela: "Letras", email: "chacof@gmail.com"}
         ],
+        theaderTable: ["Cédula","Nombre","Facultad","Escuela","Email","Acción"],
         showModal: false,
         showElection: false,
         search: ''
@@ -78,57 +70,11 @@ class User extends Component {
     render(){
 
         let UsersComponent = this.props.isAuthed ?
-            <Card className={styles.UsersCard}>
-                <Container>
-                    <Row lg={2}>
-                        <Col xs lg="12">
-                            <Table 
-                                responsive
-                                className={styles.UserTable}>
-                                <thead
-                                    className={styles.UserThead}>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Facultad</th>
-                                        <th>Escuela</th>
-                                        <th>Email</th>
-                                        <th>Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody
-                                    className={styles.UserTbody}>
-                                    {
-                                        this.state.users.map(
-                                            user => {
-                                                return (
-                                                    <tr 
-                                                        key={user.id}
-                                                        className={styles.UserTr}>
-                                                        <td>{user.nombre}</td>
-                                                        <td>{user.facultad}</td>
-                                                        <td>{user.escuela}</td>
-                                                        <td>{user.email}</td>
-                                                        <td className={styles.AccionIcons}>
-                                                            <FontAwesomeIcon 
-                                                                icon={faEye}
-                                                                className={styles.AccionIcon}/> 
-
-                                                            <FontAwesomeIcon 
-                                                                icon={faEdit}
-                                                                className={styles.AccionIcon}/>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            }
-                                        )
-                                    }
-                                </tbody>
-                            </Table>
-                        </Col>
-                    </Row>
-                </Container>
-            </Card>:
-            <Redirect from="/Dashboard" to="/login"/>;
+        <AllTable 
+            theadArray={this.state.theaderTable}
+            payloadArray={this.state.users}/>    
+            :
+        <Redirect from="/Dashboard" to="/login"/>;
 
         return(
             <Aux>

@@ -1,0 +1,46 @@
+.UsersCard{
+    padding: 20px;
+    width: 90%;
+    margin: auto;
+    margin-top: 40px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.UsersCard h1{
+    font-size: 1.5rem;
+}
+
+.UserTable{
+    text-align: center;
+}
+
+.UserThead{
+    width: 100%;
+    display: table;
+    table-layout:fixed;
+    width: calc( 100% - 1em );
+}
+
+.UserTbody{
+    max-height: 400px;
+    display: block;
+    overflow-y: scroll;
+}
+
+.UserTr{
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.AccionIcons, .AccionIcons > *{
+    margin: 0px 5px;
+}
+
+.AccionIcon{
+    transition: all 0.5s ease-out;
+}
+
+.AccionIcon:hover{
+    color: rgba(0,0,0,.7);
+}
