@@ -139,7 +139,7 @@ class User extends Component {
                     searchPlaceholder="Cédula de Identidad"
                     showModal={this.modalHandler}
                     onChange={this.handleOnInputSearchChange}
-                    typeInput="drop"/>
+                    typeInput="button"/>
                 {UsersComponent}
                 <UserCreateModal 
                     showModal={this.modalHandler}
