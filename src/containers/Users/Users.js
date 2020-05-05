@@ -94,7 +94,7 @@ class User extends Component {
                 <AllModal
                     showModal={this.modalHandler}
                     modalBoolean={this.state.showModal}
-                    createUserHandler={this.createUserHandler}
+                    createHandler={this.createUserHandler}
                     modalTitile="Crear Usuario"
                     create={true}>
                     <UserCreateModal />

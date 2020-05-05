@@ -4,6 +4,8 @@ import { Redirect } from 'react-router-dom';
 import Aux from '../../hoc/Aux';
 import SubHeader from '../../components/Layout/Subheader/Subheader';
 import AllTable from '../../components/AllTable/AllTable';
+import AllModal from '../../components/Layout/Modal/AllModal';
+import CreateModal from '../../components/ElectoralEvent/ElectoralEventCreateModal/ElectoralEventCreatModal';
 
 class ElectoralEvent extends Component {
 
@@ -43,15 +45,9 @@ class ElectoralEvent extends Component {
         this.setState( { showModal: showModalUpdated } );
     }
 
-    showElectionHandler = () => {
-        console.log("Show Election Handler");
-        const electionBoolean = this.state.showElection;
-        const showElectionUpdated = !electionBoolean;
-        this.setState( { showElection: showElectionUpdated } );
-    }
 
-    searchUserHandler = () => {
-        console.log("Searching User");
+    searchElectoralEventHandler = () => {
+        console.log("Searching Electoral Event");
         console.log(this.state.search);
     }
 
@@ -76,13 +72,21 @@ class ElectoralEvent extends Component {
             <Aux>
                 <SubHeader
                     subHeaderTitle="Eventos Electorales"
-                    searchHandler={this.searchUserHandler}
+                    searchHandler={this.searchElectoralEventHandler}
                     btnName="Evento Electoral"
                     searchPlaceholder="Código del Evento Electoral"
                     showModal={this.modalHandler}
                     onChange={this.handleOnInputSearchChange}
                     typeInput="button"/>
                 {ElectoralEventsComponent}
+                <AllModal
+                    showModal={this.modalHandler}
+                    modalBoolean={this.state.showModal}
+                    createHandler={this.createElectoralEventHandler}
+                    modalTitile="Crear Evento Electoral"
+                    create={true}>
+                    <CreateModal />
+                </AllModal>
             </Aux>
         )
     }
