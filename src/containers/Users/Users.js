@@ -5,6 +5,7 @@ import Aux from '../../hoc/Aux';
 import SubHeader from '../../components/Layout/Subheader/Subheader';
 import UserCreateModal from '../../components/Users/UserCreateModal/UserCreateModal';
 import AllTable from '../../components/AllTable/AllTable';
+import AllModal from '../../components/Layout/Modal/AllModal';
 
 class User extends Component {
 
@@ -90,11 +91,15 @@ class User extends Component {
                     onChange={this.handleOnInputSearchChange}
                     typeInput="button"/>
                 {UsersComponent}
-                <UserCreateModal 
+                <AllModal
                     showModal={this.modalHandler}
                     modalBoolean={this.state.showModal}
-                    electionBoolean={this.state.showElection}
-                    createUserHandler={this.createUserHandler}/>
+                    createUserHandler={this.createUserHandler}
+                    modalTitile="Crear Usuario"
+                    create={true}>
+                    <UserCreateModal />
+                </AllModal>
+                
             </Aux>
         )
     }
