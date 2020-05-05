@@ -8,38 +8,32 @@ import AllTable from '../../components/AllTable/AllTable';
 class ElectoralEvent extends Component {
 
     state = {
-        users: [
-            { id: "1", nombre: "José Salas", facultad: "Ingeniería", escuela: "Informática", email: "jsalas@gmail.com"},
-            { id: "2", nombre: "Simón Esperanza", facultad: "Ingeniería", escuela: "Informática", email: "esperanzas@gmail.com"},
-            { id: "3", nombre: "Ramón Bravo", facultad: "Ciencias Sociales", escuela: "Comunicación Social", email: "bravor@gmail.com"},
-            { id: "4", nombre: "Victoria Ramirez", facultad: "Derecho", escuela: "Derecho", email: "ramirezv@gmail.com"},
-            { id: "5", nombre: "José Salas", facultad: "Ingeniería", escuela: "Informática", email: "jsalas@gmail.com"},
-            { id: "6", nombre: "Simón Esperanza", facultad: "Ingeniería", escuela: "Informática", email: "esperanzas@gmail.com"},
-            { id: "7", nombre: "Ramón Bravo", facultad: "Ciencias Sociales", escuela: "Comunicación Social", email: "bravor@gmail.com"},
-            { id: "8", nombre: "Victoria Ramirez", facultad: "Derecho", escuela: "Derecho", email: "ramirezv@gmail.com"},
-            { id: "9", nombre: "José Salas", facultad: "Ingeniería", escuela: "Informática", email: "jsalas@gmail.com"},
-            { id: "10", nombre: "Simón Esperanza", facultad: "Ingeniería", escuela: "Informática", email: "esperanzas@gmail.com"},
-            { id: "11", nombre: "Ramón Bravo", facultad: "Ciencias Sociales", escuela: "Comunicación Social", email: "bravor@gmail.com"},
-            { id: "12", nombre: "Victoria Ramirez", facultad: "Derecho", escuela: "Derecho", email: "ramirezv@gmail.com"},
-            { id: "13", nombre: "José Salas", facultad: "Ingeniería", escuela: "Informática", email: "jsalas@gmail.com"},
-            { id: "14", nombre: "Simón Esperanza", facultad: "Ingeniería", escuela: "Informática", email: "esperanzas@gmail.com"},
-            { id: "15", nombre: "Ramón Bravo", facultad: "Ciencias Sociales", escuela: "Comunicación Social", email: "bravor@gmail.com"},
-            { id: "16", nombre: "Victoria Ramirez", facultad: "Derecho", escuela: "Derecho", email: "ramirezv@gmail.com"},
-            { id: "17", nombre: "Fernanda Chacón", facultad: "Ciencias Sociales", escuela: "Letras", email: "chacof@gmail.com"}
+        electoralEvents: [
+            { id: "1", estado: "Convocatoria", fechaInicio: "2020-05-05T06:00", fechaFin: "2020-05-05T20:00"},
+            { id: "2", estado: "Adjudicación", fechaInicio: "2019-05-05T06:00", fechaFin: "2019-05-05T20:00"},
+            { id: "3", estado: "Adjudicación", fechaInicio: "2018-05-05T06:00", fechaFin: "2018-05-05T20:00"}
         ],
-        theaderTable: ["Cédula","Nombre","Facultad","Escuela","Email","Acción"],
+        theaderTable: ["Código","Estado","Inicio","Finalización", ""],
         showModal: false,
         showElection: false,
         search: ''
     }
 
     componentDidMount () {
-        console.log("Users.js is mount");
+        console.log("ElectoralEvents.js is mount");
         // Here we ask for the initial data
     }
 
-    createUserHandler = () => {
-        console.log("Creating New User");
+    createElectoralEventHandler = () => {
+        console.log("Creating New Electoral Event");
+    }
+
+    consultElectoralEventHandler = () =>{
+        console.log("Consulting Electoral Event");
+    }
+
+    deleteElectoralEventHandler = () =>{
+        console.log("Deleting Electoral Event");
     }
 
     modalHandler = () => {
@@ -68,10 +62,13 @@ class ElectoralEvent extends Component {
 
     render(){
 
-        let UsersComponent = this.props.isAuthed ?
+        let ElectoralEventsComponent = this.props.isAuthed ?
         <AllTable 
             theadArray={this.state.theaderTable}
-            payloadArray={this.state.users}/>    
+            payloadArray={this.state.electoralEvents}
+            consultHandler={this.consultElectoralEventHandler}
+            deleteHandler={this.deleteElectoralEventHandler}
+            deleteAction={true}/>    
             :
         <Redirect from="/Dashboard" to="/login"/>;
 
@@ -85,7 +82,7 @@ class ElectoralEvent extends Component {
                     showModal={this.modalHandler}
                     onChange={this.handleOnInputSearchChange}
                     typeInput="button"/>
-                {UsersComponent}
+                {ElectoralEventsComponent}
             </Aux>
         )
     }

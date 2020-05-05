@@ -5,9 +5,8 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Table from 'react-bootstrap/Table';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEdit} from '@fortawesome/free-solid-svg-icons';
+import DropdownButton from 'react-bootstrap/DropdownButton'
+import Dropdown from 'react-bootstrap/Dropdown'
 
 import styles from './AllTable.module.css';
 
@@ -38,32 +37,44 @@ const AllTable = ( props ) => {
                             </thead>
                             <tbody
                                 className={styles.UserTbody}>
-                                {
-                                    props.payloadArray.map(
-                                        user => {
-                                            return (
+                                    {
+                                        props.payloadArray.map(
+                                            payload => (
                                                 <tr 
-                                                    key={user.id}
+                                                    key={payload.id}
                                                     className={styles.UserTr}>
-                                                    <td>{user.id}</td>
-                                                    <td>{user.nombre}</td>
-                                                    <td>{user.facultad}</td>
-                                                    <td>{user.escuela}</td>
-                                                    <td>{user.email}</td>
-                                                    <td className={styles.AccionIcons}>
-                                                        <FontAwesomeIcon 
-                                                            icon={faEye}
-                                                            className={styles.AccionIcon}/> 
-
-                                                        <FontAwesomeIcon 
-                                                            icon={faEdit}
-                                                            className={styles.AccionIcon}/>
+                                                    {
+                                                        Object.values(payload).map(
+                                                            (e, index) => (
+                                                                <td key={`${index}+${payload.id}`}>{e}</td>
+                                                            )
+                                                        )
+                                                    }
+                                                    <td>
+                                                        <DropdownButton 
+                                                            id="dropdown-item-button" 
+                                                            drop="left"
+                                                            title="">
+                                                                <Dropdown.Item 
+                                                                    as="button"
+                                                                    onClick={props.consultHandler}>
+                                                                    Consultar
+                                                                </Dropdown.Item>
+                                                                <Dropdown.Item 
+                                                                    as="button"
+                                                                    onClick={
+                                                                        props.deleteAction ? props.deleteHandler : props.changeHandler
+                                                                    }>
+                                                                    {
+                                                                        props.deleteAction ? "Eliminar" : "Modificar"
+                                                                    }
+                                                                </Dropdown.Item>
+                                                        </DropdownButton>
                                                     </td>
-                                                </tr>
+                                                </tr> 
                                             )
-                                        }
-                                    )
-                                }
+                                        )
+                                    }
                             </tbody>
                         </Table>
                     </Col>

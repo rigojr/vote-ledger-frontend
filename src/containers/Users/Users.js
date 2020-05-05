@@ -28,10 +28,9 @@ class User extends Component {
             { id: "16", nombre: "Victoria Ramirez", facultad: "Derecho", escuela: "Derecho", email: "ramirezv@gmail.com"},
             { id: "17", nombre: "Fernanda Chacón", facultad: "Ciencias Sociales", escuela: "Letras", email: "chacof@gmail.com"}
         ],
-        theaderTable: ["Cédula","Nombre","Facultad","Escuela","Email","Acción"],
+        theaderTable: ["Cédula","Nombre","Facultad","Escuela","Email",""],
         showModal: false,
-        showElection: false,
-        search: ''
+        search: '',
     }
 
     componentDidMount () {
@@ -43,18 +42,19 @@ class User extends Component {
         console.log("Creating New User");
     }
 
+    consultUserHandler = () => {
+        console.log("Consulting User");
+    }
+
+    changeUserHandler = () => {
+        console.log("Changing User");
+    }
+
     modalHandler = () => {
         console.log("Modal Handler");
         const modalBoolean = this.state.showModal;
         const showModalUpdated = !modalBoolean;
         this.setState( { showModal: showModalUpdated } );
-    }
-
-    showElectionHandler = () => {
-        console.log("Show Election Handler");
-        const electionBoolean = this.state.showElection;
-        const showElectionUpdated = !electionBoolean;
-        this.setState( { showElection: showElectionUpdated } );
     }
 
     searchUserHandler = () => {
@@ -72,7 +72,10 @@ class User extends Component {
         let UsersComponent = this.props.isAuthed ?
         <AllTable 
             theadArray={this.state.theaderTable}
-            payloadArray={this.state.users}/>    
+            payloadArray={this.state.users}
+            consultHandler={this.consultUserHandler}
+            changeHandler={this.changeUserHandler}
+            deleteAction={false}/>    
             :
         <Redirect from="/Dashboard" to="/login"/>;
 
@@ -90,7 +93,6 @@ class User extends Component {
                 <UserCreateModal 
                     showModal={this.modalHandler}
                     modalBoolean={this.state.showModal}
-                    showElection={this.showElectionHandler}
                     electionBoolean={this.state.showElection}
                     createUserHandler={this.createUserHandler}/>
             </Aux>
