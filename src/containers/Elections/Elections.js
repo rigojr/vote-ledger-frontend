@@ -1,33 +1,30 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import Card from 'react-bootstrap/Card';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Table from 'react-bootstrap/Table';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEdit, faVoteYea} from '@fortawesome/free-solid-svg-icons';
-
 import Aux from '../../hoc/Aux';
-import styles from './Elections.module.css';
 import SubHeader from '../../components/Layout/Subheader/Subheader';
-import ElectionCreateModal from '../../components/Elections/ElectionCreateModal/ElectionCreateModal';
-
+import CreateModal from '../../components/Elections/ElectionCreateModal/ElectionCreateModal';
+import AllTable from '../../components/AllTable/AllTable';
+import AllModal from '../../components/Layout/Modal/AllModal';
 class Elections extends Component {
 
     state = {
         elections: [
-            { id: "1", description: "Electora Election 1", startDate: "17/02/2020", endDate: "17/02/2020", statusElection: true},
-            { id: "2", description: "Electora Election 2", startDate: "18/02/2020", endDate: "18/02/2020", statusElection: true},
-            { id: "3", description: "Electora Election 3", startDate: "19/02/2020", endDate: "19/02/2020", statusElection: false},
-            { id: "4", description: "Electora Election 4", startDate: "20/02/2020", endDate: "20/02/2020", statusElection: true},
-            { id: "5", description: "Electora Election 5", startDate: "21/02/2020", endDate: "21/02/2020", statusElection: true}
+            { id: "1", description: "Electora Election 1", typeElection:"Consejo Universitario"},
+            { id: "2", description: "Electora Election 2", typeElection:"Consejo de Facultad"},
+            { id: "3", description: "Electora Election 3", typeElection:"Consejo de Escuela"},
+            { id: "4", description: "Electora Election 4", typeElection:"Consejo de Facultad"},
+            { id: "5", description: "Electora Election 5", typeElection:"Conse de Escuela"}
+        ],
+        electoralEvents: [
+            { id: "1", estado: "Convocatoria", fechaInicio: "2020-05-05T06:00", fechaFin: "2020-05-05T20:00"},
+            { id: "2", estado: "Adjudicación", fechaInicio: "2019-05-05T06:00", fechaFin: "2019-05-05T20:00"},
+            { id: "3", estado: "Adjudicación", fechaInicio: "2018-05-05T06:00", fechaFin: "2018-05-05T20:00"}
         ],
         showModal: false,
         showElection: false,
-        search: ''
+        search: '',
+        theaderTable: ["Código","Descripción","Tipo de Elección", ""],
     }
 
     componentDidMount () {
@@ -53,86 +50,48 @@ class Elections extends Component {
     }
 
     createElectionHandler = () => {
-        console.log("Creating a Election")
+        console.log("Creating New Election")
+    }
+
+    consultElectionHanlder = () => {
+        console.log("Consulting Election");
+    }
+
+    deleteElectionHandler = () => {
+        console.log("Deleting Election");
     }
 
     render(){
 
-        let ElectionsComponent = this.props.isAuthed ?
-            <Card className={styles.ElectionsCard}>
-                <Container>
-                    <Row lg={2}>
-                        <Col xs lg="12">
-                            <Table 
-                                responsive
-                                className={styles.ElectionTable}>
-                                <thead
-                                    className={styles.ElectionThead}>
-                                    <tr>
-                                        <th>Id</th>
-                                        <th>Descripción</th>
-                                        <th>Fecha de Inicio</th>
-                                        <th>Fecha de Finalización</th>
-                                        <th>Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody
-                                    className={styles.ElectionTbody}>
-                                    {
-                                        this.state.elections.map(
-                                            election => {
-                                                return (
-                                                    <tr 
-                                                        key={election.id}
-                                                        className={styles.ElectionTr}>
-                                                        <td>{election.id}</td>
-                                                        <td>{election.description}</td>
-                                                        <td>{election.startDate}</td>
-                                                        <td>{election.endDate}</td>
-                                                        <td className={styles.AccionIcons}>
-                                                            <FontAwesomeIcon 
-                                                                icon={faEye}
-                                                                className={styles.AccionIcon}/> 
-
-                                                            <FontAwesomeIcon 
-                                                                icon={faEdit}
-                                                                className={styles.AccionIcon}/>
-                                                            {
-                                                                election.statusElection ?
-                                                                    <FontAwesomeIcon 
-                                                                        icon={faVoteYea}
-                                                                        className={styles.ReportIcon}/> :
-                                                                        null
-                                                            }
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            }
-                                        )
-                                    }
-                                </tbody>
-                            </Table>
-                        </Col>
-                    </Row>
-                </Container>
-            </Card>:
-            <Redirect from="/Dashboard" to="/login"/>;
+        let ElectionTable = this.props.isAuthed ?
+        <AllTable 
+            theadArray={this.state.theaderTable}
+            payloadArray={this.state.elections}
+            consultHandler={this.consultElectionHanlder}
+            deleteHandler={this.deleteElectionHandler}
+            deleteAction={true}/>
+            :
+        <Redirect from="/Dashboard" to="/login"/>;
 
         return(
             <Aux>
                 <SubHeader 
                     subHeaderTitle="Elecciones del Sistema"
                     searchHandler={this.searchElectionHandler}
-                    btnName="Elección"
+                    btnName="Eventos Electorales"
                     searchPlaceholder="Código de la Elección"
                     showModal={this.modalHandler}
                     typeInput="drop"
                     onChange={this.handleOnInputSearchChange}/>
-                {ElectionsComponent}
-                <ElectionCreateModal 
+                {ElectionTable}
+                <AllModal
                     showModal={this.modalHandler}
                     modalBoolean={this.state.showModal}
-                    createElectionHandler={this.createElectionHandler}/>
+                    createHandler={this.createElectionHandler}
+                    modalTitile="Crear Elección"
+                    create={true}>
+                    <CreateModal />
+                </AllModal>
             </Aux>
         )
     }
