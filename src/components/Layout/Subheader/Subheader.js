@@ -26,7 +26,9 @@ const subheader = ( props ) => {
             console.log("Creating a dropdown as a input field in the sub header");
             inputFiled = (
                 <Dropdown 
-                    btnName={props.btnName}/>
+                    btnName={props.btnName}
+                    btnPayload={props.btnPayload}
+                    btnSelect={props.btnSelect}/>
             )
             break;
         default:

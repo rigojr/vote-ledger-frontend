@@ -17,7 +17,6 @@ class ElectoralEvent extends Component {
         ],
         theaderTable: ["Código","Estado","Inicio","Finalización", ""],
         showModal: false,
-        showElection: false,
         search: ''
     }
 

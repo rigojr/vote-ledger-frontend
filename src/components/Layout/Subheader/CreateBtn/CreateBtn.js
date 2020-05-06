@@ -8,7 +8,8 @@ const createbtn = ( props ) => (
     <Button 
         variant="primary"
         onClick={props.clicked}
-        className={styles.SomePadding}>
+        className={styles.SomePadding}
+        block={props.btnBlockBoolean}>
         Crear {props.btnName}
     </Button>
 );

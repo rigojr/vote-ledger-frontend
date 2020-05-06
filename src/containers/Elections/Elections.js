@@ -4,8 +4,11 @@ import { Redirect } from 'react-router-dom';
 import Aux from '../../hoc/Aux';
 import SubHeader from '../../components/Layout/Subheader/Subheader';
 import CreateModal from '../../components/Elections/ElectionCreateModal/ElectionCreateModal';
-import AllTable from '../../components/AllTable/AllTable';
+import AllTable from '../../components/Layout/AllTable/AllTable';
 import AllModal from '../../components/Layout/Modal/AllModal';
+import CardMessage from '../../components/Layout/CardMessage/CardMessage';
+import InfraHeader from '../../components/Layout/InfraHeader/InfraHeader';
+
 class Elections extends Component {
 
     state = {
@@ -21,10 +24,12 @@ class Elections extends Component {
             { id: "2", estado: "Adjudicación", fechaInicio: "2019-05-05T06:00", fechaFin: "2019-05-05T20:00"},
             { id: "3", estado: "Adjudicación", fechaInicio: "2018-05-05T06:00", fechaFin: "2018-05-05T20:00"}
         ],
+        selectElectoralEvent: '',
         showModal: false,
-        showElection: false,
         search: '',
         theaderTable: ["Código","Descripción","Tipo de Elección", ""],
+        showMessage: true,
+        showTable: false,
     }
 
     componentDidMount () {
@@ -61,37 +66,70 @@ class Elections extends Component {
         console.log("Deleting Election");
     }
 
+    selectElectoralEventHandler = ( ElectoralEvent ) => {
+        console.log("Selecting " + ElectoralEvent + " as a Electoral Event");
+        const tempShowMessage = false;
+        const tempShowTable = true;
+        this.setState(
+            {
+                showMessage: tempShowMessage,
+                showTable: tempShowTable,
+                selectElectoralEvent: ElectoralEvent
+            }
+        );
+    }
+
     render(){
 
-        let ElectionTable = this.props.isAuthed ?
-        <AllTable 
-            theadArray={this.state.theaderTable}
-            payloadArray={this.state.elections}
-            consultHandler={this.consultElectionHanlder}
-            deleteHandler={this.deleteElectionHandler}
-            deleteAction={true}/>
+        let ElectionMessage = this.state.showMessage ?
+        <CardMessage messageTitle="Por favor, seleccione un evento electoral para continuar."/> :
+        null;
+
+        let ElectionContent = this.state.showTable ?
+        <Aux>
+            <InfraHeader 
+                title={this.state.selectElectoralEvent}
+                btnName="Elección"
+                showModal={this.modalHandler}
+                btnBlockBoolean={true}/>
+            <AllTable 
+                theadArray={this.state.theaderTable}
+                payloadArray={this.state.elections}
+                consultHandler={this.consultElectionHanlder}
+                deleteHandler={this.deleteElectionHandler}
+                deleteAction={true}/>
+        </Aux>
+        
             :
-        <Redirect from="/Dashboard" to="/login"/>;
+        null;
+
+        let ElectionComponent = this.props.isAuthed ?
+        <Aux>
+            <SubHeader 
+                subHeaderTitle="Elecciones del Sistema"
+                searchHandler={this.searchElectionHandler}
+                btnName="Eventos Electorales"
+                btnPayload={this.state.electoralEvents}
+                btnSelect={this.selectElectoralEventHandler}
+                searchPlaceholder="Código de la Elección"
+                typeInput="drop"
+                onChange={this.handleOnInputSearchChange}/>
+            {ElectionMessage}
+            {ElectionContent}
+            <AllModal
+                showModal={this.modalHandler}
+                modalBoolean={this.state.showModal}
+                createHandler={this.createElectionHandler}
+                modalTitile="Crear Elección"
+                create={true}>
+                <CreateModal />
+            </AllModal>
+        </Aux>:
+         <Redirect from="/Dashboard" to="/login"/>;
 
         return(
             <Aux>
-                <SubHeader 
-                    subHeaderTitle="Elecciones del Sistema"
-                    searchHandler={this.searchElectionHandler}
-                    btnName="Eventos Electorales"
-                    searchPlaceholder="Código de la Elección"
-                    showModal={this.modalHandler}
-                    typeInput="drop"
-                    onChange={this.handleOnInputSearchChange}/>
-                {ElectionTable}
-                <AllModal
-                    showModal={this.modalHandler}
-                    modalBoolean={this.state.showModal}
-                    createHandler={this.createElectionHandler}
-                    modalTitile="Crear Elección"
-                    create={true}>
-                    <CreateModal />
-                </AllModal>
+                {ElectionComponent}
             </Aux>
         )
     }
