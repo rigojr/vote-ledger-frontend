@@ -8,6 +8,7 @@ import Table from 'react-bootstrap/Table';
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 
+import Aux from '../../../hoc/Aux';
 import styles from './AllTable.module.css';
 
 const AllTable = ( props ) => {
@@ -69,6 +70,23 @@ const AllTable = ( props ) => {
                                                                         props.deleteAction ? "Eliminar" : "Modificar"
                                                                     }
                                                                 </Dropdown.Item>
+                                                                {
+                                                                    props.pollingStation ?
+                                                                    <Aux>
+                                                                    <Dropdown.Item 
+                                                                        as="button"
+                                                                        onClick={props.enableHandler}>
+                                                                        Inhabilitar/Habilitar
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Item 
+                                                                        as="button"
+                                                                        onClick={props.uninstallHandler}>
+                                                                        Desinstalar
+                                                                    </Dropdown.Item> 
+                                                                    </Aux>
+                                                                    :
+                                                                    null
+                                                                }
                                                         </DropdownButton>
                                                     </td>
                                                 </tr> 

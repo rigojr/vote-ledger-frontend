@@ -7,6 +7,7 @@ import Dashboard from './containers/Dashboard/Dashboard';
 import Users from './containers/Users/Users'
 import Elections from './containers/Elections/Elections';
 import ElectoralEvents from './containers/ElectoralEvent/ElectoralEvent';
+import PollingStation from './containers/PollingStation/PollingStation';
 
 class App extends Component {
 
@@ -47,6 +48,9 @@ class App extends Component {
             <Route
               path="/elections"
               render={ (props) => <Elections {...props} isAuthed={this.state.authenticated}/> }/>
+            <Route
+              path="/polling-station"
+              render={ (props) => <PollingStation {...props} isAuthed={this.state.authenticated}/> }/>
             <Redirect from="/" to="/login"/>
           </Switch>
         </Layout>
