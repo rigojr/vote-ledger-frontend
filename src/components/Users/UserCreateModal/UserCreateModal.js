@@ -13,29 +13,39 @@ const usercreatemodal = ( props ) => (
             <Form.Group as={Col}>
                 <Form.Label>Nombre</Form.Label>
                 <Form.Control
-                    as="input" />
+                    as="input"
+                    value={props.userValue.name}
+                    onChange={props.onNameChange}/>
             </Form.Group>
             <Form.Group as={Col}>
-                <SelectOptionsEscuela />
+                <SelectOptionsEscuela 
+                    value={props.userValue.school}
+                    onChange={props.onSchoolChange}/>
             </Form.Group>
         </Row>
         <Row>
             <Form.Group as={Col}>
                 <Form.Label>Correo Electrónico</Form.Label>
                 <Form.Control
-                    type="email" />
+                    type="email"
+                    value={props.userValue.email}
+                    onChange={props.onEmailChange}/>
             </Form.Group>
             <Form.Group as={Col}>
                 <Form.Label>Contraseña</Form.Label>
                     <Form.Control
-                        type="password" />
+                        type="password"
+                        value={props.userPassword}
+                        onChange={props.onPasswordChange}/>
             </Form.Group>
         </Row>
         <Row>
             <Form.Group as={Col}>
                 <Form.Label>Cédula</Form.Label>
                 <Form.Control
-                    as="input" />
+                    as="input" 
+                    value={props.userValue.id}
+                    onChange={props.onIdChange}/>
             </Form.Group>
             <Form.Group as={Col}>
                 <Form.Label>Tipo de Usuario</Form.Label>
@@ -44,14 +54,12 @@ const usercreatemodal = ( props ) => (
                     label="Comisión Electoral"
                     id="ceRadios"
                     name="inputRadios"
-                    defaultChecked
-                    onChange={props.showElection}/>
+                    defaultChecked/>
                 <Form.Check
                     type="radio"
                     label="Elector"
                     id="electorRadios"
-                    name="inputRadios"
-                    onChange={props.showElection}/>
+                    name="inputRadios"/>
             </Form.Group>
         </Row>
     </Aux>

@@ -4,11 +4,13 @@ import Form from 'react-bootstrap/Form';
 
 import Aux from '../../../../hoc/Aux';
 
-const SelectOptionsEscuela = ( ) => (
+const SelectOptionsEscuela = ( props ) => (
     <Aux>
         <Form.Label>Escuela</Form.Label>
         <Form.Control 
-            as="select">
+            as="select"
+            value={props.value}
+            onChange={props.onChange}>
             <option>Administración y Contaduría</option>
             <option>Civil</option>
             <option>Ciencias Sociales</option>
