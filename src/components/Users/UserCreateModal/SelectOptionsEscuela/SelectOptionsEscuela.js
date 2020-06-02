@@ -10,7 +10,8 @@ const SelectOptionsEscuela = ( props ) => (
         <Form.Control 
             as="select"
             value={props.value}
-            onChange={props.onChange}>
+            onChange={props.onChange}
+            disabled={props.disabled}>
             <option>Administración y Contaduría</option>
             <option>Civil</option>
             <option>Ciencias Sociales</option>

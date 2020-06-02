@@ -15,12 +15,14 @@ const usercreatemodal = ( props ) => (
                 <Form.Control
                     as="input"
                     value={props.userValue.name}
-                    onChange={props.onNameChange}/>
+                    onChange={props.onNameChange}
+                    disabled={props.enableState}/>
             </Form.Group>
             <Form.Group as={Col}>
                 <SelectOptionsEscuela 
                     value={props.userValue.school}
-                    onChange={props.onSchoolChange}/>
+                    onChange={props.onSchoolChange}
+                    disabled={props.enableState}/>
             </Form.Group>
         </Row>
         <Row>
@@ -29,14 +31,16 @@ const usercreatemodal = ( props ) => (
                 <Form.Control
                     type="email"
                     value={props.userValue.email}
-                    onChange={props.onEmailChange}/>
+                    onChange={props.onEmailChange}
+                    disabled={props.enableState}/>
             </Form.Group>
             <Form.Group as={Col}>
                 <Form.Label>Contraseña</Form.Label>
                     <Form.Control
                         type="password"
                         value={props.userPassword}
-                        onChange={props.onPasswordChange}/>
+                        onChange={props.onPasswordChange}
+                        disabled={props.enableState}/>
             </Form.Group>
         </Row>
         <Row>
@@ -45,7 +49,8 @@ const usercreatemodal = ( props ) => (
                 <Form.Control
                     as="input" 
                     value={props.userValue.id}
-                    onChange={props.onIdChange}/>
+                    onChange={props.onIdChange}
+                    disabled={props.enableState}/>
             </Form.Group>
             <Form.Group as={Col}>
                 <Form.Label>Tipo de Usuario</Form.Label>
@@ -54,12 +59,16 @@ const usercreatemodal = ( props ) => (
                     label="Comisión Electoral"
                     id="ceRadios"
                     name="inputRadios"
-                    defaultChecked/>
+                    onChange={ () => props.tagLabel("A") }
+                    defaultChecked
+                    disabled={props.enableState}/>
                 <Form.Check
                     type="radio"
                     label="Elector"
                     id="electorRadios"
-                    name="inputRadios"/>
+                    name="inputRadios"
+                    onChange={ () => props.tagLabel("") }
+                    disabled={props.enableState}/>
             </Form.Group>
         </Row>
     </Aux>

@@ -14,31 +14,15 @@ class User extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            users: [
-                { id: "1", name: "José Salas", faculty: "Ingeniería", school: "Informática", email: "jsalas@gmail.com"},
-                { id: "2", name: "Simón Esperanza", faculty: "Ingeniería", school: "Informática", email: "esperanzas@gmail.com"},
-                { id: "3", name: "Ramón Bravo", faculty: "Ciencias Sociales", school: "Comunicación Social", email: "bravor@gmail.com"},
-                { id: "4", name: "Victoria Ramirez", faculty: "Derecho", school: "Derecho", email: "ramirezv@gmail.com"},
-                { id: "5", name: "José Salas", faculty: "Ingeniería", school: "Informática", email: "jsalas@gmail.com"},
-                { id: "6", name: "Simón Esperanza", faculty: "Ingeniería", school: "Informática", email: "esperanzas@gmail.com"},
-                { id: "7", name: "Ramón Bravo", faculty: "Ciencias Sociales", school: "Comunicación Social", email: "bravor@gmail.com"},
-                { id: "8", name: "Victoria Ramirez", faculty: "Derecho", school: "Derecho", email: "ramirezv@gmail.com"},
-                { id: "9", name: "José Salas", faculty: "Ingeniería", school: "Informática", email: "jsalas@gmail.com"},
-                { id: "10", name: "Simón Esperanza", faculty: "Ingeniería", school: "Informática", email: "esperanzas@gmail.com"},
-                { id: "11", name: "Ramón Bravo", faculty: "Ciencias Sociales", school: "Comunicación Social", email: "bravor@gmail.com"},
-                { id: "12", name: "Victoria Ramirez", faculty: "Derecho", school: "Derecho", email: "ramirezv@gmail.com"},
-                { id: "13", name: "José Salas", faculty: "Ingeniería", school: "Informática", email: "jsalas@gmail.com"},
-                { id: "14", name: "Simón Esperanza", faculty: "Ingeniería", school: "Informática", email: "esperanzas@gmail.com"},
-                { id: "15", name: "Ramón Bravo", faculty: "Ciencias Sociales", school: "Comunicación Social", email: "bravor@gmail.com"},
-                { id: "16", name: "Victoria Ramirez", faculty: "Derecho", school: "Derecho", email: "ramirezv@gmail.com"},
-                { id: "17", name: "Fernanda Chacón", faculty: "Ciencias Sociales", school: "Letras", email: "chacof@gmail.com"}
-            ],
+            users: null,
             user: {id:"", name:"", faculty:"", school:"Administración y Contaduría", email:"", password:"", enable: true},
             userPassword: "",
             theaderTable: ["Cédula","Nombre","Facultad","Escuela","Email",""],
+            checkLabel: "A",
             showModal: false,
+            modalMessage: "",
             search: '',
-
+            inputEnable: false
         };
     }
 
@@ -124,23 +108,72 @@ class User extends Component {
         this.setState ( { userPassword:"" } );
     }
 
+    setAdminLabel = () => {
+        const id = this.state.user.id + this.state.checkLabel;
+        this.setState( prevState => ({ user: {...prevState.user, id} }));
+    }
+
+    setLabel = (tag) => {
+        this.setState( { checkLabel: tag } );
+    }
+
+    setEnableInput = () => {
+        const status = !this.state.inputEnable;
+        this.setState( { inputEnable: status} );
+    }
+
+    setModalMessage = (message) => {
+        console.log("setModalMessage");
+        console.log(message)
+        this.setState(  { modalMessage: message} );
+    }
+
     componentDidMount () {
         console.log("Users.js is mount");
-        // Here we ask for the initial data
+        axios.get('/users.json')
+        .then( response => {
+            const fetchUsers = [];
+            for( let key in response.data){
+                fetchUsers.push({
+                    id: response.data[key].id,
+                    name: response.data[key].name,
+                    faculty: response.data[key].faculty,
+                    school: response.data[key].school,
+                    email: response.data[key].email
+                });
+            }
+            this.setState({ users: fetchUsers });
+        })
+        .catch( error => {
+            console.log(error)
+        })
+    }
+
+    componentWillMount () {
+        
     }
 
     createUserHandler = async () => {
         console.log("Creating New User");
+        this.setModalMessage("Enviando información al Blockchain");
         await this.setFaculty(this.state.user.school);
+        await this.setAdminLabel();
+        this.setEnableInput();
         axios.post('/users.json', this.state.user)
-        .then( response => {
-            console.log(response);
-            this.modalHandler();
-            this.setUserClean();
+        .then( (response) => {
+            this.setModalMessage("Guardado con éxito!");
         })
         .catch( error => {
             console.log(error);
         });
+
+        setTimeout(this.cleanModalHandler,3000);
+
+    }
+
+    cleanModalHandler = () => {
+        this.setEnableInput();
+        this.setUserClean();
     }
 
     consultUserHandler = () => {
@@ -172,15 +205,23 @@ class User extends Component {
 
     render(){
 
-        let UsersComponent = this.props.isAuthed ?
-        <AllTable 
-            theadArray={this.state.theaderTable}
-            payloadArray={this.state.users}
-            consultHandler={this.consultUserHandler}
-            changeHandler={this.changeUserHandler}
-            deleteAction={false}/>    
+        let RedirectComponent = this.props.isAuthed ?
+            null
             :
         <Redirect from="/Dashboard" to="/login"/>;
+
+        let UsersTableComponent = null;
+
+        if (this.state.users){
+            UsersTableComponent = (
+                <AllTable 
+                    theadArray={this.state.theaderTable}
+                    payloadArray={this.state.users}
+                    consultHandler={this.consultUserHandler}
+                    changeHandler={this.changeUserHandler}
+                    deleteAction={false}/>
+            );
+        }
 
         return(
             <Aux>
@@ -192,23 +233,28 @@ class User extends Component {
                     showModal={this.modalHandler}
                     onChange={this.handleOnInputSearchChange}
                     typeInput="button"/>
-                {UsersComponent}
+                {UsersTableComponent}
                 <AllModal
                     showModal={this.modalHandler}
                     modalBoolean={this.state.showModal}
                     createHandler={this.createUserHandler}
                     modalTitile="Crear Usuario"
-                    create={true}>
+                    create={true}
+                    enableState={this.state.inputEnable}
+                    modalMessage={this.state.modalMessage}>
                     <UserCreateModal 
                         userValue={this.state.user}
                         userPassword={this.state.userPassword}
+                        enableState={this.state.inputEnable}
+                        modalMessage={this.state.modalMessage}
                         onIdChange={this.setId}
                         onNameChange={this.setName}
                         onSchoolChange={this.setSchool}
                         onEmailChange={this.setEmail}
-                        onPasswordChange={this.setPassword}/>
+                        onPasswordChange={this.setPassword}
+                        tagLabel={this.setLabel}/>
                 </AllModal>
-                
+                {RedirectComponent}
             </Aux>
         )
     }

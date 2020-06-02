@@ -22,16 +22,24 @@ const AllModal = ( props ) => (
             </Form>
         </Modal.Body>
         <Modal.Footer>
+          {
+            props.enableState ?
+              <p><b>{props.modalMessage}</b></p>
+              :
+              null
+          }
           <Button 
             variant="secondary" 
-            onClick={props.showModal}>
+            onClick={props.showModal}
+            disabled={props.enableState}>
             Cerrar
           </Button>
             {                                                 
                 props.create ? 
                     <Button 
                         variant="primary" 
-                        onClick={props.createHandler}>
+                        onClick={props.createHandler}
+                        disabled={props.enableState}>
                         Crear
                     </Button>
                     :

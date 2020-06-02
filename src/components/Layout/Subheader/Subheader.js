@@ -15,7 +15,6 @@ const subheader = ( props ) => {
     let inputFiled;
     switch (props.typeInput){
         case "button":
-            console.log("Creating a button as a input field in the sub header");
             inputFiled = (
                 <CreateBtn 
                     btnName={props.btnName}
@@ -23,7 +22,6 @@ const subheader = ( props ) => {
             )
             break;
         case "drop":
-            console.log("Creating a dropdown as a input field in the sub header");
             inputFiled = (
                 <Dropdown 
                     btnName={props.btnName}
@@ -32,7 +30,6 @@ const subheader = ( props ) => {
             )
             break;
         default:
-            console.log("Error handling the input selection for the subheader");
             break;
     }
 
