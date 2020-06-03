@@ -46,7 +46,8 @@ const subheader = ( props ) => {
                             <SearchInput 
                                 searchHandler={props.searchHandler}
                                 onChange={props.onChange}
-                                searchPlaceholder={props.searchPlaceholder}/>
+                                searchPlaceholder={props.searchPlaceholder}
+                                searchValue={props.searchValue}/>
                             {inputFiled}
                         </Row>
                     </Container>

@@ -5,9 +5,10 @@ import Aux from '../../hoc/Aux';
 import axios from '../../axios';
 import { sha256 } from 'js-sha256'
 import SubHeader from '../../components/Layout/Subheader/Subheader';
-import UserCreateModal from '../../components/Users/UserCreateModal/UserCreateModal';
+import UserInputModal from '../../components/Users/UserInputModal/UserInputModal';
 import AllTable from '../../components/Layout/AllTable/AllTable';
 import AllModal from '../../components/Layout/Modal/AllModal';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 class User extends Component {
 
@@ -22,7 +23,10 @@ class User extends Component {
             showModal: false,
             modalMessage: "",
             search: '',
-            inputEnable: false
+            inputEnable: false,
+            modalTitle: '',
+            modalCreateBtn: false,
+            modalUpdateBtn: false
         };
     }
 
@@ -117,9 +121,8 @@ class User extends Component {
         this.setState( { checkLabel: tag } );
     }
 
-    setEnableInput = () => {
-        const status = !this.state.inputEnable;
-        this.setState( { inputEnable: status} );
+    setEnableInput = ( boolean ) => {
+        this.setState( { inputEnable: boolean} );
     }
 
     setModalMessage = (message) => {
@@ -149,16 +152,13 @@ class User extends Component {
         })
     }
 
-    componentWillMount () {
-        
-    }
 
-    createUserHandler = async () => {
+    createHandler = async () => {
         console.log("Creating New User");
         this.setModalMessage("Enviando información al Blockchain");
         await this.setFaculty(this.state.user.school);
         await this.setAdminLabel();
-        this.setEnableInput();
+        this.setEnableInput( true );
         axios.post('/users.json', this.state.user)
         .then( (response) => {
             this.setModalMessage("Guardado con éxito!");
@@ -171,37 +171,73 @@ class User extends Component {
 
     }
 
+    createModal = () => {
+        this.modalHandler( true, false);
+        this.cleanModalHandler();
+    }
+
     cleanModalHandler = () => {
-        this.setEnableInput();
+        this.setEnableInput( false );
         this.setUserClean();
     }
 
-    consultUserHandler = () => {
+    consultModal = ( selectUser ) => {
+        this.setState( { user: selectUser} );
+        this.modalHandler( false, false);
+        this.setEnableInput( true );
+    }
+
+    consultHandler = () => {
         console.log("Consulting User");
     }
 
-    changeUserHandler = () => {
-        console.log("Changing User");
+    updateModal = ( selectUser ) => {
+        this.setState( { user: selectUser} );
+        this.modalHandler( false, true);
     }
 
-    modalHandler = () => {
+    updateHandler = () => {
+        console.log("Updating User");
+    }
+
+    modalHandler = ( create, update ) => {
         console.log("Modal Handler");
         const modalBoolean = this.state.showModal;
         const showModalUpdated = !modalBoolean;
-        this.setState( { showModal: showModalUpdated } );
+        this.setState( { 
+            showModal: showModalUpdated,
+            modalCreateBtn: create,
+            modalUpdateBtn: update
+        } );
     }
 
-    searchUserHandler = () => {
+    searchHandler = () => {
         console.log("Searching User");
-        console.log(this.state.search);
+        if(this.state.users){
+            for (let i in this.state.users) {
+                if(this.state.search === this.state.users[i].id){
+                    const searchUser = this.state.users[i];
+                    this.setState( { 
+                        user: searchUser,
+                        search: ''
+                    } );
+                    this.searchModal();
+                }
+            }
+        }else{
+            console.log("Error, no hay usuarios cargados");
+        }
+    }
+
+    searchModal = () => {
+        this.modalHandler( false, false );
+        this.setEnableInput( true );
     }
 
     handleOnInputSearchChange = (event) => {
         const search = event.target.value;
         this.setState({ search } );
     };
-
-
 
     render(){
 
@@ -210,15 +246,15 @@ class User extends Component {
             :
         <Redirect from="/Dashboard" to="/login"/>;
 
-        let UsersTableComponent = null;
+        let UsersTableComponent = <Spinner/>;
 
         if (this.state.users){
             UsersTableComponent = (
                 <AllTable 
                     theadArray={this.state.theaderTable}
                     payloadArray={this.state.users}
-                    consultHandler={this.consultUserHandler}
-                    changeHandler={this.changeUserHandler}
+                    consultHandler={this.consultModal}
+                    changeHandler={this.updateModal}
                     deleteAction={false}/>
             );
         }
@@ -227,22 +263,25 @@ class User extends Component {
             <Aux>
                 <SubHeader
                     subHeaderTitle="Usuarios"
-                    searchHandler={this.searchUserHandler}
                     btnName="Usuario"
                     searchPlaceholder="Cédula de Identidad"
-                    showModal={this.modalHandler}
-                    onChange={this.handleOnInputSearchChange}
-                    typeInput="button"/>
+                    typeInput="button"
+                    searchValue={this.state.search}
+                    searchHandler={this.searchHandler}
+                    showModal={this.createModal}
+                    onChange={this.handleOnInputSearchChange}/>
                 {UsersTableComponent}
                 <AllModal
                     showModal={this.modalHandler}
+                    createHandler={this.createHandler}
+                    UpdateHandler={this.updateHandler}
                     modalBoolean={this.state.showModal}
-                    createHandler={this.createUserHandler}
-                    modalTitile="Crear Usuario"
-                    create={true}
+                    modalTitile={this.state.modalTitle}
+                    create={this.state.modalCreateBtn}
+                    update={this.state.modalUpdateBtn}
                     enableState={this.state.inputEnable}
                     modalMessage={this.state.modalMessage}>
-                    <UserCreateModal 
+                    <UserInputModal 
                         userValue={this.state.user}
                         userPassword={this.state.userPassword}
                         enableState={this.state.inputEnable}

@@ -58,13 +58,16 @@ const AllTable = ( props ) => {
                                                             title="">
                                                                 <Dropdown.Item 
                                                                     as="button"
-                                                                    onClick={props.consultHandler}>
+                                                                    onClick={ () => props.consultHandler(payload)}>
                                                                     Consultar
                                                                 </Dropdown.Item>
                                                                 <Dropdown.Item 
                                                                     as="button"
                                                                     onClick={
-                                                                        props.deleteAction ? props.deleteHandler : props.changeHandler
+                                                                        props.deleteAction ? 
+                                                                        () => props.deleteHandler(payload.id) 
+                                                                        : 
+                                                                        () => props.changeHandler(payload)
                                                                     }>
                                                                     {
                                                                         props.deleteAction ? "Eliminar" : "Modificar"

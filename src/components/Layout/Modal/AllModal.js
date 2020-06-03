@@ -8,7 +8,7 @@ import Form from 'react-bootstrap/Form';
 const AllModal = ( props ) => (
     <Modal 
         show={props.modalBoolean}
-        onHide={props.showModal}
+        onHide={ () => props.showModal(false, false)}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -30,21 +30,34 @@ const AllModal = ( props ) => (
           }
           <Button 
             variant="secondary" 
-            onClick={props.showModal}
-            disabled={props.enableState}>
+            onClick={ () => props.showModal(false, false)}>
             Cerrar
           </Button>
+
             {                                                 
-                props.create ? 
-                    <Button 
-                        variant="primary" 
-                        onClick={props.createHandler}
-                        disabled={props.enableState}>
-                        Crear
-                    </Button>
-                    :
-                    null
+              props.create ? 
+                <Button 
+                    variant="primary" 
+                    onClick={props.createHandler}
+                    disabled={props.enableState}>
+                    Crear
+                </Button>
+                :
+                null
             }
+
+            {
+              props.update ?
+                <Button 
+                  variant="primary" 
+                  onClick={props.UpdateHandler}
+                  disabled={props.enableState}>
+                    Modificar
+                </Button>
+                :
+                null
+            }
+
         </Modal.Footer>
       </Modal>
 );

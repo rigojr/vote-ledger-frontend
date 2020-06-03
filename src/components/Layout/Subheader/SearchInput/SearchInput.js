@@ -15,7 +15,8 @@ const searchinput = ( props ) => (
         <FormControl 
             type="text"
             placeholder={props.searchPlaceholder}
-            onChange={props.onChange}/>
+            onChange={props.onChange}
+            value={props.searchValue}/>
 
         <Button 
             variant="outline-primary"
