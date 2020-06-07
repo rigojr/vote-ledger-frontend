@@ -24,9 +24,11 @@ class User extends Component {
             modalMessage: "",
             search: '',
             inputEnable: false,
+            inputTypeOfUser: false,
             modalTitle: '',
             modalCreateBtn: false,
-            modalUpdateBtn: false
+            modalUpdateBtn: false,
+            selectedTypeOfUser: true
         };
     }
 
@@ -109,7 +111,11 @@ class User extends Component {
     setUserClean = () => {
         const user = {id:"", name:"", faculty:"", school:"Administración y Contaduría", email:"", password:"", enable: true};
         this.setState( { user } );
-        this.setState ( { userPassword:"" } );
+        this.setState ( { 
+            userPassword:"", 
+            selectedTypeOfUser: true,
+            inputTypeOfUser: false
+        } );
     }
 
     setAdminLabel = () => {
@@ -118,11 +124,21 @@ class User extends Component {
     }
 
     setLabel = (tag) => {
-        this.setState( { checkLabel: tag } );
+        const boolTypeOfUser = false;
+        if( tag === "A") 
+            boolTypeOfUser = true
+        this.setState( { 
+            checkLabel: tag,
+            selectedTypeOfUser: boolTypeOfUser
+        } );
     }
 
     setEnableInput = ( boolean ) => {
         this.setState( { inputEnable: boolean} );
+    }
+
+    setEnableInputTypeOf = ( boolean ) => {
+        this.setState( { inputTypeOfUser: boolean } );
     }
 
     setModalMessage = (message) => {
@@ -152,16 +168,17 @@ class User extends Component {
         })
     }
 
-
     createHandler = async () => {
         console.log("Creating New User");
         this.setModalMessage("Enviando información al Blockchain");
         await this.setFaculty(this.state.user.school);
         await this.setAdminLabel();
         this.setEnableInput( true );
+        this.setEnableInputTypeOf( true );
         axios.post('/users.json', this.state.user)
         .then( (response) => {
             this.setModalMessage("Guardado con éxito!");
+            console.log(response);
         })
         .catch( error => {
             console.log(error);
@@ -178,13 +195,21 @@ class User extends Component {
 
     cleanModalHandler = () => {
         this.setEnableInput( false );
+        this.setEnableInputTypeOf( false);
         this.setUserClean();
     }
 
     consultModal = ( selectUser ) => {
-        this.setState( { user: selectUser} );
+        let adminBoolean = false;
+        if( selectUser.id.charAt(selectUser.id.length - 1) === "A")
+            adminBoolean = true;
         this.modalHandler( false, false);
         this.setEnableInput( true );
+        this.setState( { 
+            user: selectUser,
+            selectedTypeOfUser: adminBoolean,
+            inputTypeOfUser: true
+        } );
     }
 
     consultHandler = () => {
@@ -192,12 +217,21 @@ class User extends Component {
     }
 
     updateModal = ( selectUser ) => {
-        this.setState( { user: selectUser} );
+        let adminBoolean = false;
+        if( selectUser.id.charAt(selectUser.id.length - 1) === "A")
+            adminBoolean = true;
         this.modalHandler( false, true);
+        this.setEnableInput( false );
+        this.setState( { 
+            user: selectUser,
+            selectedTypeOfUser: adminBoolean,
+            inputTypeOfUser: true
+        } );
     }
 
     updateHandler = () => {
         console.log("Updating User");
+        console.log(this.state.user);
     }
 
     modalHandler = ( create, update ) => {
@@ -213,7 +247,8 @@ class User extends Component {
 
     searchHandler = () => {
         console.log("Searching User");
-        if(this.state.users){
+        let found = false;
+        if(this.state.users && !(this.state.search == '')){
             for (let i in this.state.users) {
                 if(this.state.search === this.state.users[i].id){
                     const searchUser = this.state.users[i];
@@ -222,16 +257,20 @@ class User extends Component {
                         search: ''
                     } );
                     this.searchModal();
+                    found = true;
                 }
             }
+            if(!found)
+                alert("Usuario con el ID " + this.state.search + ", no fue encontrado");
         }else{
-            console.log("Error, no hay usuarios cargados");
+            alert("Error en la búsqueda, verifique entradas y conexión con el back");
         }
     }
 
     searchModal = () => {
         this.modalHandler( false, false );
         this.setEnableInput( true );
+        this.setEnableInputTypeOf( true );
     }
 
     handleOnInputSearchChange = (event) => {
@@ -286,6 +325,8 @@ class User extends Component {
                         userPassword={this.state.userPassword}
                         enableState={this.state.inputEnable}
                         modalMessage={this.state.modalMessage}
+                        typeOfUser={this.state.selectedTypeOfUser}
+                        inputTypeOfUser={this.state.inputTypeOfUser}
                         onIdChange={this.setId}
                         onNameChange={this.setName}
                         onSchoolChange={this.setSchool}

@@ -20,7 +20,7 @@ const usercreatemodal = ( props ) => (
             </Form.Group>
             <Form.Group as={Col}>
                 <SelectOptionsEscuela 
-                    value={props.userValue.school}
+                    school={props.userValue.school}
                     onChange={props.onSchoolChange}
                     disabled={props.enableState}/>
             </Form.Group>
@@ -50,7 +50,7 @@ const usercreatemodal = ( props ) => (
                     as="input" 
                     value={props.userValue.id}
                     onChange={props.onIdChange}
-                    disabled={props.enableState}/>
+                    disabled={props.inputTypeOfUser}/>
             </Form.Group>
             <Form.Group as={Col}>
                 <Form.Label>Tipo de Usuario</Form.Label>
@@ -60,15 +60,16 @@ const usercreatemodal = ( props ) => (
                     id="ceRadios"
                     name="inputRadios"
                     onChange={ () => props.tagLabel("A") }
-                    defaultChecked
-                    disabled={props.enableState}/>
+                    defaultChecked={props.typeOfUser}
+                    disabled={props.inputTypeOfUser}/>
                 <Form.Check
                     type="radio"
                     label="Elector"
                     id="electorRadios"
                     name="inputRadios"
                     onChange={ () => props.tagLabel("") }
-                    disabled={props.enableState}/>
+                    disabled={props.inputTypeOfUser}
+                    defaultChecked={!props.typeOfUser}/>
             </Form.Group>
         </Row>
     </Aux>
