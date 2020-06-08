@@ -49,6 +49,13 @@ const header = ( props ) => (
                                 Mesas Electorales
                         </Link>
                     </Dropdown.Item>
+                    <Link 
+                        to="/candidates" 
+                        className={styles.NavLink}>
+                            <Dropdown.Item as="button">
+                                Candidatos
+                            </Dropdown.Item>
+                    </Link>
                     <div className="dropdown-divider"></div>
                     <Dropdown.Item as="button">
                         <Link 
