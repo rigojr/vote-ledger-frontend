@@ -17,7 +17,8 @@ const usercreatemodal = ( props ) => (
                 <Form.Control
                     as="input"
                     value={props.inputValues['eventCode']}
-                    onChange={props.setEvent}/>
+                    onChange={props.setEvent}
+                    disabled={props.enableState}/>
             </Form.Group>
         </Row>
         <Row>
@@ -30,7 +31,8 @@ const usercreatemodal = ( props ) => (
                     showTimeSelect
                     dateFormat="Pp"
                     minDate={new Date()}
-                    placeholderText="Seleccione una fecha de inicio"/>
+                    placeholderText="Seleccione una fecha de inicio"
+                    disabled={props.enableState}/>
             </Form.Group>
             <Form.Group as={Col}>
                 <Form.Label>Fecha de Finalización</Form.Label>
@@ -41,7 +43,7 @@ const usercreatemodal = ( props ) => (
                     showTimeSelect
                     dateFormat="Pp"
                     minDate={props.inputValues['initDate']}
-                    disabled={!props.inputValues['initDate']}
+                    disabled={(!props.inputValues['initDate'] || props.enableState)}
                     placeholderText="Seleccione una fecha de Fin"/>
             </Form.Group>
         </Row>

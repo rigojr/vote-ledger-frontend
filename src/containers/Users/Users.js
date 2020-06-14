@@ -212,9 +212,6 @@ class User extends Component {
         } );
     }
 
-    consultHandler = () => {
-        console.log("Consulting User");
-    }
 
     updateModal = ( selectUser ) => {
         let adminBoolean = false;

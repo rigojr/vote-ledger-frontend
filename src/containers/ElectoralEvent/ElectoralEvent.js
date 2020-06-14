@@ -23,7 +23,8 @@ class ElectoralEvent extends Component {
             eventCode: ''
         },
         modalMessage: '',
-        enableState: false
+        enableState: false,
+        modalCreateBtn: false
     }
 
     componentDidMount () {
@@ -81,11 +82,11 @@ class ElectoralEvent extends Component {
         } );
     }
 
-    createHandler = () => {
+    createHandler = async () => {
         console.log("Creating New Electoral Event");
         this.setModalMessage("Enviando información al Blockchain");
         this.setState( { enableState: true} );
-        axios.post('/electoral-events.json', {
+        await axios.post('/electoral-events.json', {
             id: this.state.form.eventCode,
             state: 'Convocatoria',
             initDate: this.state.form.initDate,
@@ -97,29 +98,85 @@ class ElectoralEvent extends Component {
         })
         .catch( error => {
             console.log(error);
+            this.setModalMessage("Hubo un error en la comunicación, no se guardo la información");
         });
         setTimeout(this.cleanModalHandler,3000);
     }
 
-    consultHandler = () =>{
-        console.log("Consulting Electoral Event");
+    consultModal = ( selectUser ) => {
+        let adminBoolean = false;
+        if( selectUser.id.charAt(selectUser.id.length - 1) === "A")
+            adminBoolean = true;
+        this.modalHandler( false, false);
+        this.setEnableInput( true );
+        this.setState( { 
+            user: selectUser,
+            selectedTypeOfUser: adminBoolean,
+            inputTypeOfUser: true
+        } );
     }
 
-    deleteHandler = () =>{
-        console.log("Deleting Electoral Event");
+
+    consultHandler = (select) =>{
+        this.modalHandler(false);
+        this.setState( { enableState: true} );
+        this.setState(
+            {form: {
+                initDate: new Date(select['initDate']),
+                endDate: new Date(select['endDate']),
+                eventCode: select['id']
+            }}
+        )
     }
 
-    modalHandler = () => {
+    deleteHandler = (selectId) =>{
+        console.log("Deleting Electoral Event" + selectId);
+    }
+
+    modalHandler = ( create ) => {
         console.log("Modal Handler");
         const modalBoolean = this.state.showModal;
         const showModalUpdated = !modalBoolean;
-        this.setState( { showModal: showModalUpdated } );
+        if(create){
+            this.cleanModalHandler();
+        }
+        this.setState( { 
+            showModal: showModalUpdated,
+            modalCreateBtn: create
+        } );
     }
 
 
     searchHandler = () => {
         console.log("Searching Electoral Event");
-        console.log(this.state.search);
+        let found = false;
+        if(this.state.electoralEvents && !(this.state.search == '')){
+            for (let i in this.state.electoralEvents) {
+                if(this.state.search === this.state.electoralEvents[i].id){
+                    const searchElectoralEvent = this.state.electoralEvents[i];
+                    this.setState( { 
+                        form: {
+                            initDate: new Date(searchElectoralEvent['initDate']),
+                            endDate: new Date(searchElectoralEvent['endDate']),
+                            eventCode: searchElectoralEvent['id']
+
+                        },
+                        search: ''
+                    } );
+                    this.setState( { enableState: true} );
+                    this.searchModal();
+                    found = true;
+                }
+            }
+            if(!found)
+                alert("Evento Electoral con el Código " + this.state.search + ", no fue encontrado");
+        }else{
+            alert("Error en la búsqueda, verifique entradas y conexión con el back");
+        }
+    }
+
+    searchModal = () => {
+        this.modalHandler( false );
     }
 
     handleOnInputSearchChange = (event) => {
@@ -156,21 +213,23 @@ class ElectoralEvent extends Component {
                     searchPlaceholder="Código del Evento Electoral"
                     showModal={this.modalHandler}
                     onChange={this.handleOnInputSearchChange}
-                    typeInput="button"/>
+                    typeInput="button"
+                    searchValue={this.state.search}/>
                 {ElectoralEventsComponent}
                 <AllModal
                     showModal={this.modalHandler}
                     modalBoolean={this.state.showModal}
                     createHandler={this.createHandler}
                     modalTitile="Crear Evento Electoral"
-                    create={true}
+                    create={this.state.modalCreateBtn}
                     enableState={this.state.enableState}
                     modalMessage={this.state.modalMessage}>
                     <CreateModal 
                         setInitValue={this.setInitDate}
                         setEndValue={this.setEndDate}
                         setEvent={this.setEventCode}
-                        inputValues={this.state.form}/>
+                        inputValues={this.state.form}
+                        enableState={this.state.enableState}/>
                 </AllModal>
                 {RedirectComponent}
             </Aux>
