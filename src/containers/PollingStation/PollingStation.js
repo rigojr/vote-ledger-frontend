@@ -56,7 +56,7 @@ class PollingStation extends Component {
             for (let key in response.data){
                 fetch.push({
                     id: response.data[key].id,
-                    enable: response.data[key].enable,
+                    enable: response.data[key].enable.toString(),
                     school: response.data[key].school
                 })
             }
@@ -96,9 +96,39 @@ class PollingStation extends Component {
         } );
     }
 
-    searchPollingStationHandler = () =>{
+    searchHandler = () => {
         console.log("Searching Polling Station");
-        console.log(this.state.search);
+        let found = false;
+        if(this.state.electoralEvents && this.state.pollingStation){
+            if(this.state.showTable){
+                for (let i in this.state.pollingStation) {
+                    if(this.state.search === this.state.pollingStation[i].id){
+                        const search = this.state.pollingStation[i];
+                        this.setState( { 
+                            form: {
+                                id: search['id'],
+                                enable: search['enable'],
+                                school: search['school']
+                            },
+                            search: ''
+                        } );
+                        this.setState( { enableState: true} );
+                        this.searchModal();
+                        found = true;
+                    }
+                }
+                if(!found)
+                    alert("Evento Electoral con el Código " + this.state.search + ", no fue encontrado");
+            } else {
+                alert("Por favor, seleccione un evento electoral para buscar.");
+            }
+        }else{
+            alert("Error en la búsqueda, verifique entradas y conexión con el back");
+        }
+    }
+
+    searchModal = () => {
+        this.modalHandler( false );
     }
 
     handleOnInputSearchChange = (event) => {
@@ -106,11 +136,17 @@ class PollingStation extends Component {
         this.setState({ search } );
     };
 
-    modalHandler = () => {
+    modalHandler = ( create ) => {
         console.log("Modal Handler");
         const modalBoolean = this.state.showModal;
         const showModalUpdated = !modalBoolean;
-        this.setState( { showModal: showModalUpdated } );
+        if(create){
+            this.cleanModalHandler();
+        }
+        this.setState( { 
+            showModal: showModalUpdated,
+            modalCreateBtn: create
+        } );
     }
 
     createHandler = async () => {
@@ -129,20 +165,25 @@ class PollingStation extends Component {
         setTimeout(this.cleanModalHandler,3000);
     }
 
-    consultPollingStationHanlder = () => {
-        console.log("Consulting Polling Station");
+    consultHanlder = (select) => {
+        this.modalHandler(false);
+        this.setState( { enableState: true} );
+        this.setState(
+            {
+                form: {
+                    id: select['id'],
+                    enable: select['enable'],
+                    school: select['school']
+            }}
+        )
     }
 
-    deletePollingStationHandler = () => {
-        console.log("Deleting Polling Station");
+    deletePollingStationHandler = ( id ) => {
+        console.log("Deleting " + id + " Polling Station");
     }
 
-    enablePollingStationHandler = () => {
-        console.log("Enabling/Disabling Polling Station");
-    }
-
-    uninstallPollingStationHanlder = () => {
-        console.log("Uninstalling Polling Station");
+    enablePollingStationHandler = ( id ) => {
+        console.log("Enabling/Disabling " + id + " Polling Station");
     }
 
     selectElectoralEventHandler = ( ElectoralEvent ) => {
@@ -174,12 +215,11 @@ class PollingStation extends Component {
             <AllTable 
                 theadArray={this.state.theaderTable}
                 payloadArray={this.state.pollingStation}
-                consultHandler={this.consultPollingStationHanlder}
+                consultHandler={this.consultHanlder}
                 deleteHandler={this.deletePollingStationHandler}
                 deleteAction={true}
                 pollingStation={true}
-                enableHandler={this.enablePollingStationHandler}
-                uninstallHandler={this.uninstallPollingStationHanlder}/>
+                enableHandler={this.enablePollingStationHandler}/>
         </Aux>
         
             :
@@ -192,13 +232,14 @@ class PollingStation extends Component {
                 <Aux>
                     <SubHeader 
                         subHeaderTitle="Mesas Electorales del Sistema"
-                        searchHandler={this.searchPollingStationHandler}
+                        searchHandler={this.searchHandler}
                         btnName="Eventos Electorales"
                         btnPayload={this.state.electoralEvents}
                         btnSelect={this.selectElectoralEventHandler}
                         searchPlaceholder="Código de la Mesa Electoral"
                         typeInput="drop"
-                        onChange={this.handleOnInputSearchChange}/>
+                        onChange={this.handleOnInputSearchChange}
+                        searchValue={this.state.search}/>
                     {PollingStationMessage}
                     {PollingStationContent}
                     <AllModal
