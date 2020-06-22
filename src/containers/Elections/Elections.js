@@ -261,7 +261,7 @@ class Elections extends Component {
          let RedirectComponent = this.props.isAuthed ?
             null
             :
-        <Redirect from="/Dashboard" to="/login"/>;
+        <Redirect from="/elections" to="/login"/>;
 
         return(
             <Aux>

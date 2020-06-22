@@ -11,7 +11,8 @@ const SelectOptionsEscuela = ( props ) => (
             as="select"
             value={props.school}
             onChange={props.onChange}
-            disabled={props.disabled}>
+            disabled={props.disabled}
+            name={props.name}>
                 <option>Administración y Contaduría</option>
                 <option>Civil</option>
                 <option>Ciencias Sociales</option>

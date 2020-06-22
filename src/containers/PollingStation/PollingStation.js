@@ -8,33 +8,92 @@ import AllTable from '../../components/Layout/AllTable/AllTable';
 import AllModal from '../../components/Layout/Modal/AllModal';
 import CardMessage from '../../components/Layout/CardMessage/CardMessage';
 import InfraHeader from '../../components/Layout/InfraHeader/InfraHeader';
+import axios from '../../axios';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 class PollingStation extends Component {
 
     state = {
-        pollingStation: [
-            { id: "1", voters: "0", initDate: "2020-05-05T06:00", endDate: "", enable: false, idFather: "1", school: "Telecomunicaciones"},
-            { id: "2", voters: "150", initDate: "2019-05-05T06:00", endDate: "2019-05-05T20:00", enable: false, idFather: "2", school: "Educación"},
-            { id: "3", voters: "230", initDate: "2019-05-05T06:00", endDate: "2019-05-05T20:00", enable: false, idFather: "2", school: "Derecho"},
-            { id: "4", voters: "600", initDate: "2019-05-05T06:00", endDate: "2019-05-05T20:00", enable: false, idFather: "2", school: "Civil"},
-            { id: "5", voters: "2", initDate: "2018-05-05T06:00", endDate: "2018-05-05T20:00", enable: false, idFather: "3", school: "Informática"}
-        ],
-        electoralEvents: [
-            { id: "1", estado: "Convocatoria", fechaInicio: "2020-05-05T06:00", fechaFin: "2020-05-05T20:00"},
-            { id: "2", estado: "Adjudicación", fechaInicio: "2019-05-05T06:00", fechaFin: "2019-05-05T20:00"},
-            { id: "3", estado: "Adjudicación", fechaInicio: "2018-05-05T06:00", fechaFin: "2018-05-05T20:00"}
-        ],
+        pollingStation: null,
+        electoralEvents: null,
         selectElectoralEvent: '',
         showModal: false,
         search: '',
-        theaderTable: ["Código","Votantes","Inicio", "Finalización", "Habilitado", "Evento Electoral", "Escuela", ""],
+        theaderTable: ["Código","Habilitado","Escuela", ""],
         showMessage: true,
         showTable: false,
+        form: {
+            id: '',
+            enable: false,
+            school: 'Administración y Contaduría'
+        },
+        modalMessage: '',
+        enableState: false
     }
 
     componentDidMount () {
-        console.log("PollingStation.js is mount")
-        // Here we ask for the initial data
+
+        axios.get('/electoral-events.json')
+        .then( response => {
+            const fetch = [];
+            for( let key in response.data){
+                fetch.push({
+                    id: response.data[key].id,
+                    state: response.data[key].state,
+                    initDate: response.data[key].initDate,
+                    endDate: response.data[key].endDate
+                });
+            }
+            this.setState({ electoralEvents: fetch });
+        })
+        .catch( error => {
+            console.log(error);
+        })
+
+        axios.get('/polling-station.json')
+        .then( response => {
+            const fetch = [];
+            for (let key in response.data){
+                fetch.push({
+                    id: response.data[key].id,
+                    enable: response.data[key].enable,
+                    school: response.data[key].school
+                })
+            }
+            this.setState({ pollingStation: fetch });
+        })
+        .catch( error => {
+            console.log(error);
+        })
+
+    }
+
+    setValue = (e) => {
+        const value = e.target.value;
+        const name = [e.target.name];
+        this.setState( prevState => ({
+            form: {
+                ...prevState.form,
+                [name]: value 
+            }
+         }));
+    };
+
+    setModalMessage = (message) => {
+        console.log("setModalMessage");
+        console.log(message)
+        this.setState(  { modalMessage: message} );
+    }
+
+    cleanModalHandler = () => {
+        this.setState( { 
+            enableState: false,
+            form:{
+                id: '',
+                enable: false,
+                school: 'Administración y Contaduría'
+            }
+        } );
     }
 
     searchPollingStationHandler = () =>{
@@ -54,8 +113,20 @@ class PollingStation extends Component {
         this.setState( { showModal: showModalUpdated } );
     }
 
-    createPollingStationHandler = () => {
-        console.log("Creating New Polling Station")
+    createHandler = async () => {
+        console.log("Creating New Polling Station");
+        this.setModalMessage("Enviando información al Blockchain");
+        this.setState( { enableState: true} );
+        await axios.post('/polling-station.json', this.state.form)
+        .then( (response) => {
+            console.log(response);
+            this.setModalMessage("Guardado con éxito!");
+        })
+        .catch( error => {
+            console.log(error);
+            this.setModalMessage("Hubo un error en la comunicación, no se guardo la información");
+        });
+        setTimeout(this.cleanModalHandler,3000);
     }
 
     consultPollingStationHanlder = () => {
@@ -114,33 +185,48 @@ class PollingStation extends Component {
             :
         null;
 
-        let PollingStationComponent = this.props.isAuthed ?
-        <Aux>
-            <SubHeader 
-                subHeaderTitle="Mesas Electorales del Sistema"
-                searchHandler={this.searchPollingStationHandler}
-                btnName="Eventos Electorales"
-                btnPayload={this.state.electoralEvents}
-                btnSelect={this.selectElectoralEventHandler}
-                searchPlaceholder="Código de la Mesa Electoral"
-                typeInput="drop"
-                onChange={this.handleOnInputSearchChange}/>
-            {PollingStationMessage}
-            {PollingStationContent}
-            <AllModal
-                showModal={this.modalHandler}
-                modalBoolean={this.state.showModal}
-                createHandler={this.createPollingStationHandler}
-                modalTitile="Crear Mesa Electoral"
-                create={true}>
-                <CreateModal />
-            </AllModal>
-        </Aux>:
-         <Redirect from="/Dashboard" to="/login"/>;
+        let PollingStationComponent = <Spinner/>;
+
+        if( this.state.electoralEvents && this.state.pollingStation ){
+            PollingStationComponent = (
+                <Aux>
+                    <SubHeader 
+                        subHeaderTitle="Mesas Electorales del Sistema"
+                        searchHandler={this.searchPollingStationHandler}
+                        btnName="Eventos Electorales"
+                        btnPayload={this.state.electoralEvents}
+                        btnSelect={this.selectElectoralEventHandler}
+                        searchPlaceholder="Código de la Mesa Electoral"
+                        typeInput="drop"
+                        onChange={this.handleOnInputSearchChange}/>
+                    {PollingStationMessage}
+                    {PollingStationContent}
+                    <AllModal
+                        showModal={this.modalHandler}
+                        modalBoolean={this.state.showModal}
+                        createHandler={this.createHandler}
+                        modalTitile="Crear Mesa Electoral"
+                        create={true}
+                        enableState={this.state.enableState}
+                        modalMessage={this.state.modalMessage}>
+                        <CreateModal 
+                            inputValues={this.state.form}
+                            setValue={this.setValue}
+                            enableState={this.state.enableState}/>
+                    </AllModal>
+                </Aux>
+            );
+        }
+
+         let RedirectComponent = this.props.isAuthed ?
+            null
+            :
+        <Redirect from="/polling-station" to="/login"/>;
 
         return(
             <Aux>
                 {PollingStationComponent}
+                {RedirectComponent}
             </Aux>
         )
     }
