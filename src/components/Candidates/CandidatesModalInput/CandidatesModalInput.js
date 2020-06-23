@@ -18,9 +18,15 @@ const CandidatesModalInput = ( props ) => (
                 <InputGroup className="mb-3">
                     <FormControl
                     placeholder="Cédula del Usuario"
-                    />
+                    name='id'
+                    value={props.inputValues.id}
+                    onChange={props.setValue}/>
                     <InputGroup.Append>
-                        <Button variant="outline-primary">Buscar</Button>
+                        <Button 
+                            variant="outline-primary"
+                            onClick={props.searchUser}>
+                            Buscar
+                        </Button>
                     </InputGroup.Append>
                 </InputGroup>
             </Form.Group>
@@ -35,19 +41,31 @@ const CandidatesModalInput = ( props ) => (
                 <Form.Label>Nombre</Form.Label>
                 <Form.Control
                     as="input"
-                    disabled/>
+                    disabled
+                    value={props.inputValues.name}/>
             </Form.Group>
-            <Form.Group as={Col}>
-                <SelectOptionsEscuela
-                    disabled/>
-            </Form.Group>
-        </Row>
-        <Row>
             <Form.Group as={Col}>
                 <Form.Label>Correo Electrónico</Form.Label>
                 <Form.Control
                     type="email"
-                    disabled/>
+                    disabled
+                    value={props.inputValues.email}/>
+            </Form.Group>
+        </Row>
+        <Row>
+            <Form.Group as={Col}>
+                <Form.Label>Facultad</Form.Label>
+                <Form.Control
+                    as="input"
+                    disabled
+                    value={props.inputValues.faculty}/>
+            </Form.Group>
+            <Form.Group as={Col}>
+                <Form.Label>Escuela</Form.Label>
+                <Form.Control
+                    as="input"
+                    disabled
+                    value={props.inputValues.school}/>
             </Form.Group>
         </Row>
     </Aux>
