@@ -64,14 +64,6 @@ const header = ( props ) => (
                             to="/login" 
                             onClick={props.authHandler} 
                             className={styles.NavLink}>
-                                Mi Información
-                        </Link>
-                    </Dropdown.Item>
-                    <Dropdown.Item as="button">
-                        <Link 
-                            to="/login" 
-                            onClick={props.authHandler} 
-                            className={styles.NavLink}>
                                 Cerrar Sesión
                         </Link>
                     </Dropdown.Item>
