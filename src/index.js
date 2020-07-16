@@ -1,17 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import userReducer from './store/reducers/user';
+import fetchReducer from './store/reducers/fetch';
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
+const rootReducer = combineReducers({
+  user: userReducer,
+  fetch: fetchReducer
+});
+
+const store = createStore( rootReducer, composeEnhancers( applyMiddleware( thunk ) ) );
+3
 ReactDOM.render(
   <BrowserRouter>
     <React.StrictMode>
-      <App />
+      <Provider store={ store }>
+        <App />
+      </Provider>
     </React.StrictMode>
   </BrowserRouter>,
   document.getElementById('root')
