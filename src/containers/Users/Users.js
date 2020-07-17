@@ -55,21 +55,6 @@ class User extends Component {
          }));
     }
 
-    setId = (e) => {
-        const id = e.target.value;
-        this.setState( prevState => ({ user: {...prevState.user, id} }));
-    }
-
-    setName = (e) => {
-        const name = e.target.value;
-        this.setState( prevState => ({ user: {...prevState.user, name}}));
-    }
-
-    setSchool = (e) => {
-        const school = e.target.value;
-        this.setState( prevState => ({ user: {...prevState.user, school}}));
-    }
-
     setFaculty = (school) => {
         let faculty;
         switch (school){
@@ -119,17 +104,6 @@ class User extends Component {
         this.setState( prevState => ({ user: {...prevState.user, faculty}}));
     }
 
-    setEmail = (e) => {
-        const email = e.target.value;
-        this.setState( prevState => ({ user: {...prevState.user, email}}));
-    }
-
-    setPassword = (e) => {
-        const userPassword = e.target.value;
-        const password = sha256(e.target.value);
-        this.setState( prevState => ({ user: {...prevState.user, password}}));
-        this.setState ( { userPassword } )
-    }
 
     setUserClean = () => {
         const user = {id:"", name:"", faculty:"", school:"Administración y Contaduría", email:"", password:"", enable: true};
