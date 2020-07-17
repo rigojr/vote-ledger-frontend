@@ -6,7 +6,7 @@ import Aux from '../../hoc/Aux';
 import axios from '../../axios';
 import { sha256 } from 'js-sha256'
 import SubHeader from '../../components/Layout/Subheader/Subheader';
-import UserInputModal from '../../components/Users/UserInputModal/UserInputModal';
+import ContentModal from '../../components/Users/UserInputModal/UserInputModal';
 import AllTable from '../../components/Layout/AllTable/AllTable';
 import AllModal from '../../components/Layout/Modal/AllModal';
 import Spinner from '../../components/UI/Spinner/Spinner';
@@ -18,6 +18,15 @@ class User extends Component {
         super(props);
         this.state = { 
             users: null,
+            form: {
+                id: '',
+                name: '',
+                faculty: '',
+                school: '',
+                email: '',
+                password: '',
+                enable: true
+            },
             user: {id:"", name:"", faculty:"", school:"Administración y Contaduría", email:"", password:"", enable: true},
             userPassword: "",
             theaderTable: ["Cédula","Nombre","Facultad","Escuela","Email",""],
@@ -32,6 +41,18 @@ class User extends Component {
             modalUpdateBtn: false,
             selectedTypeOfUser: true
         };
+    }
+
+    setValue = (e) => {
+        const value = e.target.value;
+        const name = [e.target.name];
+        this.setState( prevState => ({
+            ...prevState,
+            form: {
+                ...prevState.form,
+                [name]: value 
+            }
+         }));
     }
 
     setId = (e) => {
@@ -126,7 +147,7 @@ class User extends Component {
     }
 
     setLabel = (tag) => {
-        const boolTypeOfUser = false;
+        let boolTypeOfUser = false;
         if( tag === "A") 
             boolTypeOfUser = true
         this.setState( { 
@@ -302,18 +323,12 @@ class User extends Component {
                     update={this.state.modalUpdateBtn}
                     enableState={this.state.inputEnable}
                     modalMessage={this.state.modalMessage}>
-                    <UserInputModal 
-                        userValue={this.state.user}
-                        userPassword={this.state.userPassword}
+                    <ContentModal 
+                        inputValues={this.state.form}
+                        setValue={this.setValue}
                         enableState={this.state.inputEnable}
-                        modalMessage={this.state.modalMessage}
                         typeOfUser={this.state.selectedTypeOfUser}
                         inputTypeOfUser={this.state.inputTypeOfUser}
-                        onIdChange={this.setId}
-                        onNameChange={this.setName}
-                        onSchoolChange={this.setSchool}
-                        onEmailChange={this.setEmail}
-                        onPasswordChange={this.setPassword}
                         tagLabel={this.setLabel}/>
                 </AllModal>
                 {RedirectComponent}

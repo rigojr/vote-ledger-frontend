@@ -14,15 +14,17 @@ const usercreatemodal = ( props ) => (
                 <Form.Label>Nombre</Form.Label>
                 <Form.Control
                     as="input"
-                    value={props.userValue.name}
-                    onChange={props.onNameChange}
-                    disabled={props.enableState}/>
+                    value={props.inputValues.name}
+                    onChange={props.setValue}
+                    disabled={props.enableState}
+                    name="name"/>
             </Form.Group>
             <Form.Group as={Col}>
-                <SelectOptionsEscuela 
-                    school={props.userValue.school}
-                    onChange={props.onSchoolChange}
-                    disabled={props.enableState}/>
+                <SelectOptionsEscuela
+                    school={props.inputValues.school}
+                    onChange={props.setValue}
+                    disabled={props.enableState}
+                    name="school"/>
             </Form.Group>
         </Row>
         <Row>
@@ -30,17 +32,19 @@ const usercreatemodal = ( props ) => (
                 <Form.Label>Correo Electrónico</Form.Label>
                 <Form.Control
                     type="email"
-                    value={props.userValue.email}
-                    onChange={props.onEmailChange}
-                    disabled={props.enableState}/>
+                    value={props.inputValues.email}
+                    onChange={props.setValue}
+                    disabled={props.enableState}
+                    name="email"/>
             </Form.Group>
             <Form.Group as={Col}>
                 <Form.Label>Contraseña</Form.Label>
                     <Form.Control
                         type="password"
-                        value={props.userPassword}
-                        onChange={props.onPasswordChange}
-                        disabled={props.enableState}/>
+                        value={props.inputValues.password}
+                        onChange={props.setValue}
+                        disabled={props.enableState}
+                        name="password"/>
             </Form.Group>
         </Row>
         <Row>
@@ -48,9 +52,10 @@ const usercreatemodal = ( props ) => (
                 <Form.Label>Cédula</Form.Label>
                 <Form.Control
                     as="input" 
-                    value={props.userValue.id}
-                    onChange={props.onIdChange}
-                    disabled={props.inputTypeOfUser}/>
+                    value={props.inputValues.id}
+                    onChange={props.setValue}
+                    disabled={props.inputTypeOfUser}
+                    name="id"/>
             </Form.Group>
             <Form.Group as={Col}>
                 <Form.Label>Tipo de Usuario</Form.Label>

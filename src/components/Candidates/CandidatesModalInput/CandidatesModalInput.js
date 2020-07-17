@@ -8,7 +8,6 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 
 import Aux from '../../../hoc/Aux'
-import SelectOptionsEscuela from '../../../components/Users/UserInputModal/SelectOptionsEscuela/SelectOptionsEscuela';
 import styles from './CandidatesModalInput.module.css';
 
 const CandidatesModalInput = ( props ) => (
