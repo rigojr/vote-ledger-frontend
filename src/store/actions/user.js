@@ -26,14 +26,20 @@ export const fetchUser = ( endPoint ) => {
         dispatch( fetchUserStart() );
         axios.get( endPoint )
         .then( response => {
-            const fetch = response.data;
-
-            //for( let key in response.data){
-            //    fetch.push(response.data[key]);
-            //}
+            const fetch = [];
+            for( let key in response.data){
+                fetch.push({
+                    id: response.data[key].id,
+                    name: response.data[key].name,
+                    faculty: response.data[key].faculty,
+                    school: response.data[key].school,
+                    email: response.data[key].email
+                });
+            }
             dispatch( fetchUserSuccess( fetch ) );
         })
         .catch( error => {
+            console.log(error);
             dispatch( fetchUserError( error ) );
         })
     }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import Aux from '../../hoc/Aux';
 import axios from '../../axios';
@@ -9,6 +10,7 @@ import UserInputModal from '../../components/Users/UserInputModal/UserInputModal
 import AllTable from '../../components/Layout/AllTable/AllTable';
 import AllModal from '../../components/Layout/Modal/AllModal';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import * as actions from '../../store/actions/index';
 
 class User extends Component {
 
@@ -148,24 +150,7 @@ class User extends Component {
     }
 
     componentDidMount () {
-        console.log("Users.js is mount");
-        axios.get('/users.json')
-        .then( response => {
-            const fetchUsers = [];
-            for( let key in response.data){
-                fetchUsers.push({
-                    id: response.data[key].id,
-                    name: response.data[key].name,
-                    faculty: response.data[key].faculty,
-                    school: response.data[key].school,
-                    email: response.data[key].email
-                });
-            }
-            this.setState({ users: fetchUsers });
-        })
-        .catch( error => {
-            console.log(error)
-        })
+        this.props.onFetchUsers();
     }
 
     createHandler = async () => {
@@ -284,11 +269,11 @@ class User extends Component {
 
         let UsersTableComponent = <Spinner/>;
 
-        if (this.state.users){
+        if (!this.props.isLoading){
             UsersTableComponent = (
                 <AllTable 
                     theadArray={this.state.theaderTable}
-                    payloadArray={this.state.users}
+                    payloadArray={this.props.users}
                     consultHandler={this.consultModal}
                     changeHandler={this.updateModal}
                     deleteAction={false}/>
@@ -338,4 +323,17 @@ class User extends Component {
 
 }
 
-export default User;
+const mapStateToProps = state => {
+    return{
+        users: state.user.users,
+        isLoading: state.user.isLoading
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onFetchUsers: () => dispatch( actions.fetchUser( '/users.json' ) )
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(User);
