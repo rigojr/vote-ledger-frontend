@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 
 import Card from 'react-bootstrap/Card'
@@ -10,6 +11,7 @@ import Col from 'react-bootstrap/Col'
 import styles from './Dashboard.module.css' 
 import Aux from '../../hoc/Aux';
 import About from '../../components/Dashboard/About/About';
+import * as actions from '../../store/actions/index';
 
 class Dashboard extends Component {
 
@@ -26,8 +28,7 @@ class Dashboard extends Component {
 
 
     componentDidMount () {
-        console.log("Dashboard.js is mount")
-        // Here we ask for the initial data
+        this.props.onFetch();
     }
 
     render (){
@@ -57,4 +58,10 @@ class Dashboard extends Component {
 
 }
 
-export default Dashboard;
+const mapDispatchToProps = dispatch => {
+    return {
+        onFetch: () => dispatch( actions.fetch() )
+    }
+}
+
+export default connect(null, mapDispatchToProps)(Dashboard);
