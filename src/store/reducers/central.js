@@ -2,6 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../utility';
 
 const initialstate = {
+    fetch: null,
     events: null,
     users: null,
     isLoading: false,
@@ -9,13 +10,13 @@ const initialstate = {
 }
 
 const fetchStart = ( state, action ) => {
-    return updateObject({ state,
+    return updateObject( state,{
         isLoading: true
     })
 }
 
 const fetchError = ( state, action ) => {
-    return updateObject({ state,
+    return updateObject( state, {
         isLoading: false,
         error: {
             ...action.error,
@@ -24,15 +25,16 @@ const fetchError = ( state, action ) => {
 }
 
 const fetchSuccessUsers = ( state, action ) => {
-    return updateObject({ state,
+    return updateObject( state, {
         isLoading: false,
         users: action.users
     })
 }
 
 const fetchSuccessEvents = ( state, action ) => {
-    return updateObject({ state,
+    return updateObject( state, {
         isLoading: false,
+        fetch: action.fetch,
         events: action.events
     })
 }

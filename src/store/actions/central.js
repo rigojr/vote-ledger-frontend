@@ -21,10 +21,11 @@ export const fetchSuccessUsers = ( users ) => {
     })
 }
 
-export const fetchSuccessEvents = ( events ) => {
+export const fetchSuccessEvents = ( fetch, events ) => {
     return ({
         type: actionTypes.FETCH_SUCCESS_EVENTS,
-        events: events
+        events: events,
+        fetch: fetch
     })
 }
 
@@ -38,16 +39,28 @@ export const fetch = ( ) => {
         })
         .then( response => {
             const fetch = [];
+            const events = [];
             const jsonData = JSON.parse(response.data.mensaje);
             for( let key in jsonData){
-                fetch.push({
+
+                const eventsTemp = {
                     id: jsonData[key].Key,
+                    state: jsonData[key].Record.estado,
+                    initDate: jsonData[key].Record.fechainicio,
+                    endDate: jsonData[key].Record.fechafin,
+                };
+
+                fetch.push({
+                    ...eventsTemp,
                     record: {
-                        ...jsonData[key].Record
+                        elections: {...jsonData[key].Record.Election},
+                        pollingStations: {...jsonData[key].Record.PollingTable}
                     }
                 })
+
+                events.push( {...eventsTemp} )
             }
-            dispatch( fetchSuccessEvents( fetch ) );
+            dispatch( fetchSuccessEvents( fetch, events ) );
         })
         .catch( error => console.log(error));
 

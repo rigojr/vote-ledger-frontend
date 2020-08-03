@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import Aux from '../../hoc/Aux';
 import SubHeader from '../../components/Layout/Subheader/Subheader';
@@ -10,7 +11,7 @@ import CardMessage from '../../components/Layout/CardMessage/CardMessage';
 import InfraHeader from '../../components/Layout/InfraHeader/InfraHeader';
 import axios from '../../axios';
 import Spinner from '../../components/UI/Spinner/Spinner';
-
+import * as actions from '../../store/actions/index';
 
 class Elections extends Component {
 
@@ -25,7 +26,7 @@ class Elections extends Component {
         selectElectoralEvent: '',
         showModal: false,
         search: '',
-        theaderTable: ["Código","Tipo de Elección","Descripción", ""],
+        theaderTable: ["Código","Nombre","Descripción", "Org", "Tipoo", ""],
         showMessage: true,
         showTable: false,
         modalMessage: '',
@@ -35,38 +36,6 @@ class Elections extends Component {
 
     componentDidMount () {
 
-        axios.get('/electoral-events.json')
-        .then( response => {
-            const fetch = [];
-            for( let key in response.data){
-                fetch.push({
-                    id: response.data[key].id,
-                    state: response.data[key].state,
-                    initDate: response.data[key].initDate,
-                    endDate: response.data[key].endDate
-                });
-            }
-            this.setState({ electoralEvents: fetch });
-        })
-        .catch( error => {
-            console.log(error);
-        })
-
-        axios.get('/elections.json')
-        .then( response => {
-            const fetch =[];
-            for( let key in response.data){
-                fetch.push({
-                    id: response.data[key].id,
-                    typeElection: response.data[key].typeElection,
-                    desc: response.data[key].desc
-                });
-            }
-            this.setState({ elections: fetch });
-        })
-        .catch( error => {
-            console.log(error);
-        })
     }
 
     setValue = (e) => {
@@ -187,6 +156,26 @@ class Elections extends Component {
                 selectElectoralEvent: ElectoralEvent
             }
         );
+        const electionsTemp = [];
+        const rawData = this.props.fetch.find(
+            events => events.id === ElectoralEvent.toString()
+        )['record'].elections;
+
+        for( let key in rawData){
+
+            electionsTemp.push({
+                id: rawData[key].id,
+                name: key,
+                desc: rawData[key].descripcion,
+                org: rawData[key].escuela,
+                type: rawData[key].tipoeleccion
+            });
+        }
+
+        this.setState( prevState => ({
+            ...prevState,
+            elections: electionsTemp
+        }))
     }
 
     cleanModalHandler = () => {
@@ -226,14 +215,14 @@ class Elections extends Component {
 
         let ElectionComponent = <Spinner/>;
 
-        if( this.state.electoralEvents && this.state.elections ){
+        if( this.props.fetch && this.props.events ){
             ElectionComponent = (
                 <Aux>
                     <SubHeader 
                         subHeaderTitle="Elecciones del Sistema"
                         searchHandler={this.searchHandler}
                         btnName="Eventos Electorales"
-                        btnPayload={this.state.electoralEvents}
+                        btnPayload={this.props.events}
                         btnSelect={this.selectElectoralEventHandler}
                         searchPlaceholder="Código de la Elección"
                         typeInput="drop"
@@ -273,4 +262,11 @@ class Elections extends Component {
 
 }
 
-export default Elections;
+const mapStateToProps = state => {
+    return{
+        fetch: state.central.fetch,
+        events: state.central.events
+    }
+}
+
+export default connect(mapStateToProps)(Elections);

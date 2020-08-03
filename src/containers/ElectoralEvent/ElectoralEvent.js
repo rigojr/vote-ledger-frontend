@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import axios from '../../axios';
 
@@ -9,6 +10,7 @@ import AllTable from '../../components/Layout/AllTable/AllTable';
 import AllModal from '../../components/Layout/Modal/AllModal';
 import CreateModal from '../../components/ElectoralEvent/ElectoralEventCreateModal/ElectoralEventCreatModal';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import * as actions from '../../store/actions/index';
 
 class ElectoralEvent extends Component {
 
@@ -28,22 +30,7 @@ class ElectoralEvent extends Component {
     }
 
     componentDidMount () {
-        axios.get('/electoral-events.json')
-        .then( response => {
-            const fetch = [];
-            for( let key in response.data){
-                fetch.push({
-                    id: response.data[key].id,
-                    state: response.data[key].state,
-                    initDate: response.data[key].initDate,
-                    endDate: response.data[key].endDate
-                });
-            }
-            this.setState({ electoralEvents: fetch });
-        })
-        .catch( error => {
-            console.log(error)
-        })
+
     }
 
     setInitDate = (date) => {
@@ -193,11 +180,11 @@ class ElectoralEvent extends Component {
 
         let ElectoralEventsComponent = <Spinner/>;
 
-        if (this.state.electoralEvents){
+        if (this.props.events){
             ElectoralEventsComponent = (
                 <AllTable 
                     theadArray={this.state.theaderTable}
-                    payloadArray={this.state.electoralEvents}
+                    payloadArray={this.props.events}
                     consultHandler={this.consultHandler}
                     deleteHandler={this.deleteHandler}
                     deleteAction={true}/> 
@@ -238,4 +225,10 @@ class ElectoralEvent extends Component {
 
 }
 
-export default ElectoralEvent;
+const mapStateToProps = state => {
+    return{
+        events: state.central.events
+    }
+}
+
+export default connect(mapStateToProps)(ElectoralEvent);
