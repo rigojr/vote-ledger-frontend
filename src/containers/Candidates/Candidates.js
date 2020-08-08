@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import Aux from '../../hoc/Aux';
 import SubHeader from '../../components/Layout/Subheader/Subheader';
@@ -27,69 +27,20 @@ class Candidates extends Component {
                 email: ''
             },
             selectElectoralEvent: '',
+            selectElection: '',
             showModal: false,
             search: '',
             theaderTable: ["Cédula","Nombre","Facultad", "Escuela", "Correo Electrónico", ""],
             showMessage: true,
             showTable: false,
             enableState: true,
-            modalMessage: ''
+            modalMessage: '',
+            message: 'Por favor, seleccione un evento electoral para continuar.',
+            btnMessage: 'Eventos Electorales'
          };
     }
 
     componentDidMount () {
-
-        axios.get('/elections.json')
-        .then( response => {
-            const fetch =[];
-            for( let key in response.data){
-                fetch.push({
-                    id: response.data[key].id,
-                    typeElection: response.data[key].typeElection,
-                    desc: response.data[key].desc
-                });
-            }
-            this.setState({ elections: fetch });
-        })
-        .catch( error => {
-            console.log(error);
-        });
-
-        axios.get('/users.json')
-        .then( response => {
-            const fetchUsers = [];
-            for( let key in response.data){
-                fetchUsers.push({
-                    id: response.data[key].id,
-                    name: response.data[key].name,
-                    faculty: response.data[key].faculty,
-                    school: response.data[key].school,
-                    email: response.data[key].email
-                });
-            }
-            this.setState({ users: fetchUsers });
-        })
-        .catch( error => {
-            console.log(error)
-        });
-
-        axios.get('/candidates.json')
-        .then( response => {
-            const fetchUsers = [];
-            for( let key in response.data){
-                fetchUsers.push({
-                    id: response.data[key].id,
-                    name: response.data[key].name,
-                    faculty: response.data[key].faculty,
-                    school: response.data[key].school,
-                    email: response.data[key].email
-                });
-            }
-            this.setState({ candidates: fetchUsers });
-        })
-        .catch( error => {
-            console.log(error)
-        });
 
     }
 
@@ -241,8 +192,8 @@ class Candidates extends Component {
 
     selectElectoralEventHandler = ( ElectoralEvent ) => {
         console.log("Selecting " + ElectoralEvent + " as a Electoral Event");
-        const tempShowMessage = false;
-        const tempShowTable = true;
+        const tempShowMessage = true;
+        const tempShowTable = false;
         this.setState(
             {
                 showMessage: tempShowMessage,
@@ -250,12 +201,66 @@ class Candidates extends Component {
                 selectElectoralEvent: ElectoralEvent
             }
         );
+
+        const electionsTemp = [];
+        const rawData = this.props.fetch.find(
+            events => events.id === ElectoralEvent.toString()
+        )['record'].elections;
+
+        for( let key in rawData){
+
+            electionsTemp.push({
+                id: rawData[key].id,
+                name: key,
+                candidates: rawData[key].Candidatos
+            });
+        }
+
+        this.setState( prevState => ({
+            ...prevState,
+            elections: electionsTemp
+        }))
+
+        console.log(electionsTemp);
+        console.log(rawData);
+
+    }
+
+    selectElectionsHandler = ( election ) => {
+        console.log("Selection Election" + election);
+        this.setState( prevState => ({
+            ...prevState,
+            showMessage: false,
+            showTable: true,
+            selectElection: election
+        }))
+
+        /* const cadidatesTemp = [];
+        const rawData = this.props. */
+    }
+
+    handlerBtnSelect = ( payload ) => {
+        console.log(this.state.elections);
+        if( !this.state.elections ){
+            this.selectElectoralEventHandler(payload);
+            this.setState( prevState => ({
+                ...prevState,
+                message: "Por favor, seleccione una elección para continuar.",
+                btnMessage: "Elecciones"
+            }));
+        }
+        else {
+            this.selectElectionsHandler(payload);
+        }
+
     }
 
     render() {
 
+        
+
         let ElectionMessage = this.state.showMessage ?
-        <CardMessage messageTitle="Por favor, seleccione un evento electoral para continuar."/> :
+        <CardMessage messageTitle={this.state.message}/> :
         null;
 
         let CandidateContent = this.state.showTable ?
@@ -278,15 +283,17 @@ class Candidates extends Component {
 
         let ElectionComponent = <Spinner/>;
 
-        if( this.state.elections && this.state.users ){
+        if( this.props.events && this.props.fetch ){
             ElectionComponent = (
                 <Aux>
                     <SubHeader 
                         subHeaderTitle="Candidatos del Sistema"
                         searchHandler={this.searchHandler}
-                        btnName="Elecciones"
-                        btnPayload={this.state.elections}
-                        btnSelect={this.selectElectoralEventHandler}
+                        btnName={this.state.btnMessage}
+                        btnPayload={
+                            !this.state.elections ? this.props.events : this.state.elections
+                        }
+                        btnSelect={this.handlerBtnSelect}
                         searchPlaceholder="Cédula del Candidato"
                         typeInput="drop"
                         onChange={this.handleOnInputSearchChange}
@@ -324,4 +331,11 @@ class Candidates extends Component {
     }
 }
 
-export default Candidates;
+const mapStateToProps = state => {
+    return{
+        fetch: state.central.fetch,
+        events: state.central.events
+    }
+}
+
+export default connect(mapStateToProps)(Candidates);

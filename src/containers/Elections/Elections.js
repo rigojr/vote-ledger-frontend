@@ -159,8 +159,6 @@ class Elections extends Component {
         const rawData = this.props.fetch.find(
             events => events.id === ElectoralEvent.toString()
         )['record'].elections;
-        console.log(this.props.fetch)
-        console.log(this.props.events)
         for( let key in rawData){
 
             electionsTemp.push({
