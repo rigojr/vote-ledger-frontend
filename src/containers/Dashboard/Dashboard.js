@@ -12,20 +12,9 @@ import styles from './Dashboard.module.css'
 import Aux from '../../hoc/Aux';
 import About from '../../components/Dashboard/About/About';
 import * as actions from '../../store/actions/index';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 class Dashboard extends Component {
-
-    state = {
-        status: ["Activo","Activo","Activo","Activo"],
-        elections: [
-            { id: "1", description: "Electora Election 1", startDate: "17/02/2020", endDate: "17/02/2020", statusElection: true},
-            { id: "2", description: "Electora Election 2", startDate: "18/02/2020", endDate: "18/02/2020", statusElection: true},
-            { id: "3", description: "Electora Election 3", startDate: "19/02/2020", endDate: "19/02/2020", statusElection: false},
-            { id: "4", description: "Electora Election 4", startDate: "20/02/2020", endDate: "20/02/2020", statusElection: true},
-            { id: "5", description: "Electora Election 5", startDate: "21/02/2020", endDate: "21/02/2020", statusElection: true}
-        ]
-    }
-
 
     componentDidMount () {
         this.props.onFetch();
@@ -33,9 +22,11 @@ class Dashboard extends Component {
 
     render (){
 
-        let DashboardComponent = this.props.isAuthed ? 
-            <Card className={styles.DashboardCard}>
+        
 
+        let DashboardComponent = this.props.isLoading 
+            ?   <Spinner />
+            :   <Card className={styles.DashboardCard}>
                     <Container>
 
                         <Row lg={2}>
@@ -45,17 +36,30 @@ class Dashboard extends Component {
                         </Row>
 
                     </Container>
-            </Card> : 
-            <Redirect from="/Dashboard" to="/login"/>;
+                </Card>
+                
+            
+        const redirectComponent = !this.props.isAuthed 
+            ? <Redirect from="/Dashboard" to="/login"/> 
+            : null
+
 
         return (
             <Aux>
                 {DashboardComponent}
+                {redirectComponent}
             </Aux>
         )
     }
 
 
+}
+
+const mapStateToProps = state => {
+    return{
+        isLoading: state.central.isLoading,
+        error: state.central.error
+    }
 }
 
 const mapDispatchToProps = dispatch => {
@@ -64,4 +68,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
