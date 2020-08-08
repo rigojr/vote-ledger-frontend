@@ -11,7 +11,6 @@ import CardMessage from '../../components/Layout/CardMessage/CardMessage';
 import InfraHeader from '../../components/Layout/InfraHeader/InfraHeader';
 import axios from '../../axios';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import * as actions from '../../store/actions/index';
 
 class Elections extends Component {
 
@@ -26,7 +25,7 @@ class Elections extends Component {
         selectElectoralEvent: '',
         showModal: false,
         search: '',
-        theaderTable: ["Código","Nombre","Descripción", "Org", "Tipoo", ""],
+        theaderTable: ["Código","Nombre","Descripción", "Org", "Tipo", ""],
         showMessage: true,
         showTable: false,
         modalMessage: '',
@@ -160,7 +159,8 @@ class Elections extends Component {
         const rawData = this.props.fetch.find(
             events => events.id === ElectoralEvent.toString()
         )['record'].elections;
-
+        console.log(this.props.fetch)
+        console.log(this.props.events)
         for( let key in rawData){
 
             electionsTemp.push({

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import Aux from '../../hoc/Aux';
 import SubHeader from '../../components/Layout/Subheader/Subheader';
@@ -32,39 +33,6 @@ class PollingStation extends Component {
     }
 
     componentDidMount () {
-
-        axios.get('/electoral-events.json')
-        .then( response => {
-            const fetch = [];
-            for( let key in response.data){
-                fetch.push({
-                    id: response.data[key].id,
-                    state: response.data[key].state,
-                    initDate: response.data[key].initDate,
-                    endDate: response.data[key].endDate
-                });
-            }
-            this.setState({ electoralEvents: fetch });
-        })
-        .catch( error => {
-            console.log(error);
-        })
-
-        axios.get('/polling-station.json')
-        .then( response => {
-            const fetch = [];
-            for (let key in response.data){
-                fetch.push({
-                    id: response.data[key].id,
-                    enable: response.data[key].enable.toString(),
-                    school: response.data[key].school
-                })
-            }
-            this.setState({ pollingStation: fetch });
-        })
-        .catch( error => {
-            console.log(error);
-        })
 
     }
 
@@ -197,6 +165,24 @@ class PollingStation extends Component {
                 selectElectoralEvent: ElectoralEvent
             }
         );
+        const pollingStationsTemp = [];
+        const rawData = this.props.fetch.find(
+            events => events.id === ElectoralEvent.toString()
+        )['record'].pollingStations;
+        
+        for( let key in rawData ){
+            pollingStationsTemp.push({
+                id: rawData[key].id,
+                enable: rawData[key].habilitada,
+                school: rawData[key].escuela
+            })
+        }
+
+        this.setState( prevState => ({
+            ...prevState,
+            pollingStation: pollingStationsTemp
+        }))
+
     }
 
     render(){
@@ -227,14 +213,14 @@ class PollingStation extends Component {
 
         let PollingStationComponent = <Spinner/>;
 
-        if( this.state.electoralEvents && this.state.pollingStation ){
+        if( this.props.fetch && this.props.events ){
             PollingStationComponent = (
                 <Aux>
                     <SubHeader 
                         subHeaderTitle="Mesas Electorales del Sistema"
                         searchHandler={this.searchHandler}
                         btnName="Eventos Electorales"
-                        btnPayload={this.state.electoralEvents}
+                        btnPayload={this.props.events}
                         btnSelect={this.selectElectoralEventHandler}
                         searchPlaceholder="Código de la Mesa Electoral"
                         typeInput="drop"
@@ -274,4 +260,11 @@ class PollingStation extends Component {
 
 }
 
-export default PollingStation;
+const mapStateToProps = state => {
+    return{
+        fetch: state.central.fetch,
+        events: state.central.events
+    }
+}
+
+export default connect(mapStateToProps)(PollingStation);
