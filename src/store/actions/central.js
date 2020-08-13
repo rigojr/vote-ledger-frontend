@@ -1,6 +1,6 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-tg';
-
+import { createArg } from '../utility';
 export const fetchStart = () => {
     return ({
         type: actionTypes.FETCH_START    
@@ -65,5 +65,37 @@ export const fetch = ( ) => {
         .catch( error => console.log(error));
 
 
+    }
+}
+
+export const createStart = () => {
+    return ({
+        type: actionTypes.CREATE_START    
+    })
+}
+
+export const createError = ( error ) => {
+    return ({
+        type: actionTypes.CREATE_ERROR,
+        error: error
+    })
+}
+
+export const createSuccess = ( ) => {
+    return ({
+        type: actionTypes.CREATE_SUCCESS,
+    })
+}
+
+export const create = ( electoralEvent ) => {
+    return dispatch => {
+        dispatch( createStart() );
+
+        axios.post('/service/', {
+            function: "AddData",
+            parameter: electoralEvent
+        })
+        .then( dispatch( createSuccess() ) )
+        .catch( error => createError(error) );
     }
 }

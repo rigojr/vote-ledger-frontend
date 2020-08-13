@@ -22,15 +22,12 @@ class ElectoralEvent extends Component {
         form: {
             initDate: null,
             endDate: null,
-            eventCode: ''
+            eventCode: '',
+            eventName: ''
         },
         modalMessage: '',
         enableState: false,
         modalCreateBtn: false
-    }
-
-    componentDidMount () {
-
     }
 
     setInitDate = (date) => {
@@ -48,8 +45,16 @@ class ElectoralEvent extends Component {
     }
 
     setEventCode = (e) => {
-        const eventCode = e.target.value;
-        this.setState( prevState => ({ form: {...prevState.form, eventCode } }) )
+        const value = e.target.value;
+        const name = [e.target.name];
+        this.setState( prevState => (
+            {
+                ...prevState, 
+                form: {
+                    ...prevState.form, 
+                    [name]: value  
+                } 
+            }));
     }
 
     setModalMessage = (message) => {
@@ -64,20 +69,33 @@ class ElectoralEvent extends Component {
             form:{
                 initDate: null,
                 endDate: null,
-                eventCode: ''
+                eventCode: '',
+                eventName: ''
             }
         } );
     }
 
-    createHandler = async () => {
-        console.log("Creating New Electoral Event");
+    createHandler = () => {
+        const electoralEvent = {
+            id: this.state.form.eventCode,
+            estado: 'Convocatoria',
+            fechainicio: this.state.form.initDate,
+            fechafin: this.state.form.endDate,
+            nombre: this.state.form.eventName,
+            election: null,
+            pollingtable: null
+        }
+        this.props.onCreate(JSON.stringify(electoralEvent));
+        console.log(JSON.stringify(electoralEvent))
+        /* console.log("Creating New Electoral Event");
         this.setModalMessage("Enviando información al Blockchain");
         this.setState( { enableState: true} );
         await axios.post('/electoral-events.json', {
             id: this.state.form.eventCode,
             state: 'Convocatoria',
             initDate: this.state.form.initDate,
-            endDate: this.state.form.endDate
+            endDate: this.state.form.endDate,
+            name: this.state.form.eventName
         })
         .then( (response) => {
             console.log(response);
@@ -87,7 +105,7 @@ class ElectoralEvent extends Component {
             console.log(error);
             this.setModalMessage("Hubo un error en la comunicación, no se guardo la información");
         });
-        setTimeout(this.cleanModalHandler,3000);
+        setTimeout(this.cleanModalHandler,3000); */
     }
 
     consultModal = ( selectUser ) => {
@@ -231,4 +249,10 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(ElectoralEvent);
+const mapDispatchToProps = dispatch => {
+    return {
+        onCreate: (electoralEvent) => dispatch( actions.create(electoralEvent) )
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(ElectoralEvent);

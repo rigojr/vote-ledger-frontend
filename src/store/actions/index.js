@@ -3,5 +3,6 @@ export {
 } from './user';
 
 export {
-    fetch
+    fetch,
+    create
 } from './central';

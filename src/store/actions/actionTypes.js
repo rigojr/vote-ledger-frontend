@@ -8,3 +8,8 @@ export const FETCH_SUCCESS_USERS = 'FETCH_SUCCESS_USERS';
 export const FETCH_ERROR = 'FETCH_ERROR';
 export const FETCH_START = 'FETCH_START';
 export const FETCH = 'FETCH';
+
+export const CREATE_SUCCESS = 'CREATE_SUCCESS';
+export const CREATE_ERROR = 'CREATE_ERROR';
+export const CREATE_START = 'CREATE_START';
+export const CREATE = 'CREATE';

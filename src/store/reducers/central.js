@@ -20,7 +20,7 @@ const fetchError = ( state, action ) => {
         isLoading: false,
         error: {
             ...action.error,
-            customMessage: "Error al obtener los usuarios"
+            customMessage: "Error al obtener los datos"
         }})
 }
 
@@ -39,6 +39,28 @@ const fetchSuccessEvents = ( state, action ) => {
     })
 }
 
+const createStart = ( state, action ) => {
+    return updateObject( state, {
+        isLoading: true,
+    })
+}
+
+const createError = ( state, action ) => {
+    return updateObject( state, {
+        isLoading: false,
+        error: {
+            ...action.error,
+            customMessage: "Error al crear"
+        }
+    })
+}
+
+const createSuccess = ( state, action ) => {
+    return updateObject( state, {
+        isLoading: false
+    })
+}
+
 const reducer = ( state = initialstate, action ) => {
     switch ( action.type ) {
         case actionTypes.FETCH_START:
@@ -49,6 +71,12 @@ const reducer = ( state = initialstate, action ) => {
             return fetchSuccessUsers( state, action )
         case actionTypes.FETCH_SUCCESS_EVENTS:
             return fetchSuccessEvents( state, action )
+        case actionTypes.CREATE_START:
+            return createStart( state, action )
+        case actionTypes.CREATE_ERROR:
+            return createError( state, action )
+        case actionTypes.CREATE_SUCCESS:
+            return createSuccess( state, action )
         default: return state;
     }
 }
