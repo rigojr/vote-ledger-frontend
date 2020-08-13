@@ -42,11 +42,14 @@ export const fetch = ( ) => {
             const jsonData = JSON.parse(response.data.mensaje);
             for( let key in jsonData){
 
+                const tempInitDate = new Date(jsonData[key].Record.fechainicio)
+                const tempEndDate = new Date(jsonData[key].Record.fechafin)
+
                 const eventsTemp = {
                     id: jsonData[key].Key,
                     state: jsonData[key].Record.estado,
-                    initDate: jsonData[key].Record.fechainicio,
-                    endDate: jsonData[key].Record.fechafin,
+                    initDate: tempInitDate.toString(),
+                    endDate: tempEndDate.toString(),
                 };
 
                 fetch.push({

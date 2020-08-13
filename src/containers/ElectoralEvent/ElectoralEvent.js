@@ -75,38 +75,27 @@ class ElectoralEvent extends Component {
         } );
     }
 
-    createHandler = () => {
+    setOnCreate = () => {
         const electoralEvent = {
             id: this.state.form.eventCode,
             estado: 'Convocatoria',
-            fechainicio: this.state.form.initDate,
-            fechafin: this.state.form.endDate,
+            fechainicio: +new Date(this.state.form.initDate),
+            fechafin: +new Date(this.state.form.endDate),
             nombre: this.state.form.eventName,
             election: null,
             pollingtable: null
         }
         this.props.onCreate(JSON.stringify(electoralEvent));
-        console.log(JSON.stringify(electoralEvent))
-        /* console.log("Creating New Electoral Event");
+    }
+
+    createHandler = () => {
+        this.setOnCreate();
         this.setModalMessage("Enviando información al Blockchain");
         this.setState( { enableState: true} );
-        await axios.post('/electoral-events.json', {
-            id: this.state.form.eventCode,
-            state: 'Convocatoria',
-            initDate: this.state.form.initDate,
-            endDate: this.state.form.endDate,
-            name: this.state.form.eventName
-        })
-        .then( (response) => {
-            console.log(response);
-            this.setModalMessage("Guardado con éxito!");
-        })
-        .catch( error => {
-            console.log(error);
-            this.setModalMessage("Hubo un error en la comunicación, no se guardo la información");
-        });
-        setTimeout(this.cleanModalHandler,3000); */
+        setTimeout(this.cleanModalHandler,3000);
     }
+
+    
 
     consultModal = ( selectUser ) => {
         let adminBoolean = false;
@@ -155,10 +144,10 @@ class ElectoralEvent extends Component {
     searchHandler = () => {
         console.log("Searching Electoral Event");
         let found = false;
-        if(this.state.electoralEvents && !(this.state.search == '')){
-            for (let i in this.state.electoralEvents) {
-                if(this.state.search === this.state.electoralEvents[i].id){
-                    const searchElectoralEvent = this.state.electoralEvents[i];
+        if(this.props.events && !(this.state.search == '')){
+            for (let i in this.props.events) {
+                if(this.state.search === this.props.events[i].id){
+                    const searchElectoralEvent = this.props.events[i];
                     this.setState( { 
                         form: {
                             initDate: new Date(searchElectoralEvent['initDate']),
@@ -205,7 +194,8 @@ class ElectoralEvent extends Component {
                     payloadArray={this.props.events}
                     consultHandler={this.consultHandler}
                     deleteHandler={this.deleteHandler}
-                    deleteAction={true}/> 
+                    deleteAction={true}
+                    changeStatus={true}/> 
             );
         }
 
