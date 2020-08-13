@@ -33,8 +33,7 @@ export const fetch = ( ) => {
     return dispatch => {
         dispatch( fetchStart() );
         
-         axios.post( '/service', {
-            function: "GetAll",
+         axios.post( '/event/getall', {
             parameter :""
         })
         .then( response => {
@@ -91,8 +90,7 @@ export const create = ( electoralEvent ) => {
     return dispatch => {
         dispatch( createStart() );
 
-        axios.post('/service/', {
-            function: "AddData",
+        axios.post('/event/save', {
             parameter: electoralEvent
         })
         .then( dispatch( createSuccess() ) )
