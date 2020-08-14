@@ -11,6 +11,7 @@ import AllModal from '../../components/Layout/Modal/AllModal';
 import CreateModal from '../../components/ElectoralEvent/ElectoralEventCreateModal/ElectoralEventCreatModal';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import * as actions from '../../store/actions/index';
+import { eventStates } from '../../constants/eventStates';
 
 class ElectoralEvent extends Component {
 
@@ -23,7 +24,8 @@ class ElectoralEvent extends Component {
             initDate: null,
             endDate: null,
             eventCode: '',
-            eventName: ''
+            eventName: '',
+            state: eventStates[0]
         },
         modalMessage: '',
         enableState: false,
@@ -58,8 +60,6 @@ class ElectoralEvent extends Component {
     }
 
     setModalMessage = (message) => {
-        console.log("setModalMessage");
-        console.log(message)
         this.setState(  { modalMessage: message} );
     }
 
@@ -70,32 +70,33 @@ class ElectoralEvent extends Component {
                 initDate: null,
                 endDate: null,
                 eventCode: '',
-                eventName: ''
+                eventName: '',
+                state: eventStates[0]
             }
         } );
+        this.setModalMessage("");
     }
 
-    setOnCreate = () => {
+    setOnCreate = (elections, pollingStations) => {
         const electoralEvent = {
             id: this.state.form.eventCode,
-            estado: 'Convocatoria',
+            estado: this.state.form.state,
             fechainicio: +new Date(this.state.form.initDate),
             fechafin: +new Date(this.state.form.endDate),
             nombre: this.state.form.eventName,
-            election: null,
-            pollingtable: null
+            election: elections,
+            pollingtable: pollingStations
         }
         this.props.onCreate(JSON.stringify(electoralEvent));
+        this.props.onFetch();
     }
 
     createHandler = () => {
-        this.setOnCreate();
+        this.setOnCreate(null, null);
         this.setModalMessage("Enviando información al Blockchain");
         this.setState( { enableState: true} );
         setTimeout(this.cleanModalHandler,3000);
     }
-
-    
 
     consultModal = ( selectUser ) => {
         let adminBoolean = false;
@@ -118,17 +119,16 @@ class ElectoralEvent extends Component {
             {form: {
                 initDate: new Date(select['initDate']),
                 endDate: new Date(select['endDate']),
-                eventCode: select['id']
+                eventCode: select['id'],
+                state: select['state']
             }}
         )
     }
 
     deleteHandler = (selectId) =>{
-        console.log("Deleting Electoral Event" + selectId);
     }
 
     modalHandler = ( create ) => {
-        console.log("Modal Handler");
         const modalBoolean = this.state.showModal;
         const showModalUpdated = !modalBoolean;
         if(create){
@@ -142,7 +142,6 @@ class ElectoralEvent extends Component {
 
 
     searchHandler = () => {
-        console.log("Searching Electoral Event");
         let found = false;
         if(this.props.events && !(this.state.search == '')){
             for (let i in this.props.events) {
@@ -178,7 +177,30 @@ class ElectoralEvent extends Component {
         this.setState({ search } );
     };
 
+    handleChangeStatus =  async (payload) => {
+        const eventRaw = this.props.fetch.find( event => event.id === payload.id);
+        const newIndex = eventStates.indexOf(payload['state']) + 1;
+        if( newIndex < eventStates.length){
+            if (confirm(`El Evento Electoral de Id ${payload['id']} cambiara su estado de ${payload['state']} a ${eventStates[newIndex]}. ¿Desea continuar?`)){
+                await this.setState(
+                    {form: {
+                        initDate: new Date(payload['initDate']),
+                        endDate: new Date(payload['endDate']),
+                        eventCode: payload['id'],
+                        state: eventStates[newIndex]
+                    }}
+                )
+                this.setOnCreate(eventRaw.record.elections, eventRaw.record.pollingStations)
+            }
+        } else {
+            alert("Error, el evento electoral ya está fnializado");
+        }
+
+    }
+
     render(){
+
+        console.log("test")
 
         let RedirectComponent = this.props.isAuthed ?
             null
@@ -195,7 +217,7 @@ class ElectoralEvent extends Component {
                     consultHandler={this.consultHandler}
                     deleteHandler={this.deleteHandler}
                     deleteAction={true}
-                    changeStatus={true}/> 
+                    changeStatus={this.handleChangeStatus}/> 
             );
         }
 
@@ -209,7 +231,8 @@ class ElectoralEvent extends Component {
                     showModal={this.modalHandler}
                     onChange={this.handleOnInputSearchChange}
                     typeInput="button"
-                    searchValue={this.state.search}/>
+                    searchValue={this.state.search}
+                    updateHandler={this.props.onFetch}/>
                 {ElectoralEventsComponent}
                 <AllModal
                     showModal={this.modalHandler}
@@ -235,13 +258,15 @@ class ElectoralEvent extends Component {
 
 const mapStateToProps = state => {
     return{
-        events: state.central.events
+        events: state.central.events,
+        fetch: state.central.fetch
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onCreate: (electoralEvent) => dispatch( actions.create(electoralEvent) )
+        onCreate: (electoralEvent) => dispatch( actions.create(electoralEvent) ),
+        onFetch: () => dispatch( actions.fetch() )
     }
 }
 

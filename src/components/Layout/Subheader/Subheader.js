@@ -49,6 +49,10 @@ const subheader = ( props ) => {
                                 searchPlaceholder={props.searchPlaceholder}
                                 searchValue={props.searchValue}/>
                             {inputFiled}
+                            <img 
+                                src={process.env.PUBLIC_URL + '/refresh.png'}
+                                className={styles.RefreshIcon}
+                                onClick={ () => props.updateHandler() }/>
                         </Row>
                     </Container>
                 </Col>

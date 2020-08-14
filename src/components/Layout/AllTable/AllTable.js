@@ -92,7 +92,7 @@ const AllTable = ( props ) => {
                                                                     <Aux>
                                                                         <Dropdown.Item
                                                                             as="button"
-                                                                            onClick={() => console.log("test")}>
+                                                                            onClick={() => props.changeStatus(payload)}>
                                                                                 Cambiar Estado
                                                                         </Dropdown.Item>
                                                                     </Aux> :

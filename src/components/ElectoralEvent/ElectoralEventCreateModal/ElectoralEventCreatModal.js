@@ -13,7 +13,7 @@ const usercreatemodal = ( props ) => (
     <Aux>
         <Row>
             <Form.Group as={Col}>
-                <Form.Label>Código del Evento</Form.Label>
+                <Form.Label>Código</Form.Label>
                 <Form.Control
                     as="input"
                     name="eventCode"
@@ -22,13 +22,22 @@ const usercreatemodal = ( props ) => (
                     disabled={props.enableState}/>
             </Form.Group>
             <Form.Group as={Col}>
-                <Form.Label>Nombre del Evento</Form.Label>
+                <Form.Label>Nombre</Form.Label>
                 <Form.Control
                     as="input"
                     name="eventName"
                     value={props.inputValues['eventName']}
                     onChange={props.setEvent}
                     disabled={props.enableState}/>
+            </Form.Group>
+            <Form.Group as={Col}>
+                <Form.Label>Estado</Form.Label>
+                <Form.Control
+                    as="input"
+                    name="state"
+                    value={props.inputValues['state']}
+                    onChange={props.setEvent}
+                    disabled={true}/>
             </Form.Group>
         </Row>
         <Row>
