@@ -10,6 +10,7 @@ import CreateModal from '../../components/ElectoralEvent/ElectoralEventCreateMod
 import Spinner from '../../components/UI/Spinner/Spinner';
 import * as actions from '../../store/actions/index';
 import { eventStates } from '../../constants/eventStates';
+import { compareValues } from '../../store/utility'
 
 class ElectoralEvent extends Component {
 
@@ -209,7 +210,7 @@ class ElectoralEvent extends Component {
             ElectoralEventsComponent = (
                 <AllTable 
                     theadArray={this.state.theaderTable}
-                    payloadArray={this.props.events}
+                    payloadArray={this.props.events.sort(compareValues('id'))}
                     consultHandler={this.consultHandler}
                     deleteHandler={this.deleteHandler}
                     deleteAction={true}
