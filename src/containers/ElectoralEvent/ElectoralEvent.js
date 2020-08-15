@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import axios from '../../axios';
-
 import Aux from '../../hoc/Aux';
 import SubHeader from '../../components/Layout/Subheader/Subheader';
 import AllTable from '../../components/Layout/AllTable/AllTable';
@@ -199,8 +197,6 @@ class ElectoralEvent extends Component {
     }
 
     render(){
-
-        console.log("test")
 
         let RedirectComponent = this.props.isAuthed ?
             null

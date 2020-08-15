@@ -19,7 +19,6 @@ class App extends Component {
 
   authenticationHandler = () => {
 
-    console.log("authenticationHandler")
     const auth = this.state.authenticated;
     const authUpdated = !auth;
     this.setState( { authenticated: authUpdated } );

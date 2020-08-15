@@ -139,8 +139,6 @@ class User extends Component {
     }
 
     setModalMessage = (message) => {
-        console.log("setModalMessage");
-        console.log(message)
         this.setState(  { modalMessage: message} );
     }
 
@@ -149,7 +147,6 @@ class User extends Component {
     }
 
     createHandler = async () => {
-        console.log("Creating New User");
         this.setModalMessage("Enviando información al Blockchain");
         await this.setFaculty(this.state.user.school);
         await this.setAdminLabel();
@@ -158,10 +155,8 @@ class User extends Component {
         axios.post('/users.json', this.state.user)
         .then( (response) => {
             this.setModalMessage("Guardado con éxito!");
-            console.log(response);
         })
         .catch( error => {
-            console.log(error);
         });
 
         setTimeout(this.cleanModalHandler,3000);
@@ -207,12 +202,9 @@ class User extends Component {
     }
 
     updateHandler = () => {
-        console.log("Updating User");
-        console.log(this.state.user);
     }
 
     modalHandler = ( create, update ) => {
-        console.log("Modal Handler");
         const modalBoolean = this.state.showModal;
         const showModalUpdated = !modalBoolean;
         this.setState( { 
@@ -223,7 +215,6 @@ class User extends Component {
     }
 
     searchHandler = () => {
-        console.log("Searching User");
         let found = false;
         if(this.state.users && !(this.state.search == '')){
             for (let i in this.state.users) {

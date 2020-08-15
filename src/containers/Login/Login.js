@@ -10,13 +10,11 @@ import Aux from '../../hoc/Aux';
 class Login extends Component {
 
     componentDidMount () {
-        console.log("Login.js is mount")
         // Here we ask for the initial data
     }
 
 
     authLogicRedirection = () =>{
-        console.log("authLogicRedirection");
         this.props.authHandler();
         this.props.history.push( '/dashboard/' );
     }

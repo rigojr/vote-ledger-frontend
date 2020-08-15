@@ -48,8 +48,6 @@ class PollingStation extends Component {
     };
 
     setModalMessage = (message) => {
-        console.log("setModalMessage");
-        console.log(message)
         this.setState(  { modalMessage: message} );
     }
 
@@ -65,7 +63,6 @@ class PollingStation extends Component {
     }
 
     searchHandler = () => {
-        console.log("Searching Polling Station");
         let found = false;
         if(this.state.electoralEvents && this.state.pollingStation){
             if(this.state.showTable){
@@ -105,7 +102,6 @@ class PollingStation extends Component {
     };
 
     modalHandler = ( create ) => {
-        console.log("Modal Handler");
         const modalBoolean = this.state.showModal;
         const showModalUpdated = !modalBoolean;
         if(create){
@@ -118,16 +114,13 @@ class PollingStation extends Component {
     }
 
     createHandler = async () => {
-        console.log("Creating New Polling Station");
         this.setModalMessage("Enviando información al Blockchain");
         this.setState( { enableState: true} );
         await axios.post('/polling-station.json', this.state.form)
         .then( (response) => {
-            console.log(response);
             this.setModalMessage("Guardado con éxito!");
         })
         .catch( error => {
-            console.log(error);
             this.setModalMessage("Hubo un error en la comunicación, no se guardo la información");
         });
         setTimeout(this.cleanModalHandler,3000);
@@ -147,15 +140,12 @@ class PollingStation extends Component {
     }
 
     deletePollingStationHandler = ( id ) => {
-        console.log("Deleting " + id + " Polling Station");
     }
 
     enablePollingStationHandler = ( id ) => {
-        console.log("Enabling/Disabling " + id + " Polling Station");
     }
 
     selectElectoralEventHandler = ( ElectoralEvent ) => {
-        console.log("Selecting " + ElectoralEvent + " as a Electoral Event");
         const tempShowMessage = false;
         const tempShowTable = true;
         this.setState(

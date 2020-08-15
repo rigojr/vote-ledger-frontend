@@ -49,13 +49,10 @@ class Elections extends Component {
     };
 
     setModalMessage = (message) => {
-        console.log("setModalMessage");
-        console.log(message)
         this.setState(  { modalMessage: message} );
     }
 
     searchHandler = () => {
-        console.log("Searching Election");
         let found = false;
         if(this.state.electoralEvents && this.state.elections){
             if(this.state.showTable){
@@ -95,7 +92,6 @@ class Elections extends Component {
     }
 
     modalHandler = ( create ) => {
-        console.log("Modal Handler");
         const modalBoolean = this.state.showModal;
         const showModalUpdated = !modalBoolean;
         if(create){
@@ -108,7 +104,6 @@ class Elections extends Component {
     }
 
     createElectionHandler = async () => {
-        console.log("Creating New Election");
         this.setModalMessage("Enviando información al Blockchain");
         this.setState( { enableState: true} );
         await axios.post('/elections.json', {
@@ -117,11 +112,9 @@ class Elections extends Component {
             desc: this.state.form.desc
         })
         .then( (response) => {
-            console.log(response);
             this.setModalMessage("Guardado con éxito!");
         })
         .catch( error => {
-            console.log(error);
             this.setModalMessage("Hubo un error en la comunicación, no se guardo la información");
         });
         setTimeout(this.cleanModalHandler,3000);
@@ -140,12 +133,8 @@ class Elections extends Component {
         )
     }
 
-    deleteElectionHandler = () => {
-        console.log("Deleting Election");
-    }
 
     selectElectoralEventHandler = ( ElectoralEvent ) => {
-        console.log("Selecting " + ElectoralEvent + " as a Electoral Event");
         const tempShowMessage = false;
         const tempShowTable = true;
         this.setState(

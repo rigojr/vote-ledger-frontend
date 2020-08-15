@@ -56,8 +56,6 @@ class Candidates extends Component {
     }
 
     setModalMessage = (message) => {
-        console.log("setModalMessage");
-        console.log(message)
         this.setState(  { modalMessage: message} );
     }
 
@@ -75,7 +73,6 @@ class Candidates extends Component {
     }
 
     searchHandler = () => {
-        console.log("Searching Candidate");
         let found = false;
         if(this.state.elections && this.state.candidates){
             if(this.state.showTable){
@@ -112,7 +109,6 @@ class Candidates extends Component {
     }
 
     searchUserHandler = () => {
-        console.log("Searching User");
         let found = false;
         if(this.state.users && !(this.state.form.id == '')){
             for (let i in this.state.users) {
@@ -144,7 +140,6 @@ class Candidates extends Component {
     };
 
     modalHandler = ( create ) => {
-        console.log("Modal Handler");
         const modalBoolean = this.state.showModal;
         const showModalUpdated = !modalBoolean;
         if(create){
@@ -156,16 +151,13 @@ class Candidates extends Component {
     }
 
     createHandler = async () => {
-        console.log("Creating New Election");
         this.setModalMessage("Enviando información al Blockchain");
         this.setState( { enableState: true} );
         await axios.post('/candidates.json', this.state.form)
         .then( (response) => {
-            console.log(response);
             this.setModalMessage("Guardado con éxito!");
         })
         .catch( error => {
-            console.log(error);
             this.setModalMessage("Hubo un error en la comunicación, no se guardo la información");
         });
         setTimeout(this.cleanModalHandler,3000);
@@ -186,12 +178,7 @@ class Candidates extends Component {
         )
     }
 
-    deleteHandler = () => {
-        console.log("Deleting Election");
-    }
-
     selectElectoralEventHandler = ( ElectoralEvent ) => {
-        console.log("Selecting " + ElectoralEvent + " as a Electoral Event");
         const tempShowMessage = true;
         const tempShowTable = false;
         this.setState(
@@ -221,13 +208,9 @@ class Candidates extends Component {
             elections: electionsTemp
         }))
 
-        console.log(electionsTemp);
-        console.log(rawData);
-
     }
 
     selectElectionsHandler = ( election ) => {
-        console.log("Selection Election" + election);
         this.setState( prevState => ({
             ...prevState,
             showMessage: false,
@@ -240,7 +223,6 @@ class Candidates extends Component {
     }
 
     handlerBtnSelect = ( payload ) => {
-        console.log(this.state.elections);
         if( !this.state.elections ){
             this.selectElectoralEventHandler(payload);
             this.setState( prevState => ({
