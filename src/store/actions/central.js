@@ -1,6 +1,6 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-tg';
-import { createArg } from '../utility';
+
 export const fetchStart = () => {
     return ({
         type: actionTypes.FETCH_START    
@@ -47,6 +47,7 @@ export const fetch = ( ) => {
 
                 const eventsTemp = {
                     id: jsonData[key].Key,
+                    eventName: jsonData[key].Record.nombreevento,
                     state: jsonData[key].Record.estado,
                     initDate: tempInitDate.toString(),
                     endDate: tempEndDate.toString(),

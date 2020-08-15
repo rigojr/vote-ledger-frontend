@@ -15,7 +15,7 @@ class ElectoralEvent extends Component {
 
     state = {
         electoralEvents: null,
-        theaderTable: ["Código","Estado","Inicio","Finalización", ""],
+        theaderTable: ["Código","Nombre","Estado","Inicio","Finalización", ""],
         showModal: false,
         search: '',
         form: {
@@ -81,7 +81,7 @@ class ElectoralEvent extends Component {
             estado: this.state.form.state,
             fechainicio: +new Date(this.state.form.initDate),
             fechafin: +new Date(this.state.form.endDate),
-            nombre: this.state.form.eventName,
+            nombreevento: this.state.form.eventName,
             election: elections,
             pollingtable: pollingStations
         }
@@ -118,13 +118,12 @@ class ElectoralEvent extends Component {
                 initDate: new Date(select['initDate']),
                 endDate: new Date(select['endDate']),
                 eventCode: select['id'],
-                state: select['state']
+                state: select['state'],
+                eventName: select['eventName'],
             }}
         )
     }
 
-    deleteHandler = (selectId) =>{
-    }
 
     modalHandler = ( create ) => {
         const modalBoolean = this.state.showModal;
@@ -185,7 +184,8 @@ class ElectoralEvent extends Component {
                         initDate: new Date(payload['initDate']),
                         endDate: new Date(payload['endDate']),
                         eventCode: payload['id'],
-                        state: eventStates[newIndex]
+                        state: eventStates[newIndex],
+                        eventName: payload['eventName'],
                     }}
                 )
                 this.setOnCreate(eventRaw.record.elections, eventRaw.record.pollingStations)
