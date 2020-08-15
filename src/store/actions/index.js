@@ -4,5 +4,6 @@ export {
 
 export {
     fetch,
-    create
+    create,
+    setMessage,
 } from './central';

@@ -97,7 +97,17 @@ export const create = ( electoralEvent ) => {
         axios.post('/event/save', {
             parameter: electoralEvent
         })
-        .then( dispatch( createSuccess() ) )
+        .then( response => {
+            dispatch(createSuccess())
+            dispatch(fetch())
+        })
         .catch( error => createError(error) );
     }
+}
+
+export const setMessage = ( message ) => {
+    return ({
+        type: actionTypes.SET_MESSAGE,
+        message: message
+    })
 }

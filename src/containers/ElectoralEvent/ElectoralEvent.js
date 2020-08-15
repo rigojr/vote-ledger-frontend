@@ -58,10 +58,6 @@ class ElectoralEvent extends Component {
             }));
     }
 
-    setModalMessage = (message) => {
-        this.setState(  { modalMessage: message} );
-    }
-
     cleanModalHandler = () => {
         this.setState( { 
             enableState: false,
@@ -73,7 +69,7 @@ class ElectoralEvent extends Component {
                 state: eventStates[0]
             }
         } );
-        this.setModalMessage("");
+        this.props.onSetMessage('');
     }
 
     setOnCreate = (elections, pollingStations) => {
@@ -87,14 +83,26 @@ class ElectoralEvent extends Component {
             pollingtable: pollingStations
         }
         this.props.onCreate(JSON.stringify(electoralEvent));
-        this.props.onFetch();
     }
 
     createHandler = () => {
-        this.setOnCreate(null, null);
-        this.setModalMessage("Enviando información al Blockchain");
-        this.setState( { enableState: true} );
-        setTimeout(this.cleanModalHandler,3000);
+        if( this.props.events.findIndex( (event) => event.id === this.state.form.eventCode) == -1 ){
+            if(
+                !(this.state.form.eventCode === '' ||
+                this.state.form.initDate === null ||
+                this.state.form.endDate === null ||
+                this.state.form.eventName === '')
+            ){
+                this.setOnCreate(null, null);
+                this.setState( { enableState: true} );
+                setTimeout(this.cleanModalHandler,3000);
+            } else {
+                alert(`Termine de ingresar los datos`)
+            }
+        } else {
+            alert(`El id ${this.state.form.eventCode} ya existe`)
+        }
+        
     }
 
     consultModal = ( selectUser ) => {
@@ -123,6 +131,7 @@ class ElectoralEvent extends Component {
                 eventName: select['eventName'],
             }}
         )
+        this.props.onSetMessage('');
     }
 
 
@@ -149,8 +158,10 @@ class ElectoralEvent extends Component {
                         form: {
                             initDate: new Date(searchElectoralEvent['initDate']),
                             endDate: new Date(searchElectoralEvent['endDate']),
-                            eventCode: searchElectoralEvent['id']
-
+                            eventCode: searchElectoralEvent['id'],
+                            eventName: searchElectoralEvent['eventName'],
+                            state: searchElectoralEvent['state'],
+                            
                         },
                         search: ''
                     } );
@@ -236,7 +247,7 @@ class ElectoralEvent extends Component {
                     modalTitile="Crear Evento Electoral"
                     create={this.state.modalCreateBtn}
                     enableState={this.state.enableState}
-                    modalMessage={this.state.modalMessage}>
+                    modalMessage={this.props.message}>
                     <CreateModal 
                         setInitValue={this.setInitDate}
                         setEndValue={this.setEndDate}
@@ -255,14 +266,16 @@ const mapStateToProps = state => {
     return{
         events: state.central.events,
         fetch: state.central.fetch,
-        isLoading: state.central.isLoading
+        isLoading: state.central.isLoading,
+        message: state.central.message
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
         onCreate: (electoralEvent) => dispatch( actions.create(electoralEvent) ),
-        onFetch: () => dispatch( actions.fetch() )
+        onFetch: () => dispatch( actions.fetch() ),
+        onSetMessage: (message) => dispatch( actions.setMessage(message) )
     }
 }
 

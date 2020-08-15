@@ -63,18 +63,22 @@ const AllTable = ( props ) => {
                                                                     onClick={ () => props.consultHandler(payload)}>
                                                                     Consultar
                                                                 </Dropdown.Item>
-                                                                <Dropdown.Item 
-                                                                    as="button"
-                                                                    onClick={
-                                                                        props.deleteAction ? 
-                                                                        () => props.deleteHandler(payload.id) 
-                                                                        : 
-                                                                        () => props.changeHandler(payload)
-                                                                    }>
-                                                                    {
-                                                                        props.deleteAction ? "Eliminar" : "Modificar"
-                                                                    }
-                                                                </Dropdown.Item>
+                                                                {
+                                                                    props.deleteChange ? 
+                                                                    <Dropdown.Item 
+                                                                        as="button"
+                                                                        onClick={
+                                                                            props.deleteAction ? 
+                                                                            () => props.deleteHandler(payload.id) 
+                                                                            : 
+                                                                            () => props.changeHandler(payload)
+                                                                        }>
+                                                                        {
+                                                                            props.deleteAction ? "Eliminar" : "Modificar"
+                                                                        }
+                                                                    </Dropdown.Item> : null
+                                                                }
+                                                                
                                                                 {
                                                                     props.pollingStation ?
                                                                     <Aux>

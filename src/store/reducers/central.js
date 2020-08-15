@@ -1,12 +1,13 @@
 import * as actionTypes from '../actions/actionTypes';
-import { updateObject } from '../utility';
+import { updateObject, immmutableInsertItem} from '../utility';
 
 const initialstate = {
     fetch: null,
     events: null,
     users: null,
     isLoading: false,
-    error: null
+    error: null,
+    message: ''
 }
 
 const fetchStart = ( state, action ) => {
@@ -42,6 +43,7 @@ const fetchSuccessEvents = ( state, action ) => {
 const createStart = ( state, action ) => {
     return updateObject( state, {
         isLoading: true,
+        message: 'Enviando información al bockchain'
     })
 }
 
@@ -51,13 +53,21 @@ const createError = ( state, action ) => {
         error: {
             ...action.error,
             customMessage: "Error al crear"
-        }
+        },
+        message: 'Hubo un error al guardar la información'
     })
 }
 
 const createSuccess = ( state, action ) => {
     return updateObject( state, {
-        isLoading: false
+        isLoading: false,
+        message: 'La información se ha guardado con éxito'
+    })
+}
+
+const setMessage = ( state, action ) => {
+    return updateObject( state, {
+        message: action.message
     })
 }
 
@@ -77,6 +87,8 @@ const reducer = ( state = initialstate, action ) => {
             return createError( state, action )
         case actionTypes.CREATE_SUCCESS:
             return createSuccess( state, action )
+        case actionTypes.SET_MESSAGE:
+            return setMessage( state, action )
         default: return state;
     }
 }

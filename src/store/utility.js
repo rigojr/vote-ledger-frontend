@@ -28,3 +28,11 @@ export const compareValues = (key, order = 'asc') => {
       );
     };
   }
+
+  export const immmutableInsertItem = (array, payload) => {
+    return [...array.slice(0, payload.index), payload.item, ...array.slice(payload.index)]
+  }
+  
+  export const immutableRemoveItem = (array, payload) => {
+    return [...array.slice(0, payload.index), ...array.slice(payload.index + 1)]
+  }
