@@ -206,14 +206,12 @@ class ElectoralEvent extends Component {
 
         let ElectoralEventsComponent = <Spinner/>;
 
-        if (this.props.events){
+        if (this.props.events && !this.props.isLoading){
             ElectoralEventsComponent = (
                 <AllTable 
                     theadArray={this.state.theaderTable}
                     payloadArray={this.props.events.sort(compareValues('id'))}
                     consultHandler={this.consultHandler}
-                    deleteHandler={this.deleteHandler}
-                    deleteAction={true}
                     changeStatus={this.handleChangeStatus}/> 
             );
         }
@@ -256,7 +254,8 @@ class ElectoralEvent extends Component {
 const mapStateToProps = state => {
     return{
         events: state.central.events,
-        fetch: state.central.fetch
+        fetch: state.central.fetch,
+        isLoading: state.central.isLoading
     }
 }
 

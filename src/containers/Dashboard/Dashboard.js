@@ -57,8 +57,7 @@ class Dashboard extends Component {
 
 const mapStateToProps = state => {
     return{
-        isLoading: state.central.isLoading,
-        error: state.central.error
+        isLoading: state.central.isLoading
     }
 }
 
