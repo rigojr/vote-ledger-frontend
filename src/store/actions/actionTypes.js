@@ -13,5 +13,6 @@ export const CREATE_SUCCESS = 'CREATE_SUCCESS';
 export const CREATE_ERROR = 'CREATE_ERROR';
 export const CREATE_START = 'CREATE_START';
 export const CREATE = 'CREATE';
+export const LOCAL_SAVE = 'LOCAL_SAVE';
 
 export const SET_MESSAGE = "SET_MESSAGE";

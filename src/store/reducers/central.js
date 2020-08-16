@@ -1,5 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
-import { updateObject, immmutableInsertItem} from '../utility';
+import { updateObject, immmutableInsertItem, immutableRemoveItem, parseRawData} from '../utility';
 
 const initialstate = {
     fetch: null,
@@ -71,6 +71,30 @@ const setMessage = ( state, action ) => {
     })
 }
 
+const localSave = ( state, action ) => {
+
+    const data = parseRawData(action.rawEvent)
+
+    let tempEvents = state.events
+    let tempFetch = state.fetch
+    const indexEvents = state.events.findIndex( event => event.id == action.rawEvent.id )
+    const indexFetch = state.fetch.findIndex( fetch => fetch.id == action.rawEvent.id)
+
+    if( indexEvents !== -1 ){
+        tempEvents = immutableRemoveItem(state.events,{index:indexEvents})
+        tempFetch = immutableRemoveItem(state.fetch,{index:indexFetch})
+    }
+
+    tempEvents = immmutableInsertItem(tempEvents,{index:tempEvents.length,item:data.event})
+    tempFetch = immmutableInsertItem(tempFetch,{index:tempFetch.length,item:data.fetch})
+
+    return updateObject( state, {
+        isLoading: false,
+        fetch: tempFetch,
+        events: tempEvents
+    })
+}
+
 const reducer = ( state = initialstate, action ) => {
     switch ( action.type ) {
         case actionTypes.FETCH_START:
@@ -89,6 +113,8 @@ const reducer = ( state = initialstate, action ) => {
             return createSuccess( state, action )
         case actionTypes.SET_MESSAGE:
             return setMessage( state, action )
+        case actionTypes.LOCAL_SAVE:
+            return localSave( state, action)
         default: return state;
     }
 }

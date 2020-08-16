@@ -1,5 +1,7 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-tg';
+import {parseRawData} from '../utility';
+
 
 export const fetchStart = () => {
     return ({
@@ -33,7 +35,7 @@ export const fetch = ( ) => {
     return dispatch => {
         dispatch( fetchStart() );
         
-         axios.post( '/event/getall', {
+        axios.post( '/event/getall', {
             parameter :""
         })
         .then( response => {
@@ -42,26 +44,9 @@ export const fetch = ( ) => {
             const jsonData = JSON.parse(response.data.mensaje);
             for( let key in jsonData){
 
-                const tempInitDate = new Date(jsonData[key].Record.fechainicio)
-                const tempEndDate = new Date(jsonData[key].Record.fechafin)
-
-                const eventsTemp = {
-                    id: jsonData[key].Key,
-                    eventName: jsonData[key].Record.nombreevento,
-                    state: jsonData[key].Record.estado,
-                    initDate: tempInitDate.toString(),
-                    endDate: tempEndDate.toString(),
-                };
-
-                fetch.push({
-                    ...eventsTemp,
-                    record: {
-                        elections: {...jsonData[key].Record.Election},
-                        pollingStations: {...jsonData[key].Record.PollingTable}
-                    }
-                })
-
-                events.push( {...eventsTemp} )
+                const data = parseRawData(jsonData[key].Record)
+                fetch.push({...data.fetch})
+                events.push({...data.event})
             }
             dispatch( fetchSuccessEvents( fetch, events ) );
         })
@@ -69,6 +54,13 @@ export const fetch = ( ) => {
 
 
     }
+}
+
+export const localSave = ( event ) => {
+    return ({
+        type: actionTypes.LOCAL_SAVE,
+        rawEvent: event
+    })
 }
 
 export const createStart = () => {
@@ -98,8 +90,8 @@ export const create = ( electoralEvent ) => {
             parameter: electoralEvent
         })
         .then( response => {
-            dispatch(createSuccess())
-            dispatch(fetch())
+            dispatch(createSuccess());
+            dispatch(localSave(JSON.parse(response.data.mensaje)));
         })
         .catch( error => createError(error) );
     }
