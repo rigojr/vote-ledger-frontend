@@ -64,3 +64,26 @@ export const compareValues = (key, order = 'asc') => {
     }
 
   }
+
+  export const parseRawDataUser = (rawUser) => {
+
+    const userTemp = {
+      id: rawUser.id,
+      name: rawUser.nombre,
+      faculty: rawUser.facultad,
+      school: rawUser.escuela,
+      email: rawUser.email,
+    };
+
+    const fetchTemp = {
+      ...userTemp,
+      password: rawUser.password,
+      voteRercord: {...rawUser.HistorialVotos}
+    }
+
+    return {
+      user: userTemp,
+      fetch: fetchTemp
+    }
+
+  }

@@ -17,7 +17,8 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 class Dashboard extends Component {
 
     componentDidMount () {
-        this.props.onFetch();
+        this.props.onFetchEvents();
+        this.props.onFetchUsers();
     }
 
     render (){
@@ -63,7 +64,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetch: () => dispatch( actions.fetch() )
+        onFetchEvents: () => dispatch( actions.fetch() ),
+        onFetchUsers: () => dispatch( actions.fetchUser() )
     }
 }
 

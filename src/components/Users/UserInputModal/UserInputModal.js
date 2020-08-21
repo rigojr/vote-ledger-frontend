@@ -64,7 +64,7 @@ const usercreatemodal = ( props ) => (
                     label="Comisión Electoral"
                     id="ceRadios"
                     name="inputRadios"
-                    onChange={ () => props.tagLabel("A") }
+                    onChange={ () => props.tagLabel('admin') }
                     defaultChecked={props.typeOfUser}
                     disabled={props.inputTypeOfUser}/>
                 <Form.Check
@@ -72,7 +72,7 @@ const usercreatemodal = ( props ) => (
                     label="Elector"
                     id="electorRadios"
                     name="inputRadios"
-                    onChange={ () => props.tagLabel("") }
+                    onChange={ () => props.tagLabel('elector') }
                     disabled={props.inputTypeOfUser}
                     defaultChecked={!props.typeOfUser}/>
             </Form.Group>

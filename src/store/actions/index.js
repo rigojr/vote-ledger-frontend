@@ -1,5 +1,6 @@
 export {
-    fetchUser
+    fetchUser,
+    createUser
 } from './user';
 
 export {

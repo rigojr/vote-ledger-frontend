@@ -1,5 +1,6 @@
 import * as actionTypes from './actionTypes';
-import axios from '../../axios';
+import axios from '../../axios-tg';
+import {parseRawDataUser} from '../utility';
 
 export const fetchUserStart = () => {
     return ({
@@ -14,33 +15,71 @@ export const fetchUserError = ( error ) => {
     })
 }
 
-export const fetchUserSuccess = ( users ) => {
+export const fetchUserSuccess = ( users, fetch ) => {
     return ({
         type: actionTypes.FETCH_USERS_SUCCESS,
-        users: users
+        users: users,
+        fetch: fetch
     })
 }
 
-export const fetchUser = ( endPoint ) => {
+export const fetchUser = ( ) => {
     return dispatch => {
         dispatch( fetchUserStart() );
-        axios.get( endPoint )
+
+        axios.post( `/user/getall`, { parameter: "" } )
         .then( response => {
             const fetch = [];
-            for( let key in response.data){
-                fetch.push({
-                    id: response.data[key].id,
-                    name: response.data[key].name,
-                    faculty: response.data[key].faculty,
-                    school: response.data[key].school,
-                    email: response.data[key].email
-                });
+            const users = [];
+            const jsonData = JSON.parse(response.data.mensaje);
+            for( let key in jsonData){
+                const data = parseRawDataUser(jsonData[key].Record);
+                users.push({...data.user});
+                fetch.push({...data.fetch})
             }
-            dispatch( fetchUserSuccess( fetch ) );
+            dispatch( fetchUserSuccess(users, fetch) )
         })
-        .catch( error => {
-            console.log(error);
-            dispatch( fetchUserError( error ) );
+        .catch( error => {dispatch( fetchUserError(error) )})
+    }
+}
+
+export const createUserStart = () => {
+    return ({
+        type: actionTypes.CREATE_USER_START
+    })
+}
+
+export const createUserSuccess = () => {
+    return({
+        type: actionTypes.CREATE_USER_SUCCESS
+    })
+}
+
+export const createUserError = (error) => {
+    return({
+        type: actionTypes.CREATE_USER_ERROR,
+        error: error
+    })
+}
+
+export const localSaveUser = (user) => {
+    return({
+        type: actionTypes.LOCAL_SAVE_USER,
+        rawUser: user
+    })
+}
+
+export const createUser = ( user ) => {
+    return dispatch => {
+        dispatch( createUserStart() )
+
+        axios.post('/user/save', {
+            parameter: user
         })
+        .then( response => {
+            dispatch(createUserSuccess());
+            dispatch(localSaveUser(JSON.parse(response.data.mensaje)));
+        })
+        .catch( error => createUserError(error))
     }
 }

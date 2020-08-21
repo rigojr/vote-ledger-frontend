@@ -16,13 +16,6 @@ export const fetchError = ( error ) => {
     })
 }
 
-export const fetchSuccessUsers = ( users ) => {
-    return ({
-        type: actionTypes.FETCH_SUCCESS_USERS,
-        users: users
-    })
-}
-
 export const fetchSuccessEvents = ( fetch, events ) => {
     return ({
         type: actionTypes.FETCH_SUCCESS_EVENTS,

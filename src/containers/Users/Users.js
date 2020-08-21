@@ -22,15 +22,15 @@ class User extends Component {
                 id: '',
                 name: '',
                 faculty: '',
-                school: '',
+                school: 'Administración y Contaduría',
                 email: '',
                 password: '',
-                enable: true
+                enable: true,
+                type: ''
             },
-            user: {id:"", name:"", faculty:"", school:"Administración y Contaduría", email:"", password:"", enable: true},
             userPassword: "",
             theaderTable: ["Cédula","Nombre","Facultad","Escuela","Email",""],
-            checkLabel: "A",
+            checkLabel: "admin",
             showModal: false,
             modalMessage: "",
             search: '',
@@ -101,13 +101,13 @@ class User extends Component {
                 faculty = "Teología";
                 break;
         }
-        this.setState( prevState => ({ user: {...prevState.user, faculty}}));
+        this.setState( prevState => ({ form: {...prevState.form, faculty}}));
     }
 
 
     setUserClean = () => {
-        const user = {id:"", name:"", faculty:"", school:"Administración y Contaduría", email:"", password:"", enable: true};
-        this.setState( { user } );
+        const user = {id:"", name:"", faculty:"", school:"Administración y Contaduría", email:"", password:""};
+        this.setState( { form: user } );
         this.setState ( { 
             userPassword:"", 
             selectedTypeOfUser: true,
@@ -116,13 +116,12 @@ class User extends Component {
     }
 
     setAdminLabel = () => {
-        const id = this.state.user.id + this.state.checkLabel;
-        this.setState( prevState => ({ user: {...prevState.user, id} }));
+        this.setState( prevState => ({ form: {...prevState.form, type: this.state.checkLabel} }));
     }
 
     setLabel = (tag) => {
         let boolTypeOfUser = false;
-        if( tag === "A") 
+        if( tag === "admin") 
             boolTypeOfUser = true
         this.setState( { 
             checkLabel: tag,
@@ -142,25 +141,46 @@ class User extends Component {
         this.setState(  { modalMessage: message} );
     }
 
-    componentDidMount () {
-        this.props.onFetchUsers();
+    setOnCreate = ( voteRecord ) => {
+        const user = {
+            id: this.state.form.id,
+            nombre: this.state.form.name,
+            facultad: this.state.form.faculty,
+            escuela: this.state.form.school,
+            email: this.state.form.email,
+            password: sha256(this.state.form.password),
+            HistorialVotos: voteRecord,
+            type: this.state.form.type
+        }
+        this.props.onCreateUser(JSON.stringify(user));
     }
 
     createHandler = async () => {
-        this.setModalMessage("Enviando información al Blockchain");
-        await this.setFaculty(this.state.user.school);
-        await this.setAdminLabel();
-        this.setEnableInput( true );
-        this.setEnableInputTypeOf( true );
-        axios.post('/users.json', this.state.user)
-        .then( (response) => {
-            this.setModalMessage("Guardado con éxito!");
-        })
-        .catch( error => {
-        });
-
-        setTimeout(this.cleanModalHandler,3000);
-
+        if( this.props.users.findIndex( user => user.id === this.state.form.id) === -1 ){
+                await this.setFaculty(this.state.form.school);
+                await this.setAdminLabel();
+            if(
+                !(
+                    this.state.form.id === '' ||
+                    this.state.form.name === '' ||
+                    this.state.form.faculty === '' ||
+                    this.state.form.school === '' ||
+                    this.state.form.email === '' ||
+                    this.state.form.password === ''
+                )
+            ){
+                this.setModalMessage("Enviando información al Blockchain");
+                this.setEnableInput( true );
+                this.setEnableInputTypeOf( true );
+                this.setOnCreate(null);
+                setTimeout(this.cleanModalHandler,3000);
+            } else {
+                alert(`Termine de ingresar los datos`)
+            }
+        }else {
+            alert(`El id ${this.state.form.id} ya existe`)
+        }
+        
     }
 
     createModal = () => {
@@ -176,7 +196,7 @@ class User extends Component {
 
     consultModal = ( selectUser ) => {
         let adminBoolean = false;
-        if( selectUser.id.charAt(selectUser.id.length - 1) === "A")
+        if( selectUser.id.charAt(selectUser.id.length - 1) === "admin")
             adminBoolean = true;
         this.modalHandler( false, false);
         this.setEnableInput( true );
@@ -190,7 +210,7 @@ class User extends Component {
 
     updateModal = ( selectUser ) => {
         let adminBoolean = false;
-        if( selectUser.id.charAt(selectUser.id.length - 1) === "A")
+        if( selectUser.id.charAt(selectUser.id.length - 1) === "admin")
             adminBoolean = true;
         this.modalHandler( false, true);
         this.setEnableInput( false );
@@ -216,12 +236,12 @@ class User extends Component {
 
     searchHandler = () => {
         let found = false;
-        if(this.state.users && !(this.state.search == '')){
-            for (let i in this.state.users) {
-                if(this.state.search === this.state.users[i].id){
-                    const searchUser = this.state.users[i];
+        if(this.props.users && !(this.state.search == '')){
+            for (let i in this.props.users) {
+                if(this.state.search === this.props.users[i].id){
+                    const searchUser = this.props.users[i];
                     this.setState( { 
-                        user: searchUser,
+                        form: searchUser,
                         search: ''
                     } );
                     this.searchModal();
@@ -276,7 +296,8 @@ class User extends Component {
                     searchValue={this.state.search}
                     searchHandler={this.searchHandler}
                     showModal={this.createModal}
-                    onChange={this.handleOnInputSearchChange}/>
+                    onChange={this.handleOnInputSearchChange}
+                    updateHandler={this.props.onFetchUsers}/>
                 {UsersTableComponent}
                 <AllModal
                     showModal={this.modalHandler}
@@ -312,7 +333,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUsers: () => dispatch( actions.fetchUser( '/users.json' ) )
+        onFetchUsers: () => dispatch( actions.fetchUser( ) ),
+        onCreateUser: (user) => dispatch( actions.createUser(user))
     }
 }
 

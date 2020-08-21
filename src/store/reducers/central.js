@@ -25,13 +25,6 @@ const fetchError = ( state, action ) => {
         }})
 }
 
-const fetchSuccessUsers = ( state, action ) => {
-    return updateObject( state, {
-        isLoading: false,
-        users: action.users
-    })
-}
-
 const fetchSuccessEvents = ( state, action ) => {
     return updateObject( state, {
         isLoading: false,
@@ -101,8 +94,6 @@ const reducer = ( state = initialstate, action ) => {
             return fetchStart( state, action )
         case actionTypes.FETCH_ERROR:
             return fetchError( state, action )
-        case actionTypes.FETCH_SUCCESS_USERS:
-            return fetchSuccessUsers( state, action )
         case actionTypes.FETCH_SUCCESS_EVENTS:
             return fetchSuccessEvents( state, action )
         case actionTypes.CREATE_START:
