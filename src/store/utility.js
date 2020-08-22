@@ -78,6 +78,7 @@ export const compareValues = (key, order = 'asc') => {
     const fetchTemp = {
       ...userTemp,
       password: rawUser.password,
+      type: rawUser.type,
       voteRercord: {...rawUser.HistorialVotos}
     }
 

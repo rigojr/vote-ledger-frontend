@@ -141,18 +141,25 @@ class User extends Component {
         this.setState(  { modalMessage: message} );
     }
 
-    setOnCreate = ( voteRecord ) => {
+    setOnCreate = ( voteRecord, oldPassword) => {
+        let password
+        if(!oldPassword){
+            password = sha256(this.state.form.password)
+        } else {
+            password = oldPassword
+        }
         const user = {
             id: this.state.form.id,
             nombre: this.state.form.name,
             facultad: this.state.form.faculty,
             escuela: this.state.form.school,
             email: this.state.form.email,
-            password: sha256(this.state.form.password),
+            password,
             HistorialVotos: voteRecord,
-            type: this.state.form.type
+            type: !voteRecord ? this.state.form.type : this.props.fetch.find( user => user.id === this.state.form.id).type
         }
         this.props.onCreateUser(JSON.stringify(user));
+        console.log(user)
     }
 
     createHandler = async () => {
@@ -172,7 +179,7 @@ class User extends Component {
                 this.setModalMessage("Enviando información al Blockchain");
                 this.setEnableInput( true );
                 this.setEnableInputTypeOf( true );
-                this.setOnCreate(null);
+                this.setOnCreate(null, null);
                 setTimeout(this.cleanModalHandler,3000);
             } else {
                 alert(`Termine de ingresar los datos`)
@@ -196,12 +203,12 @@ class User extends Component {
 
     consultModal = ( selectUser ) => {
         let adminBoolean = false;
-        if( selectUser.id.charAt(selectUser.id.length - 1) === "admin")
+        if( this.props.fetch.find( user => user.id === selectUser.id).type === "admin")
             adminBoolean = true;
         this.modalHandler( false, false);
         this.setEnableInput( true );
         this.setState( { 
-            user: selectUser,
+            form: selectUser,
             selectedTypeOfUser: adminBoolean,
             inputTypeOfUser: true
         } );
@@ -210,18 +217,28 @@ class User extends Component {
 
     updateModal = ( selectUser ) => {
         let adminBoolean = false;
-        if( selectUser.id.charAt(selectUser.id.length - 1) === "admin")
+        if( this.props.fetch.find( user => user.id === selectUser.id).type === "admin")
             adminBoolean = true;
         this.modalHandler( false, true);
         this.setEnableInput( false );
-        this.setState( { 
-            user: selectUser,
+        this.setState( prevState => ({
+            ...prevState, 
+            form: {...prevState.form, ...selectUser},
             selectedTypeOfUser: adminBoolean,
             inputTypeOfUser: true
-        } );
+        }) );
     }
 
     updateHandler = () => {
+        const rawUser = this.props.fetch.find( user => user.id === this.state.form.id)
+        console.log(rawUser)
+        if(this.state.form.password === ''){
+            this.setOnCreate(rawUser.voteRercord, rawUser.password)
+        }else{
+            this.setOnCreate(rawUser.voteRercord, null)
+        }
+        this.cleanModalHandler()
+        this.modalHandler(false,false)
     }
 
     modalHandler = ( create, update ) => {
@@ -236,16 +253,28 @@ class User extends Component {
 
     searchHandler = () => {
         let found = false;
-        if(this.props.users && !(this.state.search == '')){
+        if(this.props.fetch && !(this.state.search == '')){
             for (let i in this.props.users) {
-                if(this.state.search === this.props.users[i].id){
-                    const searchUser = this.props.users[i];
+                if(this.state.search === this.props.fetch[i].id){
                     this.setState( { 
-                        form: searchUser,
+                        form: {
+                            id: this.props.fetch[i].id,
+                            name: this.props.fetch[i].name,
+                            faculty: this.props.fetch[i].faculty,
+                            school: this.props.fetch[i].school,
+                            email: this.props.fetch[i].email,
+                            type: this.props.fetch[i].type
+                        },
                         search: ''
                     } );
                     this.searchModal();
                     found = true;
+                    let adminBoolean = false;
+                    if( this.props.fetch[i].type === "admin")
+                        adminBoolean = true;
+                    this.setState( { 
+                        selectedTypeOfUser: adminBoolean,
+                    } );
                 }
             }
             if(!found)
@@ -282,7 +311,8 @@ class User extends Component {
                     payloadArray={this.props.users}
                     consultHandler={this.consultModal}
                     changeHandler={this.updateModal}
-                    deleteAction={false}/>
+                    deleteAction={false}
+                    deleteChange={true}/>
             );
         }
 
@@ -327,6 +357,7 @@ class User extends Component {
 const mapStateToProps = state => {
     return{
         users: state.user.users,
+        fetch: state.user.fetch,
         isLoading: state.user.isLoading
     }
 }

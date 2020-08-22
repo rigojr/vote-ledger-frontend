@@ -67,14 +67,18 @@ const localSaveUser = ( state, action ) => {
     const data = parseRawDataUser(action.rawUser)
     let tempUsers = state.users
     let tempFetch = state.fetch
-    const indexUsers = state.users.findIndex( user => user.id == action.rawUser.id )
-    const indexFetch = state.fetch.findIndex( fetch => {fetch.id == action.rawUser.id})
+    let indexUsers = state.users.findIndex( user => user.id == action.rawUser.id )
+    let indexFetch = state.fetch.findIndex( fetch => fetch.id == action.rawUser.id)
     if( indexUsers !== -1 ){
-        tempUsers = immutableRemoveItem(state.users,{index:indexUsers})
-        tempFetch = immutableRemoveItem(state.fetch,{index:indexFetch})
+        tempUsers = immutableRemoveItem(tempUsers,{index:indexUsers})
+        tempFetch = immutableRemoveItem(tempFetch,{index:indexFetch})
+
+    } else {
+        indexUsers = tempUsers.length
+        indexFetch = tempFetch.length
     }
-    tempUsers = immmutableInsertItem(tempUsers,{index:tempUsers.length,item:data.user})
-    tempFetch = immmutableInsertItem(tempFetch,{index:tempFetch.length,item:data.fetch})
+    tempUsers = immmutableInsertItem(tempUsers,{index:indexUsers,item:data.user})
+    tempFetch = immmutableInsertItem(tempFetch,{index:indexFetch,item:data.fetch})
     return updateObject( state, {
         isLoading: false,
         fetch: tempFetch,
