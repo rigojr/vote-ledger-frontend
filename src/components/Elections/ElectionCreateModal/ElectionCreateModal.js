@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 
 import Aux from '../../../hoc/Aux';
+import SelectOptionsEscuela from '../../Users/UserInputModal/SelectOptionsEscuela/SelectOptionsEscuela'
 
 const ElectionCreateModal = ( props ) => (
   <Aux>
@@ -16,7 +17,23 @@ const ElectionCreateModal = ( props ) => (
                     name="id"
                     onChange={props.setValue}
                     value={props.inputValues.id}
+                    disabled={props.enableState || props.UpdateBoolean}/>
+            </Form.Group>
+            <Form.Group as={Col}>
+                <Form.Label>Nombre</Form.Label>
+                <Form.Control 
+                    as="input"
+                    name="name"
+                    onChange={props.setValue}
+                    value={props.inputValues.name}
                     disabled={props.enableState}/>
+            </Form.Group>
+            <Form.Group as={Col}>
+                <SelectOptionsEscuela
+                    school={props.inputValues.school}
+                    onChange={props.setValue}
+                    disabled={props.enableState}
+                    name="school"/>
             </Form.Group>
         </Row>
         <Row>
@@ -30,7 +47,7 @@ const ElectionCreateModal = ( props ) => (
                     name="typeElection"
                     onChange={props.setValue}
                     defaultChecked={ props.inputValues.typeElection === 'Consejo Universitario' }
-                    disabled={props.enableState}/>
+                    disabled={props.enableState || props.UpdateBoolean}/>
                 <Form.Check
                     type="radio"
                     label="Consejo de Facultad"
@@ -39,7 +56,7 @@ const ElectionCreateModal = ( props ) => (
                     name="typeElection"
                     onChange={props.setValue}
                     defaultChecked={ props.inputValues.typeElection === 'Consejo de Facultad' }
-                    disabled={props.enableState}/>
+                    disabled={props.enableState || props.UpdateBoolean}/>
                 <Form.Check
                     type="radio"
                     label="Consejo de Escuela"
@@ -48,7 +65,7 @@ const ElectionCreateModal = ( props ) => (
                     name="typeElection"
                     onChange={props.setValue}
                     defaultChecked={ props.inputValues.typeElection === 'Consejo de Escuela' }
-                    disabled={props.enableState}/>
+                    disabled={props.enableState || props.UpdateBoolean}/>
             </Form.Group>
             <Form.Group as={Col} md="8">
                 <Form.Label>Descripción</Form.Label>

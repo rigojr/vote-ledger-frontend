@@ -38,7 +38,6 @@ export const compareValues = (key, order = 'asc') => {
   }
 
   export const parseRawData = (rawEvent) => {
-
     const tempInitDate = new Date(rawEvent.fechainicio)
     const tempEndDate = new Date(rawEvent.fechafin)
 

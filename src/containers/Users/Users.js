@@ -231,7 +231,6 @@ class User extends Component {
 
     updateHandler = () => {
         const rawUser = this.props.fetch.find( user => user.id === this.state.form.id)
-        console.log(rawUser)
         if(this.state.form.password === ''){
             this.setOnCreate(rawUser.voteRercord, rawUser.password)
         }else{

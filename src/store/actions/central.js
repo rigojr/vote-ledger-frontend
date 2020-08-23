@@ -78,7 +78,6 @@ export const createSuccess = ( ) => {
 export const create = ( electoralEvent ) => {
     return dispatch => {
         dispatch( createStart() );
-
         axios.post('/event/save', {
             parameter: electoralEvent
         })

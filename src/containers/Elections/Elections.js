@@ -9,32 +9,57 @@ import AllTable from '../../components/Layout/AllTable/AllTable';
 import AllModal from '../../components/Layout/Modal/AllModal';
 import CardMessage from '../../components/Layout/CardMessage/CardMessage';
 import InfraHeader from '../../components/Layout/InfraHeader/InfraHeader';
-import axios from '../../axios';
+import * as actions from '../../store/actions/index';
 import Spinner from '../../components/UI/Spinner/Spinner';
 
 class Elections extends Component {
 
     state = {
-        elections: null,
+        elections: [],
         form: {
             id: '',
             typeElection: 'Consejo Universitario',
-            desc: ''
+            desc: '',
+            name: '',
+            school: 'Administración y Contaduría'
         },
         electoralEvents: null,
         selectElectoralEvent: '',
         showModal: false,
         search: '',
-        theaderTable: ["Código","Nombre","Descripción", "Org", "Tipo", ""],
+        theaderTable: ["Código","Nombre","Descripción", "Escuela", "Tipo", ""],
         showMessage: true,
         showTable: false,
         modalMessage: '',
         enableState: false,
-        modalCreateBtn: false
+        modalCreateBtn: false,
+        modalUpdateBtn: false,
+        UpdateBoolean: false 
     }
 
     componentDidMount () {
 
+    }
+
+    setLocalElections (ElectoralEvent) {
+        const electionsTemp = [];
+        const rawData = this.props.fetch.find(
+            events => events.id === ElectoralEvent.toString()
+        )['record'].elections;
+        for( let key in rawData){
+
+            electionsTemp.push({
+                id: rawData[key].id,
+                name: key,
+                desc: rawData[key].descripcion,
+                school: rawData[key].escuela,
+                typeElection: rawData[key].tipoeleccion
+            });
+        }
+        this.setState( prevState => ({
+            ...prevState,
+            elections: electionsTemp
+        }))
     }
 
     setValue = (e) => {
@@ -54,7 +79,7 @@ class Elections extends Component {
 
     searchHandler = () => {
         let found = false;
-        if(this.state.electoralEvents && this.state.elections){
+        if(this.state.elections){
             if(this.state.showTable){
                 for (let i in this.state.elections) {
                     if(this.state.search === this.state.elections[i].id){
@@ -63,11 +88,13 @@ class Elections extends Component {
                             form: {
                                 id: search['id'],
                                 typeElection: search['typeElection'],
-                                desc: search['desc']
+                                desc: search['desc'],
+                                name: search['name'],
+                                school: search['school']
                             },
                             search: ''
                         } );
-                        this.setState( { enableState: true} );
+                        this.setState( { enableState: true, UpdateBoolean: false} );
                         this.searchModal();
                         found = true;
                     }
@@ -88,10 +115,10 @@ class Elections extends Component {
     };
 
     searchModal = () => {
-        this.modalHandler( false );
+        this.modalHandler( false, false );
     }
 
-    modalHandler = ( create ) => {
+    modalHandler = ( create, update) => {
         const modalBoolean = this.state.showModal;
         const showModalUpdated = !modalBoolean;
         if(create){
@@ -99,36 +126,68 @@ class Elections extends Component {
         }
         this.setState( { 
             showModal: showModalUpdated,
-            modalCreateBtn: create
+            modalCreateBtn: create,
+            modalUpdateBtn: update
         } );
     }
 
+    setOnCreate = (rawElectoralEvent) => {
+        const electoralEvent = {
+            id: rawElectoralEvent.id,
+            estado: rawElectoralEvent.state,
+            fechainicio: +new Date(rawElectoralEvent.initDate),
+            fechafin: +new Date(rawElectoralEvent.endDate),
+            nombreevento: rawElectoralEvent.eventName,
+            Election: {
+                ...rawElectoralEvent.record.elections,
+                [this.state.form.name]: {
+                    Candidatos: null,
+                    descripcion: this.state.form.desc,
+                    escuela: this.state.form.school,
+                    id: this.state.form.id,
+                    maximovotos: this.state.form.typeElection === 'Consejo Universitario' ? '3' : '2',
+                    tipoeleccion: this.state.form.typeElection
+                }
+            },
+            PollingTable: {...rawElectoralEvent.record.pollingStations}
+        }
+        this.props.onCreate(JSON.stringify(electoralEvent));
+    }
+
     createElectionHandler = async () => {
-        this.setModalMessage("Enviando información al Blockchain");
-        this.setState( { enableState: true} );
-        await axios.post('/elections.json', {
-            id: this.state.form.id,
-            typeElection: this.state.form.typeElection,
-            desc: this.state.form.desc
-        })
-        .then( (response) => {
-            this.setModalMessage("Guardado con éxito!");
-        })
-        .catch( error => {
-            this.setModalMessage("Hubo un error en la comunicación, no se guardo la información");
-        });
-        setTimeout(this.cleanModalHandler,3000);
+        if( this.state.elections.findIndex( election => election.id === this.state.form.id ) === -1 ){
+            if(
+                !(
+                    this.state.form.id === '' ||
+                    this.state.form.desc === '' ||
+                    this.state.form.name === '' ||
+                    this.state.form.school === ''
+                )
+            ){
+                this.setOnCreate(this.props.fetch.find( fetch => fetch.id === this.state.selectElectoralEvent ))
+                this.setModalMessage("Enviando información al Blockchain");
+                this.setState( { enableState: true, UpdateBoolean: false} );
+                setTimeout(this.cleanModalHandler,3000);
+                setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
+            }else{
+                alert(`Termine de ingresar los datos`)
+            }
+        } else {
+            alert(`El id ${this.state.form.id} ya existe`)
+        }
     }
 
     consultHanlder = (select) => {
-        this.modalHandler(false);
-        this.setState( { enableState: true} );
+        this.modalHandler(false, false);
+        this.setState( { enableState: true, UpdateBoolean: false} );
         this.setState(
             {
                 form: {
                     id: select['id'],
                     typeElection: select['typeElection'],
-                    desc: select['desc']
+                    desc: select['desc'],
+                    name: select['name'],
+                    school: select['school']
             }}
         )
     }
@@ -144,36 +203,60 @@ class Elections extends Component {
                 selectElectoralEvent: ElectoralEvent
             }
         );
-        const electionsTemp = [];
-        const rawData = this.props.fetch.find(
-            events => events.id === ElectoralEvent.toString()
-        )['record'].elections;
-        for( let key in rawData){
-
-            electionsTemp.push({
-                id: rawData[key].id,
-                name: key,
-                desc: rawData[key].descripcion,
-                org: rawData[key].escuela,
-                type: rawData[key].tipoeleccion
-            });
-        }
-
-        this.setState( prevState => ({
-            ...prevState,
-            elections: electionsTemp
-        }))
+        this.setLocalElections(ElectoralEvent)
     }
 
     cleanModalHandler = () => {
         this.setState( { 
             enableState: false,
+            UpdateBoolean: false,
             form:{
                 id: '',
                 typeElection: 'Consejo Universitario',
-                desc: ''
+                desc: '',
+                name: '',
+                school: 'Administración y Contaduría',
             }
         } );
+    }
+
+    updateModal = ( selectElection ) => {
+        this.modalHandler( false, true)
+        this.setState( prevState => ({
+            ...prevState,
+            UpdateBoolean: true,
+            enableState: false,
+            form: {
+                ...selectElection
+            }
+        }))
+    }
+
+    updateHandler = () => {
+        if(
+            !(
+                this.state.form.desc === '' ||
+                this.state.form.name === '' ||
+                this.state.form.school === ''
+            )
+        ){
+            this.setOnCreate(this.props.fetch.find( fetch => fetch.id == this.state.selectElectoralEvent ))
+            this.setModalMessage("Enviando información al Blockchain");
+            this.setState( { enableState: true, UpdateBoolean: false} );
+            setTimeout(this.cleanModalHandler,3000);
+            setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
+        }else{
+            alert(`Termine de ingresar los datos`)
+        }
+
+        const rawUser = this.props.fetch.find( user => user.id === this.state.form.id)
+        if(this.state.form.password === ''){
+            this.setOnCreate(rawUser.voteRercord, rawUser.password)
+        }else{
+            this.setOnCreate(rawUser.voteRercord, null)
+        }
+        this.cleanModalHandler()
+        this.modalHandler(false,false)
     }
 
     render(){
@@ -182,19 +265,26 @@ class Elections extends Component {
         <CardMessage messageTitle="Por favor, seleccione un evento electoral para continuar."/> :
         null;
 
-        let ElectionContent = this.state.showTable ?
-        <Aux>
-            <InfraHeader 
-                title={this.state.selectElectoralEvent}
-                btnName="Elección"
-                showModal={this.modalHandler}
-                btnBlockBoolean={true}/>
-            <AllTable 
+        let ComponentAllTable = 
+            (<AllTable 
                 theadArray={this.state.theaderTable}
                 payloadArray={this.state.elections}
                 consultHandler={this.consultHanlder}
-                deleteHandler={this.deleteElectionHandler}
-                deleteAction={true}/>
+                changeHandler={this.updateModal}
+                deleteChange={true}
+                deleteAction={false}/>)
+        
+        if(this.state.elections.length <= 0)
+            ComponentAllTable = <CardMessage messageTitle="No existen elecciones registradas"/>
+
+        let ElectionContent = this.state.showTable ?
+        <Aux>
+            <InfraHeader 
+                title={`${this.state.selectElectoralEvent} - ${this.props.events.find( event => event.id === this.state.selectElectoralEvent).eventName}`}
+                btnName="Elección"
+                showModal={this.modalHandler}
+                btnBlockBoolean={true}/>
+            {ComponentAllTable}
         </Aux>
         
             :
@@ -202,7 +292,7 @@ class Elections extends Component {
 
         let ElectionComponent = <Spinner/>;
 
-        if( this.props.fetch && this.props.events ){
+        if( this.props.events ){
             ElectionComponent = (
                 <Aux>
                     <SubHeader 
@@ -214,7 +304,8 @@ class Elections extends Component {
                         searchPlaceholder="Código de la Elección"
                         typeInput="drop"
                         onChange={this.handleOnInputSearchChange}
-                        searchValue={this.state.search}/>
+                        searchValue={this.state.search}
+                        updateHandler={this.props.onFetch}/>
                     {ElectionMessage}
                     {ElectionContent}
                     <AllModal
@@ -224,11 +315,14 @@ class Elections extends Component {
                         modalTitile="Crear Elección"
                         enableState={this.state.enableState}
                         modalMessage={this.state.modalMessage}
-                        create={this.state.modalCreateBtn}>
+                        create={this.state.modalCreateBtn}
+                        update={this.state.modalUpdateBtn}
+                        UpdateHandler={this.updateHandler}>
                         <CreateModal 
                             setValue={this.setValue}
                             inputValues={this.state.form}
-                            enableState={this.state.enableState}/>
+                            enableState={this.state.enableState}
+                            UpdateBoolean={this.state.UpdateBoolean}/>
                     </AllModal>
                 </Aux>
             )
@@ -252,8 +346,18 @@ class Elections extends Component {
 const mapStateToProps = state => {
     return{
         fetch: state.central.fetch,
-        events: state.central.events
+        events: state.central.events,
+        isLoading: state.central.isLoading,
+        message: state.central.message
     }
 }
 
-export default connect(mapStateToProps)(Elections);
+const mapDispatchToProps = dispatch => {
+    return {
+        onCreate: (electoralEvent) => dispatch( actions.create(electoralEvent) ),
+        onFetch: () => dispatch( actions.fetch() ),
+        onSetMessage: (message) => dispatch( actions.setMessage(message) )
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Elections);

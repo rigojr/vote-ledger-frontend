@@ -70,17 +70,18 @@ const localSave = ( state, action ) => {
 
     let tempEvents = state.events
     let tempFetch = state.fetch
-    const indexEvents = state.events.findIndex( event => event.id == action.rawEvent.id )
-    const indexFetch = state.fetch.findIndex( fetch => fetch.id == action.rawEvent.id)
+    let indexEvents = state.events.findIndex( event => event.id == action.rawEvent.id )
+    let indexFetch = state.fetch.findIndex( fetch => fetch.id == action.rawEvent.id)
 
     if( indexEvents !== -1 ){
         tempEvents = immutableRemoveItem(state.events,{index:indexEvents})
         tempFetch = immutableRemoveItem(state.fetch,{index:indexFetch})
+    } else {
+        indexEvents = tempEvents.length
+        indexFetch = tempFetch.length
     }
-
     tempEvents = immmutableInsertItem(tempEvents,{index:tempEvents.length,item:data.event})
     tempFetch = immmutableInsertItem(tempFetch,{index:tempFetch.length,item:data.fetch})
-
     return updateObject( state, {
         isLoading: false,
         fetch: tempFetch,
