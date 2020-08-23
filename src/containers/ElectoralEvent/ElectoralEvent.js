@@ -79,8 +79,8 @@ class ElectoralEvent extends Component {
             fechainicio: +new Date(this.state.form.initDate),
             fechafin: +new Date(this.state.form.endDate),
             nombreevento: this.state.form.eventName,
-            election: elections,
-            pollingtable: pollingStations
+            Election: elections,
+            PollingTable: pollingStations
         }
         this.props.onCreate(JSON.stringify(electoralEvent));
     }

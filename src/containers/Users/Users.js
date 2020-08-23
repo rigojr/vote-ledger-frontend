@@ -159,7 +159,6 @@ class User extends Component {
             type: !voteRecord ? this.state.form.type : this.props.fetch.find( user => user.id === this.state.form.id).type
         }
         this.props.onCreateUser(JSON.stringify(user));
-        console.log(user)
     }
 
     createHandler = async () => {

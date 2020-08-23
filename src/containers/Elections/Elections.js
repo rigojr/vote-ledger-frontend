@@ -50,7 +50,7 @@ class Elections extends Component {
 
             electionsTemp.push({
                 id: rawData[key].id,
-                name: key,
+                name: rawData[key].nombre,
                 desc: rawData[key].descripcion,
                 school: rawData[key].escuela,
                 typeElection: rawData[key].tipoeleccion
@@ -140,13 +140,14 @@ class Elections extends Component {
             nombreevento: rawElectoralEvent.eventName,
             Election: {
                 ...rawElectoralEvent.record.elections,
-                [this.state.form.name]: {
+                [this.state.form.id]: {
                     Candidatos: null,
                     descripcion: this.state.form.desc,
                     escuela: this.state.form.school,
                     id: this.state.form.id,
                     maximovotos: this.state.form.typeElection === 'Consejo Universitario' ? '3' : '2',
-                    tipoeleccion: this.state.form.typeElection
+                    tipoeleccion: this.state.form.typeElection,
+                    nombre: this.state.form.name
                 }
             },
             PollingTable: {...rawElectoralEvent.record.pollingStations}
@@ -243,20 +244,11 @@ class Elections extends Component {
             this.setOnCreate(this.props.fetch.find( fetch => fetch.id == this.state.selectElectoralEvent ))
             this.setModalMessage("Enviando información al Blockchain");
             this.setState( { enableState: true, UpdateBoolean: false} );
-            setTimeout(this.cleanModalHandler,3000);
             setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
+            setTimeout( () => this.modalHandler(false,false), 3000 )
         }else{
             alert(`Termine de ingresar los datos`)
         }
-
-        const rawUser = this.props.fetch.find( user => user.id === this.state.form.id)
-        if(this.state.form.password === ''){
-            this.setOnCreate(rawUser.voteRercord, rawUser.password)
-        }else{
-            this.setOnCreate(rawUser.voteRercord, null)
-        }
-        this.cleanModalHandler()
-        this.modalHandler(false,false)
     }
 
     render(){
@@ -276,6 +268,9 @@ class Elections extends Component {
         
         if(this.state.elections.length <= 0)
             ComponentAllTable = <CardMessage messageTitle="No existen elecciones registradas"/>
+
+        if(this.props.isLoading)
+            ComponentAllTable = <Spinner/>
 
         let ElectionContent = this.state.showTable ?
         <Aux>
