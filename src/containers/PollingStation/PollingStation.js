@@ -59,6 +59,7 @@ class PollingStation extends Component {
     }
 
     setOnCreate = (rawElectoralEvent, voters, enable) => {
+        console.log(enable)
         const electoralEvent = {
             id: rawElectoralEvent.id,
             estado: rawElectoralEvent.state,
@@ -77,6 +78,7 @@ class PollingStation extends Component {
             },
             Election: {...rawElectoralEvent.record.elections}
         }
+        console.log(electoralEvent)
         this.props.onCreate(JSON.stringify(electoralEvent));
     }
 
@@ -168,7 +170,7 @@ class PollingStation extends Component {
                     this.state.form.name === ''
                 )
             ){
-                this.setOnCreate(this.props.fetch.find( fetch => fetch.id === this.state.selectElectoralEvent ), 0, 0)
+                this.setOnCreate(this.props.fetch.find( fetch => fetch.id === this.state.selectElectoralEvent ), 0, "0")
                 this.setModalMessage("Enviando información al Blockchain");
                 this.setState( { enableState: true, UpdateBoolean: false } );
                 this.setModalMessage("Guardado con éxito!");
@@ -195,11 +197,19 @@ class PollingStation extends Component {
         this.props.onSetMessage('');
     }
 
-    enablePollingStationHandler = ( payload ) => {
-        const tempRawElectoralEvent = this.props.fetch.find( fetch => fetch.id == payload.id )
+    enablePollingStationHandler = async ( payload ) => {
+        const tempRawElectoralEvent = this.props.fetch.find( fetch => fetch.id === this.state.selectElectoralEvent )
         const tempRawPollingStation = tempRawElectoralEvent.record.pollingStations[payload.id]
-        if( confirm(`La mesa electoral de Id ${payload.id} cambiar su estado a ${!tempRawPollingStation.habilitada ? 'Habilitado': 'Inhabilitado'}. ¿Desea Continuar?`) )
-            this.setOnCreate(tempRawElectoralEvent, tempRawPollingStation.votantes, !tempRawPollingStation.habilitada? 1 : 0)
+        if( confirm(`La mesa electoral de Id ${payload.id} cambiar su estado a ${tempRawPollingStation.habilitada == '0' ? 'Habilitado': 'Inhabilitado'}. ¿Desea Continuar?`) ){
+            await this.setState(
+                {form: {
+                    id: tempRawPollingStation.id,
+                    name: tempRawPollingStation.nombre,
+                    school: tempRawPollingStation.escuela
+                }}
+            )
+            this.setOnCreate(tempRawElectoralEvent, tempRawPollingStation.votantes, tempRawPollingStation.habilitada == '0' ? "1" : "0")
+        }
 
     }
 
