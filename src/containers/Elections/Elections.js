@@ -155,7 +155,7 @@ class Elections extends Component {
         this.props.onCreate(JSON.stringify(electoralEvent));
     }
 
-    createElectionHandler = async () => {
+    createElectionHandler = () => {
         if( this.state.elections.findIndex( election => election.id === this.state.form.id ) === -1 ){
             if(
                 !(

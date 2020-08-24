@@ -12,11 +12,20 @@ const PollingStationCreateModal = ( props ) => (
     <Aux>
         <Row>
             <Form.Group as={Col}>
-                <Form.Label>Código de la Mesa Electoral</Form.Label>
+                <Form.Label>Código</Form.Label>
                 <Form.Control
                     as="input"
                     name="id"
                     value={props.inputValues.id}
+                    onChange={props.setValue}
+                    disabled={props.enableState || props.UpdateBoolean}/>
+            </Form.Group>
+            <Form.Group as={Col}>
+                <Form.Label>Nombre</Form.Label>
+                <Form.Control
+                    as="input"
+                    name="name"
+                    value={props.inputValues.name}
                     onChange={props.setValue}
                     disabled={props.enableState}/>
             </Form.Group>
@@ -25,7 +34,7 @@ const PollingStationCreateModal = ( props ) => (
                     name="school"
                     school={props.inputValues.school}
                     onChange={props.setValue}
-                    disabled={props.enableState}/>
+                    disabled={props.enableState || props.UpdateBoolean}/>
             </Form.Group>
         </Row>
     </Aux>

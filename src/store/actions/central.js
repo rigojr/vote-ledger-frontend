@@ -36,9 +36,7 @@ export const fetch = ( ) => {
             const events = [];
             const jsonData = JSON.parse(response.data.mensaje);
             for( let key in jsonData){
-                console.log(jsonData[key].Record)
                 const data = parseRawData(jsonData[key].Record)
-                console.log(data)
                 fetch.push({...data.fetch})
                 events.push({...data.event})
             }

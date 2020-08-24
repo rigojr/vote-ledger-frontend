@@ -84,7 +84,7 @@ const AllTable = ( props ) => {
                                                                     <Aux>
                                                                     <Dropdown.Item 
                                                                         as="button"
-                                                                        onClick={() => props.enableHandler(payload.id)}>
+                                                                        onClick={() => props.enableHandler(payload)}>
                                                                         Inhabilitar/Habilitar
                                                                     </Dropdown.Item>
                                                                     </Aux>
