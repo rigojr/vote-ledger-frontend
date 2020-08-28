@@ -80,8 +80,8 @@ const localSave = ( state, action ) => {
         indexEvents = tempEvents.length
         indexFetch = tempFetch.length
     }
-    tempEvents = immmutableInsertItem(tempEvents,{index:tempEvents.length,item:data.event})
-    tempFetch = immmutableInsertItem(tempFetch,{index:tempFetch.length,item:data.fetch})
+    tempEvents = immmutableInsertItem(tempEvents,{index:indexEvents,item:data.event})
+    tempFetch = immmutableInsertItem(tempFetch,{index:indexFetch,item:data.fetch})
     return updateObject( state, {
         isLoading: false,
         fetch: tempFetch,

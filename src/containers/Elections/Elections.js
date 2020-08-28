@@ -11,6 +11,7 @@ import CardMessage from '../../components/Layout/CardMessage/CardMessage';
 import InfraHeader from '../../components/Layout/InfraHeader/InfraHeader';
 import * as actions from '../../store/actions/index';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import CandiateModalInput from '../../components/Candidates/CandidatesModalInput/CandidatesModalInput'
 
 class Elections extends Component {
 
@@ -23,6 +24,9 @@ class Elections extends Component {
             name: '',
             school: 'Administración y Contaduría'
         },
+        formCandidates: {
+            id: '',
+        },
         electoralEvents: null,
         selectElectoralEvent: '',
         showModal: false,
@@ -34,7 +38,9 @@ class Elections extends Component {
         enableState: false,
         modalCreateBtn: false,
         modalUpdateBtn: false,
-        UpdateBoolean: false 
+        UpdateBoolean: false,
+        candidateModal: false,
+        selectedElection: {}
     }
 
     componentDidMount () {
@@ -251,7 +257,105 @@ class Elections extends Component {
         }
     }
 
+    setValueCandidates = (e) => {
+        const value = e.target.value;
+        const name = [e.target.name];
+        this.setState( prevState => ({
+            formCandidates: {
+                ...prevState.form,
+                [name]: value 
+            }
+         }));
+    };
+
+    setOnCreateCandidates = (rawElectoralEvent, candidateCI) => {
+        let prevCandidates = rawElectoralEvent.record.elections[this.state.selectedElection.id].Candidatos
+        if(!prevCandidates)
+            prevCandidates = []
+        const candidatesArray = [...prevCandidates]
+        candidatesArray.push({ idusuario: candidateCI, votos: 0})
+        const electoralEvent = {
+            id: rawElectoralEvent.id,
+            estado: rawElectoralEvent.state,
+            fechainicio: +new Date(rawElectoralEvent.initDate),
+            fechafin: +new Date(rawElectoralEvent.endDate),
+            nombreevento: rawElectoralEvent.eventName,
+            Election: {
+                ...rawElectoralEvent.record.elections,
+                [this.state.selectedElection.id]: {
+                    ...this.state.selectedElection,
+                    Candidatos: candidatesArray,
+                }
+            },
+            PollingTable: {...rawElectoralEvent.record.pollingStations}
+        }
+        this.props.onCreate(JSON.stringify(electoralEvent));
+    }
+
+    modalCandidatesHandler = (isShowing) =>{
+        this.setState( prevState => ({
+            ...prevState,
+            candidateModal: isShowing,
+            formCandidates: {
+                id: '',
+            }
+        }))
+    }
+
+    candidatesHandler = (election) => {
+        this.modalCandidatesHandler(true)
+        this.setState( prevState => ({
+            ...prevState,
+            selectedElection: this.props.fetch.find( event => event.id === this.state.selectElectoralEvent).record.elections[election.id]
+        }))
+    }
+
+    setCandidate = () => {
+        if(this.state.formCandidates.id !== ''){
+            const user = this.props.users.find( user => user.id === this.state.formCandidates.id)
+            const rawEvent = this.props.fetch.find( event => event.id === this.state.selectElectoralEvent)
+            const rawCandidates = rawEvent.record.elections[this.state.selectedElection.id].Candidatos
+            if(user){
+                if(rawCandidates && rawCandidates.find( candidato => candidato.idusuario === this.state.formCandidates.id)){
+                    alert(`CI ${this.state.formCandidates.id} ya es un candidato registrado`)
+                }else{
+                    let tempCandidates = this.state.selectedElection.Candidatos
+                    if(!tempCandidates)
+                        tempCandidates = []
+                    this.setOnCreateCandidates(rawEvent,user.id)
+                    tempCandidates.push({ idusuario: this.state.formCandidates.id, votos: 0 })
+                    this.setState( prevState => ({
+                        ...prevState,
+                        selectedElection: {
+                            ...this.state.selectedElection,
+                            Candidatos: tempCandidates
+                        }
+                    }))
+                }
+            }else{
+                alert(`CI ${this.state.formCandidates.id} no es un usuario registrado`)
+            }
+        }else{
+            alert('No deje espacios vacios')
+        }
+    }
+
     render(){
+
+
+
+        const CandidatesModal = 
+        (<AllModal
+            modalBoolean={this.state.candidateModal}
+            showModal={this.modalCandidatesHandler}
+            modalTitile={`Candidatos de la elección ${this.state.selectedElection.id} - ${this.state.selectedElection.nombre}`}>
+                <CandiateModalInput
+                    candidates={this.state.selectedElection.Candidatos}
+                    register={this.setCandidate}
+                    inputValues={this.state.formCandidates}
+                    setValueCandidates={this.setValueCandidates}
+                    users={this.props.users}/>
+        </AllModal>)
 
         let ElectionMessage = this.state.showMessage ?
         <CardMessage messageTitle="Por favor, seleccione un evento electoral para continuar."/> :
@@ -264,7 +368,8 @@ class Elections extends Component {
                 consultHandler={this.consultHanlder}
                 changeHandler={this.updateModal}
                 deleteChange={true}
-                deleteAction={false}/>)
+                deleteAction={false}
+                candidates={this.candidatesHandler}/>)
         
         if(this.state.elections.length <= 0)
             ComponentAllTable = <CardMessage messageTitle="No existen elecciones registradas"/>
@@ -319,6 +424,7 @@ class Elections extends Component {
                             enableState={this.state.enableState}
                             UpdateBoolean={this.state.UpdateBoolean}/>
                     </AllModal>
+                    {CandidatesModal}
                 </Aux>
             )
         }
@@ -343,7 +449,8 @@ const mapStateToProps = state => {
         fetch: state.central.fetch,
         events: state.central.events,
         isLoading: state.central.isLoading,
-        message: state.central.message
+        message: state.central.message,
+        users: state.user.users,
     }
 }
 
