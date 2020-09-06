@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form';
 
 import Aux from '../../../hoc/Aux';
 import SelectOptionsEscuela from '../../Users/UserInputModal/SelectOptionsEscuela/SelectOptionsEscuela'
-
+import SelectOptionsFaculty from '../../Users/UserInputModal/SelectOptionsFaculty/SelectOptionsFaculty'
 
 const ElectionCreateModal = ( props ) => {
 
@@ -23,7 +23,7 @@ const ElectionCreateModal = ( props ) => {
                         </Form.Control>
                     </Aux>)
             case 'Consejo de Facultad':
-                return <SelectOptionsEscuela
+                return <SelectOptionsFaculty
                         school={props.inputValues.school}
                         onChange={props.setValue}
                         disabled={props.enableState}

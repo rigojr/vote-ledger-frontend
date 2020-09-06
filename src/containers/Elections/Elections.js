@@ -139,6 +139,11 @@ class Elections extends Component {
     }
 
     setOnCreate = (rawElectoralEvent) => {
+        const schoolTemp = this.state.form.typeElection === 'Consejo Universitario' ? 'UCAB' 
+        : this.state.form.typeElection === 'Consejo de Facultad' && this.state.form.school === 'Administración y Contaduría' ? 
+        'Ciencias Económicas y Sociales' :
+        (this.state.form.school)
+
         const electoralEvent = {
             id: rawElectoralEvent.id,
             estado: rawElectoralEvent.state,
@@ -150,7 +155,7 @@ class Elections extends Component {
                 [this.state.form.id]: {
                     Candidatos: null,
                     descripcion: this.state.form.desc,
-                    escuela: this.state.form.typeElection === 'Consejo Universitario' ? 'UCAB' : this.state.form.school,
+                    escuela: schoolTemp,
                     id: this.state.form.id,
                     maximovotos: this.state.form.typeElection === 'Consejo Universitario' ? '3' : '2',
                     tipoeleccion: this.state.form.typeElection,
@@ -342,8 +347,6 @@ class Elections extends Component {
     }
 
     render(){
-
-
 
         const CandidatesModal = 
         (<AllModal
