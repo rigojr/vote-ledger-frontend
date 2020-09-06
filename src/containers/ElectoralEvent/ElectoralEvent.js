@@ -190,7 +190,7 @@ class ElectoralEvent extends Component {
         const eventRaw = this.props.fetch.find( event => event.id === payload.id);
         const newIndex = eventStates.indexOf(payload['state']) + 1;
         if( newIndex < eventStates.length){
-            if (confirm(`El Evento Electoral de Id ${payload['id']} cambiara su estado de ${payload['state']} a ${eventStates[newIndex]}. ¿Desea continuar?`)){
+            if (confirm(`El Evento Electoral de Id ${payload['id']} cambiara su estado de ${payload['state']} a ${eventStates[newIndex]}. ${payload['state'] === 'Inscripción' ? 'Por favor, recuerde actualizar el padrón electoral antes de abandonar el proceso de inscripción' : '' }¿Desea continuar?`)){
                 await this.setState(
                     {form: {
                         initDate: new Date(payload['initDate']),

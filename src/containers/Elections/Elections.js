@@ -238,7 +238,6 @@ class Elections extends Component {
     }
 
     updateModal = ( selectElection ) => {
-        console.log(selectElection)
         this.modalHandler( false, true)
         this.setState( prevState => ({
             ...prevState,

@@ -59,7 +59,6 @@ class PollingStation extends Component {
     }
 
     setOnCreate = (rawElectoralEvent, voters, enable) => {
-        console.log(enable)
         const electoralEvent = {
             id: rawElectoralEvent.id,
             estado: rawElectoralEvent.state,
@@ -78,7 +77,6 @@ class PollingStation extends Component {
             },
             Election: {...rawElectoralEvent.record.elections}
         }
-        console.log(electoralEvent)
         this.props.onCreate(JSON.stringify(electoralEvent));
     }
 
