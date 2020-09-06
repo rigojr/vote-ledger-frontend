@@ -22,7 +22,8 @@ class Elections extends Component {
             typeElection: 'Consejo Universitario',
             desc: '',
             name: '',
-            school: 'Administración y Contaduría'
+            school: 'Administración y Contaduría',
+            faculty: 'Ciencias Económicas y Sociales'
         },
         formCandidates: {
             id: '',
@@ -96,7 +97,8 @@ class Elections extends Component {
                                 typeElection: search['typeElection'],
                                 desc: search['desc'],
                                 name: search['name'],
-                                school: search['school']
+                                school: search['school'],
+                                faculty: search['school']
                             },
                             search: ''
                         } );
@@ -139,10 +141,9 @@ class Elections extends Component {
     }
 
     setOnCreate = (rawElectoralEvent) => {
-        const schoolTemp = this.state.form.typeElection === 'Consejo Universitario' ? 'UCAB' 
-        : this.state.form.typeElection === 'Consejo de Facultad' && this.state.form.school === 'Administración y Contaduría' ? 
-        'Ciencias Económicas y Sociales' :
-        (this.state.form.school)
+        const orgTemp = this.state.form.typeElection === 'Consejo Universitario' ? 'UCAB' 
+        : this.state.form.typeElection === 'Consejo de Facultad' ? this.state.form.faculty
+        : this.state.form.school
 
         const electoralEvent = {
             id: rawElectoralEvent.id,
@@ -155,7 +156,7 @@ class Elections extends Component {
                 [this.state.form.id]: {
                     Candidatos: null,
                     descripcion: this.state.form.desc,
-                    escuela: schoolTemp,
+                    escuela: orgTemp,
                     id: this.state.form.id,
                     maximovotos: this.state.form.typeElection === 'Consejo Universitario' ? '3' : '2',
                     tipoeleccion: this.state.form.typeElection,
@@ -165,7 +166,7 @@ class Elections extends Component {
             PollingTable: {...rawElectoralEvent.record.pollingStations}
         }
         this.props.onCreate(JSON.stringify(electoralEvent));
-    }
+        }
 
     createElectionHandler = () => {
         if( this.state.elections.findIndex( election => election.id === this.state.form.id ) === -1 ){
@@ -201,7 +202,8 @@ class Elections extends Component {
                     typeElection: select['typeElection'],
                     desc: select['desc'],
                     name: select['name'],
-                    school: select['school']
+                    school: select['school'],
+                    faculty: select['school']
             }}
         )
     }
@@ -230,18 +232,21 @@ class Elections extends Component {
                 desc: '',
                 name: '',
                 school: 'Administración y Contaduría',
+                faculty: 'Ciencias Económicas y Sociales'
             }
         } );
     }
 
     updateModal = ( selectElection ) => {
+        console.log(selectElection)
         this.modalHandler( false, true)
         this.setState( prevState => ({
             ...prevState,
             UpdateBoolean: true,
             enableState: false,
             form: {
-                ...selectElection
+                ...selectElection,
+                faculty: selectElection['school']
             }
         }))
     }

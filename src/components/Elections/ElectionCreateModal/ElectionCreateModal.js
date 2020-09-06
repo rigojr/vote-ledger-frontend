@@ -22,16 +22,16 @@ const ElectionCreateModal = ( props ) => {
                                 <option>UCAB</option>
                         </Form.Control>
                     </Aux>)
-            case 'Consejo de Facultad':
+            case 'Consejo de Facultad':        
                 return <SelectOptionsFaculty
-                        school={props.inputValues.school}
+                        faculty={props.inputValues.faculty}
                         onChange={props.setValue}
-                        disabled={props.enableState}
-                        name="school"/>
+                        disabled={props.enableState || props.UpdateBoolean}
+                        name="faculty"/>
             default:
                 return <SelectOptionsEscuela
                         school={props.inputValues.school}
-                        onChange={props.setValue || props.UpdateBoolean}
+                        onChange={props.setValue}
                         disabled={props.enableState || props.UpdateBoolean}
                         name="school"/>
         }

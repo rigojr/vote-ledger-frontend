@@ -9,7 +9,7 @@ const SelectOptionsFaculty = ( props ) => (
         <Form.Label>Facultad</Form.Label>
         <Form.Control 
             as="select"
-            value={props.school}
+            value={props.faculty}
             onChange={props.onChange}
             disabled={props.disabled}
             name={props.name}>
