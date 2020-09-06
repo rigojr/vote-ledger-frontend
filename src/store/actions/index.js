@@ -8,3 +8,7 @@ export {
     create,
     setMessage,
 } from './central';
+
+export {
+    login
+} from './login'

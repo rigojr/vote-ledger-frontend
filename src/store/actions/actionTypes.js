@@ -21,3 +21,9 @@ export const CREATE = 'CREATE';
 export const LOCAL_SAVE = 'LOCAL_SAVE';
 
 export const SET_MESSAGE = "SET_MESSAGE";
+
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS"
+export const LOGIN_ERROR = "LOGIN_ERROR";
+export const LOGIN_START = "LOGIN_START";
+export const LOGIN_FAIL = "LOGIN_FAIL";
+export const LOGIN = "LOGIN";
