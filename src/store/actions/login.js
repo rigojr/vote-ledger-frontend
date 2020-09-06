@@ -36,12 +36,10 @@ export const login = ( ci, password, userInfo ) => {
             passwordHash: password
         })
         .then( response => {
-            console.log(response)
-            dispatch( loginSuccess( userInfo ) )
-            /* if( response === "ValidLogin" )
+            if( response.data.mensaje === "ValidLogin" )
                 dispatch( loginSuccess( userInfo ) )
             else 
-                dispatch( loginFail() ) */
+                dispatch( loginFail() )
         })
         .catch( error => dispatch( loginError(error) ))
     }

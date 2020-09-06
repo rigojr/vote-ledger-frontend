@@ -49,6 +49,8 @@ export const compareValues = (key, order = 'asc') => {
         endDate: tempEndDate.toString(),
     };
 
+    console.log(rawEvent.Election)
+
     const fetchTemp = {
         ...eventsTemp,
         record: {

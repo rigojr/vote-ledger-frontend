@@ -31,7 +31,7 @@ class Elections extends Component {
         selectElectoralEvent: '',
         showModal: false,
         search: '',
-        theaderTable: ["Código","Nombre","Descripción", "Escuela", "Tipo", ""],
+        theaderTable: ["Código","Nombre","Descripción", "Organización", "Tipo", ""],
         showMessage: true,
         showTable: false,
         modalMessage: '',
@@ -135,6 +135,7 @@ class Elections extends Component {
             modalCreateBtn: create,
             modalUpdateBtn: update
         } );
+        this.props.onSetMessage('')
     }
 
     setOnCreate = (rawElectoralEvent) => {
@@ -149,7 +150,7 @@ class Elections extends Component {
                 [this.state.form.id]: {
                     Candidatos: null,
                     descripcion: this.state.form.desc,
-                    escuela: this.state.form.school,
+                    escuela: this.state.form.typeElection === 'Consejo Universitario' ? 'UCAB' : this.state.form.school,
                     id: this.state.form.id,
                     maximovotos: this.state.form.typeElection === 'Consejo Universitario' ? '3' : '2',
                     tipoeleccion: this.state.form.typeElection,
@@ -175,6 +176,7 @@ class Elections extends Component {
                 this.setModalMessage("Enviando información al Blockchain");
                 this.setState( { enableState: true, UpdateBoolean: false} );
                 setTimeout(this.cleanModalHandler,3000);
+                setTimeout(() => this.modalHandler( false, false ),3000);
                 setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
             }else{
                 alert(`Termine de ingresar los datos`)
@@ -248,7 +250,6 @@ class Elections extends Component {
             )
         ){
             this.setOnCreate(this.props.fetch.find( fetch => fetch.id == this.state.selectElectoralEvent ))
-            this.setModalMessage("Enviando información al Blockchain");
             this.setState( { enableState: true, UpdateBoolean: false} );
             setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
             setTimeout( () => this.modalHandler(false,false), 3000 )
@@ -414,7 +415,7 @@ class Elections extends Component {
                         createHandler={this.createElectionHandler}
                         modalTitile="Crear Elección"
                         enableState={this.state.enableState}
-                        modalMessage={this.state.modalMessage}
+                        modalMessage={this.props.message}
                         create={this.state.modalCreateBtn}
                         update={this.state.modalUpdateBtn}
                         UpdateHandler={this.updateHandler}>
