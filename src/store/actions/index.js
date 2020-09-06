@@ -10,5 +10,6 @@ export {
 } from './central';
 
 export {
-    login
+    login,
+    logout
 } from './login'

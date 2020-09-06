@@ -37,11 +37,18 @@ export const login = ( ci, password, userInfo ) => {
         })
         .then( response => {
             console.log(response)
-            if( response === "ValidLogin" )
+            dispatch( loginSuccess( userInfo ) )
+            /* if( response === "ValidLogin" )
                 dispatch( loginSuccess( userInfo ) )
             else 
-                dispatch( loginFail() )
+                dispatch( loginFail() ) */
         })
         .catch( error => dispatch( loginError(error) ))
     }
+}
+
+export const logout = () => {
+    return ({
+        type: actionTypes.LOGOUT
+    })
 }

@@ -3,9 +3,9 @@ import * as actionTypes from '../actions/actionTypes'
 
 const initialState = {
     userProfile: { },
-    isDemo: false,
     isLoading: false,
     failMessage: '',
+    authenticated: false,
 }
 
 const loginStart = (state, action) => {
@@ -20,6 +20,7 @@ const loginSuccess = (state, action) => {
         userProfile: {...action.userInfo},
         isLoading: false,
         failMessage: '',
+        authenticated: true,
     })
 }
 
@@ -41,6 +42,15 @@ const loginFail = (state, action) => {
     })
 }
 
+const logout = (state, action) => {
+    return updateObject( state, {
+        userProfile: { },
+        isLoading: false,
+        failMessage: '',
+        authenticated: false,
+    })
+}
+
 const reducer = ( state = initialState, action ) => {
     switch (action.type) {
         case actionTypes.LOGIN_START:
@@ -51,6 +61,8 @@ const reducer = ( state = initialState, action ) => {
             return loginError( state, action )
         case actionTypes.LOGIN_FAIL:
             return loginFail( state, action )
+        case actionTypes.LOGOUT:
+            return logout( state, action )
         default: return state
     }
 }

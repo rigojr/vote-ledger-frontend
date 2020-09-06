@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom';
 
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
@@ -43,8 +44,6 @@ class Login extends Component {
                     sha256(this.state.form.password),  
                     user
                     )
-                this.props.authHandler();
-                this.props.history.push( '/dashboard/' );
             } else {
                 alert('El usuario no existe en el sistema, valide los datos ingresados.')
             }
@@ -113,6 +112,11 @@ class Login extends Component {
                 </Card>
         )
 
+        let redirectDashBoard = null
+
+        if ( this.props.authenticated )
+            redirectDashBoard = <Redirect to="/dashboard"/>
+
         if ( this.props.isLoading )
             LoginContainer = <Spinner/>
 
@@ -126,6 +130,7 @@ class Login extends Component {
                 {
                     this.props.isLoggin ? <Spinner /> : null
                 }
+                {redirectDashBoard}
             </Aux>
         )
     }
@@ -137,7 +142,8 @@ const mapStateToProps = state => {
         isLoading: state.user.isLoading,
         users: state.user.users,
         isLoggin: state.login.isLoading,
-        failMessage: state.login.failMessage
+        failMessage: state.login.failMessage,
+        authenticated: state.login.authenticated
     }
 }
 

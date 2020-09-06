@@ -50,25 +50,16 @@ const header = ( props ) => (
                         </Link>
                     </Dropdown.Item>
                     
-                    <Dropdown.Item as="button">
-                        <Link 
-                            to="/candidates" 
-                            className={styles.NavLink}>
-                            Candidatos
-                        </Link>
-                    </Dropdown.Item>
-                    
                     <div className="dropdown-divider"></div>
                     <Dropdown.Item as="button">
                         <Link 
                             to="/login" 
-                            onClick={props.authHandler} 
+                            onClick={props.logout} 
                             className={styles.NavLink}>
                                 Cerrar Sesión
                         </Link>
                     </Dropdown.Item>
                 </DropdownButton>
-
             </Nav>
         </Navbar>
     </header>

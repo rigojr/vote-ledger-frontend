@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 
 import Aux from '../../hoc/Aux';
 import Header from './Header/Header';
 import Footer from './Footer/Footer'
+import * as actions from '../../store/actions/index'
+
 
 class Layout extends Component {
     
@@ -11,7 +14,7 @@ class Layout extends Component {
         let HeaderComponent = this.props.isAuthed ? 
             <Header 
                 userName={this.props.userName}
-                authHandler={this.props.authHandler}/> : null;
+                logout={this.props.onLogout}/> : null;
 
         return(
             
@@ -27,4 +30,10 @@ class Layout extends Component {
 
 }
 
-export default Layout;
+const mapDispatchToProps = dispatch => {
+    return {
+        onLogout: () => dispatch( actions.logout())
+    }
+}
+
+export default connect(null,mapDispatchToProps)(Layout);
