@@ -141,7 +141,7 @@ class User extends Component {
         this.setState(  { modalMessage: message} );
     }
 
-    setOnCreate = ( voteRecord, oldPassword) => {
+    setOnCreate = ( voteRecord, oldPassword, status) => {
         let password
         if(!oldPassword){
             password = sha256(this.state.form.password)
@@ -156,7 +156,8 @@ class User extends Component {
             email: this.state.form.email,
             password,
             HistorialVotos: voteRecord,
-            type: !voteRecord ? this.state.form.type : this.props.fetch.find( user => user.id === this.state.form.id).type
+            type: !voteRecord ? this.state.form.type : this.props.fetch.find( user => user.id === this.state.form.id).type,
+            status: status
         }
         this.props.onCreateUser(JSON.stringify(user));
     }
@@ -178,7 +179,7 @@ class User extends Component {
                 this.setModalMessage("Enviando información al Blockchain");
                 this.setEnableInput( true );
                 this.setEnableInputTypeOf( true );
-                this.setOnCreate(null, null);
+                this.setOnCreate(null, null, "1");
                 setTimeout(this.cleanModalHandler,3000);
             } else {
                 alert(`Termine de ingresar los datos`)
@@ -231,9 +232,9 @@ class User extends Component {
     updateHandler = () => {
         const rawUser = this.props.fetch.find( user => user.id === this.state.form.id)
         if(this.state.form.password === ''){
-            this.setOnCreate(rawUser.voteRercord, rawUser.password)
+            this.setOnCreate(rawUser.voteRercord, rawUser.password, rawUser.status)
         }else{
-            this.setOnCreate(rawUser.voteRercord, null)
+            this.setOnCreate(rawUser.voteRercord, null, rawUser.status)
         }
         this.cleanModalHandler()
         this.modalHandler(false,false)
@@ -293,6 +294,23 @@ class User extends Component {
         this.setState({ search } );
     };
 
+    enableUserHandler = async (payload) => {
+        const tempRawUser = this.props.fetch.find( fetch => fetch.id === payload.id )
+        if( confirm(`El usuario de CI ${payload.id} cambiará su estado a ${tempRawUser.status === '0' ? 'Habilitado': 'Inhabilitado'}. ¿Desea Continuar?`) ){
+            await this.setState(
+                {form: {
+                    id: tempRawUser.id,
+                    name: tempRawUser.name,
+                    faculty: tempRawUser.faculty,
+                    school: tempRawUser.school,
+                    email: tempRawUser.email,
+                    type: tempRawUser.type
+                }}
+            )
+            this.setOnCreate(tempRawUser.voteRecord, tempRawUser.password, tempRawUser.status === '0' ? '1': '0')
+        }
+    }
+
     render(){
 
         let RedirectComponent = this.props.isAuthed ?
@@ -310,7 +328,9 @@ class User extends Component {
                     consultHandler={this.consultModal}
                     changeHandler={this.updateModal}
                     deleteAction={false}
-                    deleteChange={true}/>
+                    deleteChange={true}
+                    pollingStation={true}
+                    enableHandler={this.enableUserHandler}/>
             );
         }
 
