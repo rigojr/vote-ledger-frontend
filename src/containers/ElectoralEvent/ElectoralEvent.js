@@ -244,7 +244,7 @@ class ElectoralEvent extends Component {
                     showModal={this.modalHandler}
                     modalBoolean={this.state.showModal}
                     createHandler={this.createHandler}
-                    modalTitile="Crear Evento Electoral"
+                    modalTitile="Evento Electoral"
                     create={this.state.modalCreateBtn}
                     enableState={this.state.enableState}
                     modalMessage={this.props.message}>

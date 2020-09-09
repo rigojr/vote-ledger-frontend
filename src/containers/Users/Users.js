@@ -36,7 +36,7 @@ class User extends Component {
             search: '',
             inputEnable: false,
             inputTypeOfUser: false,
-            modalTitle: '',
+            modalTitle: 'Usuario',
             modalCreateBtn: false,
             modalUpdateBtn: false,
             selectedTypeOfUser: true

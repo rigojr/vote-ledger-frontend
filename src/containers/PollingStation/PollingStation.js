@@ -328,7 +328,7 @@ class PollingStation extends Component {
                         showModal={this.modalHandler}
                         modalBoolean={this.state.showModal}
                         createHandler={this.createHandler}
-                        modalTitile="Crear Mesa Electoral"
+                        modalTitile="Mesa Electoral"
                         create={this.state.modalCreateBtn}
                         enableState={this.state.enableState}
                         modalMessage={this.props.message}
