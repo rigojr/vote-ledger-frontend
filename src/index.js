@@ -22,7 +22,7 @@ const rootReducer = combineReducers({
 });
 
 const store = createStore( rootReducer, composeEnhancers( applyMiddleware( thunk ) ) );
-3
+
 ReactDOM.render(
   <BrowserRouter>
     <React.StrictMode>

@@ -296,7 +296,7 @@ class User extends Component {
 
     enableUserHandler = async (payload) => {
         const tempRawUser = this.props.fetch.find( fetch => fetch.id === payload.id )
-        if( confirm(`El usuario de CI ${payload.id} cambiará su estado a ${tempRawUser.status === '0' ? 'Habilitado': 'Inhabilitado'}. ¿Desea Continuar?`) ){
+        if( confirm(`El usuario de CI ${payload.id} cambiará su estado a ${tempRawUser.status === '0' ? 'Habilitado': 'Inhabilitado'}. ¿Desea Continuar?`) ){ // eslint-disable-line no-eval
             await this.setState(
                 {form: {
                     id: tempRawUser.id,

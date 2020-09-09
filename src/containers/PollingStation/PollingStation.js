@@ -198,7 +198,7 @@ class PollingStation extends Component {
     enablePollingStationHandler = async ( payload ) => {
         const tempRawElectoralEvent = this.props.fetch.find( fetch => fetch.id === this.state.selectElectoralEvent )
         const tempRawPollingStation = tempRawElectoralEvent.record.pollingStations[payload.id]
-        if( confirm(`La mesa electoral de Id ${payload.id} cambiar su estado a ${tempRawPollingStation.habilitada == '0' ? 'Habilitado': 'Inhabilitado'}. ¿Desea Continuar?`) ){
+        if( confirm(`La mesa electoral de Id ${payload.id} cambiar su estado a ${tempRawPollingStation.habilitada == '0' ? 'Habilitado': 'Inhabilitado'}. ¿Desea Continuar?`) ){ // eslint-disable-line no-eval
             await this.setState(
                 {form: {
                     id: tempRawPollingStation.id,
