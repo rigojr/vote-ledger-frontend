@@ -52,7 +52,19 @@ const subheader = ( props ) => {
                             <img 
                                 src={process.env.PUBLIC_URL + '/refresh.png'}
                                 className={styles.RefreshIcon}
-                                onClick={ () => props.updateHandler() }/>
+                                onClick={ () => props.updateHandler() }
+                                alt="Refrescar"
+                                title="Refrescar"/>
+                            {
+                                props.batchModal 
+                                ?
+                                <img 
+                                    src={process.env.PUBLIC_URL + 'upload.png'}
+                                    className={styles.RefreshIcon}
+                                    onClick={ () => props.batchModal() }
+                                    alt="Carga en lote de usuarios"
+                                    title="Carga en lote de usuarios"/> : null
+                            }
                         </Row>
                     </Container>
                 </Col>

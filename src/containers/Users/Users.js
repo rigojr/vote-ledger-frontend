@@ -3,10 +3,10 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Aux from '../../hoc/Aux';
-import axios from '../../axios';
 import { sha256 } from 'js-sha256'
 import SubHeader from '../../components/Layout/Subheader/Subheader';
 import ContentModal from '../../components/Users/UserInputModal/UserInputModal';
+import ContentBatchModal from '../../components/Users/UserBatchModal/UserBatchModal';
 import AllTable from '../../components/Layout/AllTable/AllTable';
 import AllModal from '../../components/Layout/Modal/AllModal';
 import Spinner from '../../components/UI/Spinner/Spinner';
@@ -39,7 +39,8 @@ class User extends Component {
             modalTitle: 'Usuario',
             modalCreateBtn: false,
             modalUpdateBtn: false,
-            selectedTypeOfUser: true
+            selectedTypeOfUser: true,
+            isBatchModal: false,
         };
     }
 
@@ -311,6 +312,13 @@ class User extends Component {
         }
     }
 
+    batchModal = () => {
+        this.setState( prevState => ({
+            ...prevState,
+            isBatchModal: !prevState.isBatchModal
+        }))
+    }
+
     render(){
 
         let RedirectComponent = this.props.isAuthed ?
@@ -345,7 +353,8 @@ class User extends Component {
                     searchHandler={this.searchHandler}
                     showModal={this.createModal}
                     onChange={this.handleOnInputSearchChange}
-                    updateHandler={this.props.onFetchUsers}/>
+                    updateHandler={this.props.onFetchUsers}
+                    batchModal={this.batchModal}/>
                 {UsersTableComponent}
                 <AllModal
                     showModal={this.modalHandler}
@@ -364,6 +373,13 @@ class User extends Component {
                         typeOfUser={this.state.selectedTypeOfUser}
                         inputTypeOfUser={this.state.inputTypeOfUser}
                         tagLabel={this.setLabel}/>
+                </AllModal>
+                <AllModal
+                    showModal={this.batchModal}
+                    modalBoolean={this.state.isBatchModal}
+                    modalTitile="Proceso en lote"
+                    small>
+                        <ContentBatchModal />
                 </AllModal>
                 {RedirectComponent}
             </Aux>

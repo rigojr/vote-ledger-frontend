@@ -9,7 +9,7 @@ const AllModal = ( props ) => (
     <Modal 
         show={props.modalBoolean}
         onHide={ () => props.showModal(false, false)}
-        size="lg"
+        size={ props.small ? "sm" : "lg"}
         aria-labelledby="contained-modal-title-vcenter"
         centered
         animation={false}>
