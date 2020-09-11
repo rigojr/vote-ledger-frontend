@@ -103,6 +103,7 @@ class User extends Component {
                 break;
         }
         this.setState( prevState => ({ form: {...prevState.form, faculty}}));
+        return faculty
     }
 
 
@@ -152,7 +153,7 @@ class User extends Component {
         const user = {
             id: this.state.form.id,
             nombre: this.state.form.name,
-            facultad: this.state.form.faculty,
+            facultad: this.setFaculty(this.state.form.school),
             escuela: this.state.form.school,
             email: this.state.form.email,
             password,
@@ -319,6 +320,27 @@ class User extends Component {
         }))
     }
 
+    batchProcessHandler = (data, fileInfo) => {
+        delete data[0]
+        Object.keys(data).forEach(index => {
+        
+        const doesUserExist = this.props.fetch.find( user => user.id === data[index][0])
+        
+        const user = {
+            id: doesUserExist ? doesUserExist.id : data[index][0],
+            nombre: data[index][1],
+            facultad: this.setFaculty(data[index][2]),
+            escuela: data[index][2],
+            email: data[index][3],
+            password: sha256(data[index][4]),
+            HistorialVotos: doesUserExist ? doesUserExist.voteRecord : null,
+            type: doesUserExist ? doesUserExist.type : 'elector',
+            status: data[index][5]
+        }
+        this.props.onCreateUser(JSON.stringify(user));
+        });   
+    }
+
     render(){
 
         let RedirectComponent = this.props.isAuthed ?
@@ -379,7 +401,8 @@ class User extends Component {
                     modalBoolean={this.state.isBatchModal}
                     modalTitile="Proceso en lote"
                     small>
-                        <ContentBatchModal />
+                        <ContentBatchModal 
+                            initBatchProcess={this.batchProcessHandler}/>
                 </AllModal>
                 {RedirectComponent}
             </Aux>
