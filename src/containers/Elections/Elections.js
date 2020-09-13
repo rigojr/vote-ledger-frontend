@@ -374,7 +374,7 @@ class Elections extends Component {
         (<AllModal
             modalBoolean={this.state.candidateModal}
             showModal={this.modalCandidatesHandler}
-            modalTitile={`Candidatos de la elección ${this.state.selectedElection.id} - ${this.state.selectedElection.nombre}`}>
+            modalTitile={`Candidatos de la elección ${this.state.selectedElection.id} - ${this.state.selectedElection.nombre} - ${this.state.selectedElection.tipoeleccion}`}>
                 <CandiateModalInput
                     candidates={this.state.selectedElection.Candidatos}
                     register={this.setCandidate}
