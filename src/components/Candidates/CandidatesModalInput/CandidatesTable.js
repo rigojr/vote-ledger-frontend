@@ -32,6 +32,7 @@ const CandidatesTable = ( props ) => (
                             <th>Nombre</th>
                             <th>Facultad</th>
                             <th>Escuela</th>
+                            <th>Organización/es</th>
                         </tr>
                     </thead>
                     <tbody
@@ -46,6 +47,10 @@ const CandidatesTable = ( props ) => (
                                         <td>{tempUser.name}</td>
                                         <td>{tempUser.faculty}</td>
                                         <td>{tempUser.school}</td>
+                                        <td>{candidate.organizacion ? 
+                                            <ul> {candidate.organizacion.map( org => <li key={org}>{org}</li>) } </ul>
+                                            : "error"}
+                                        </td>
                                     </tr>
                                 )
                             }

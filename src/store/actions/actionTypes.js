@@ -28,3 +28,14 @@ export const LOGIN_START = "LOGIN_START";
 export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGIN = "LOGIN";
 export const LOGOUT = "LOGOUT";
+
+export const FETCH_ORG_SUCCESS = "FETCH_ORG_SUCCESS";
+export const FETCH_ORG_ERROR = "FETCH_ORG_ERROR";
+export const FETCH_ORG_START = "FETCH_ORG_START";
+export const FETCH_ORG = "FETCH_ORG";
+export const SHOW_ORG_MODAL = "SHOW_ORG_MODAL";
+
+export const CREATE_ORG_SUCCESS = "CREATE_ORG_SUCCESS";
+export const CREATE_ORG_ERROR = "CREATE_ORG_ERROR";
+export const CREATE_ORG_START = "CREATE_ORG_START";
+export const CREATE_ORG = "CREATE_ORG";

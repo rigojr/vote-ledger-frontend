@@ -5,8 +5,13 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
+import styled from 'styled-components'
 
 import styles from './Header.module.css'
+
+const SpecialAnchor = styled.a`
+    color: rgba(0,0,0,.5) !important;
+`
 
 const header = ( props ) => (
 
@@ -48,6 +53,13 @@ const header = ( props ) => (
                             className={styles.NavLink}>
                                 Mesas Electorales
                         </Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item as="button">
+                        <SpecialAnchor 
+                            className={styles.NavLink}
+                            onClick={ () => props.orgModalHandler() }>
+                                Organizaciones
+                        </SpecialAnchor>
                     </Dropdown.Item>
                     
                     <div className="dropdown-divider"></div>

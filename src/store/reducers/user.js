@@ -1,3 +1,4 @@
+import { faSmileBeam } from '@fortawesome/free-solid-svg-icons';
 import * as actionTypes from '../actions/actionTypes';
 import { updateObject, parseRawDataUser, immmutableInsertItem, immutableRemoveItem } from '../utility';
 
@@ -6,7 +7,9 @@ const initialState = {
     users: [],
     isLoading: false,
     error: null,
-    message:''
+    message:'',
+    electoralOrg: [],
+    isOrgModal: false,
 }
 
 const fetchUserStart = ( state, action ) => {
@@ -86,6 +89,59 @@ const localSaveUser = ( state, action ) => {
     })
 }
 
+const fetchOrgStart = ( state, action ) => {
+    return updateObject( state, {
+        isLoading: true,
+        message: 'Recibiendo Información de las organizaciones '
+    })
+}
+
+const fetchOrgError = ( state, action ) => {
+    return updateObject( state, {
+        isLoading: false,
+        error: {
+            ...action.error,
+            customMessage: "Error al recibir las organizaciones "
+        },
+        message: 'Hubo un error al guardar la información'
+    } )
+}
+
+const fetchOrgSuccess = ( state, action ) => {
+    return updateObject( state, {
+        isLoading: false,
+        electoralOrg: action.electoralOrganizations
+    })
+}
+
+const createOrgStart = ( state, action ) => {
+    return updateObject( state, {
+        isLoading: true
+    } )
+}
+
+const createOrgSuccess = ( state, action ) => {
+    return updateObject( state, {
+        isLoading: false,
+        electoralOrg: immmutableInsertItem( state.electoralOrg,
+            {
+                index: state.electoralOrg.length,
+                item: action.electoralOrg
+            })
+    })
+}
+
+const createOrgError = ( state, action ) => {
+    return updateObject( state, {
+        isLoading: false,
+        error: {
+            ...action.error,
+            customMessage: "Error al recibir las organizaciones "
+        },
+        message: 'Hubo un error al guardar la información'
+    } )
+}
+
 const reducer = ( state = initialState, action) => {
     switch (action.type){
         case actionTypes.FETCH_USERS_START:
@@ -104,6 +160,20 @@ const reducer = ( state = initialState, action) => {
             return setMessage( state, action )
         case actionTypes.LOCAL_SAVE_USER:
             return localSaveUser( state, action)
+        case actionTypes.FETCH_ORG_SUCCESS:
+            return fetchOrgSuccess( state, action )
+        case actionTypes.FETCH_ORG_ERROR:
+            return fetchOrgError( state, action )
+        case actionTypes.FETCH_ORG_START:
+            return fetchOrgStart( state, action)
+        case actionTypes.SHOW_ORG_MODAL:
+            return updateObject( state, { isOrgModal: !state.isOrgModal, message: ''} )
+        case actionTypes.CREATE_ORG_START:
+            return createOrgStart( state, action )
+        case actionTypes.CREATE_ORG_SUCCESS:
+            return createOrgSuccess( state, action )
+        case actionTypes.CREATE_ORG_ERROR:
+            return createOrgError( state, action )
         default: return state
     }
 }

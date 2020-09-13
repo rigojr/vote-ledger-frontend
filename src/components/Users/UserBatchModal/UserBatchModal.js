@@ -4,7 +4,6 @@ import CSVReader from 'react-csv-reader'
 import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
 
 import Aux from '../../../hoc/Aux';
 

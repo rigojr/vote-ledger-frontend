@@ -27,6 +27,7 @@ class Elections extends Component {
         },
         formCandidates: {
             id: '',
+            electoralOrg: []
         },
         electoralEvents: null,
         selectElectoralEvent: '',
@@ -45,7 +46,7 @@ class Elections extends Component {
     }
 
     componentDidMount () {
-
+        this.props.onFetchOrg()
     }
 
     setLocalElections (ElectoralEvent) {
@@ -271,8 +272,9 @@ class Elections extends Component {
         const value = e.target.value;
         const name = [e.target.name];
         this.setState( prevState => ({
+            ...prevState,
             formCandidates: {
-                ...prevState.form,
+                ...prevState.formCandidates,
                 [name]: value 
             }
          }));
@@ -283,7 +285,7 @@ class Elections extends Component {
         if(!prevCandidates)
             prevCandidates = []
         const candidatesArray = [...prevCandidates]
-        candidatesArray.push({ idusuario: candidateCI, votos: 0})
+        candidatesArray.push({ idusuario: candidateCI, votos: 0, organizacion: [...this.state.formCandidates.electoralOrg]})
         const electoralEvent = {
             id: rawElectoralEvent.id,
             estado: rawElectoralEvent.state,
@@ -308,6 +310,7 @@ class Elections extends Component {
             candidateModal: isShowing,
             formCandidates: {
                 id: '',
+                electoralOrg: []
             }
         }))
     }
@@ -320,8 +323,18 @@ class Elections extends Component {
         }))
     }
 
+    setValueElectoralOrg = (electoralOrg) => {
+        this.setState( prevState => ({
+            ...prevState,
+            formCandidates: {
+                ...prevState.formCandidates,
+                electoralOrg: electoralOrg
+            }
+        }))
+    }
+
     setCandidate = () => {
-        if(this.state.formCandidates.id !== ''){
+        if(this.state.formCandidates.id !== '' && this.state.formCandidates.electoralOrg.length > 0){
             const user = this.props.users.find( user => user.id === this.state.formCandidates.id)
             const rawEvent = this.props.fetch.find( event => event.id === this.state.selectElectoralEvent)
             const rawCandidates = rawEvent.record.elections[this.state.selectedElection.id].Candidatos
@@ -333,12 +346,16 @@ class Elections extends Component {
                     if(!tempCandidates)
                         tempCandidates = []
                     this.setOnCreateCandidates(rawEvent,user.id)
-                    tempCandidates.push({ idusuario: this.state.formCandidates.id, votos: 0 })
+                    tempCandidates.push({ idusuario: this.state.formCandidates.id, votos: 0, organizacion: this.state.formCandidates.electoralOrg})
                     this.setState( prevState => ({
                         ...prevState,
                         selectedElection: {
                             ...this.state.selectedElection,
                             Candidatos: tempCandidates
+                        },
+                        formCandidates: {
+                            ...prevState.formCandidates,
+                            id: '',
                         }
                     }))
                 }
@@ -346,9 +363,10 @@ class Elections extends Component {
                 alert(`CI ${this.state.formCandidates.id} no es un usuario registrado`)
             }
         }else{
-            alert('No deje espacios vacios')
+            alert('No deje espacios vacios/Seleccione una Organización Electoral')
         }
     }
+
 
     render(){
 
@@ -362,7 +380,9 @@ class Elections extends Component {
                     register={this.setCandidate}
                     inputValues={this.state.formCandidates}
                     setValueCandidates={this.setValueCandidates}
-                    users={this.props.users}/>
+                    users={this.props.users}
+                    electoralOrg={this.props.electoralOrg}
+                    setElectoralOrg={this.setValueElectoralOrg}/>
         </AllModal>)
 
         let ElectionMessage = this.state.showMessage ?
@@ -459,6 +479,7 @@ const mapStateToProps = state => {
         isLoading: state.central.isLoading,
         message: state.central.message,
         users: state.user.users,
+        electoralOrg: state.user.electoralOrg
     }
 }
 
@@ -466,7 +487,8 @@ const mapDispatchToProps = dispatch => {
     return {
         onCreate: (electoralEvent) => dispatch( actions.create(electoralEvent) ),
         onFetch: () => dispatch( actions.fetch() ),
-        onSetMessage: (message) => dispatch( actions.setMessage(message) )
+        onSetMessage: (message) => dispatch( actions.setMessage(message) ),
+        onFetchOrg: () => dispatch( actions.fetchOrg() )
     }
 }
 

@@ -83,3 +83,75 @@ export const createUser = ( user ) => {
         .catch( error => createUserError(error))
     }
 }
+
+export const fetchOrgStart = () => {
+    return({
+        type: actionTypes.FETCH_ORG_START
+    })
+}
+
+export const fetchOrgSuccess = ( electoralOrganizations ) => {
+    return ({
+        type: actionTypes.FETCH_ORG_SUCCESS,
+        electoralOrganizations: electoralOrganizations
+    })
+}
+
+export const fetchOrgError = ( error ) => {
+    return({
+        type: actionTypes.FETCH_ORG_ERROR,
+        error: error
+    })
+}
+
+export const fetchOrg = () => {
+    return dispatch => {
+        dispatch( fetchOrgStart() )
+
+        axios.post('/org/getall')
+        .then( response => {
+            dispatch( fetchOrgSuccess(response.data.mensaje) )
+        })
+        .catch( error => dispatch(fetchOrgError( error )))
+    }
+}
+
+export const showOrgModal = () => {
+    return({
+        type: actionTypes.SHOW_ORG_MODAL
+    })
+}
+
+export const createOrgStart = () => {
+    return({
+        type: actionTypes.CREATE_ORG_START
+    })
+}
+
+export const createOrgError = (error) => {
+    return({
+        type: actionTypes.CREATE_ORG_ERROR,
+        error: error
+    })
+}
+
+export const createOrgSuccess = (electoralOrg) => {
+    return({
+        type: actionTypes.CREATE_ORG_SUCCESS,
+        electoralOrg: electoralOrg
+    })
+}
+
+export const createOrg = ( electoralOrg ) => {
+    return dispatch => {
+        dispatch( createOrgStart() )
+
+        axios.post('/org/add', {
+            nombre: electoralOrg
+        })
+        .then( response => {
+            dispatch( createOrgSuccess(electoralOrg) )
+        })
+        .catch( error => dispatch( createOrgError(error) ))
+    }
+}

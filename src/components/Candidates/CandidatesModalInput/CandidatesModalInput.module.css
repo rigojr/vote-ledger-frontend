@@ -6,3 +6,7 @@
 .alertContainer{
     margin: 0px !important;
 }
+
+.dropDownClasses{
+    min-width: 250px;
+}
