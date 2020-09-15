@@ -7,7 +7,14 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
 import Aux from '../../../hoc/Aux';
-import styles from './inputElectoralEvents.module.css'
+import styles from './inputElectoralEvents.module.css';
+import styled from 'styled-components';
+
+const StyleDatePicker = styled.div`
+    & > * {
+        display: block;
+    }
+`
 
 const usercreatemodal = ( props ) => (
     <Aux>
@@ -43,27 +50,31 @@ const usercreatemodal = ( props ) => (
         <Row>
             <Form.Group as={Col}>
                 <Form.Label className={`${styles.DisplayOption}`}>Fecha de Inicio</Form.Label>
-                <DatePicker
-                    className={`${styles.DisplayOption} ${styles.inputStyle}`}
-                    onChange={props.setInitValue}
-                    selected={props.inputValues['initDate']}
-                    showTimeSelect
-                    dateFormat="Pp"
-                    minDate={new Date()}
-                    placeholderText="Seleccione una fecha de inicio"
-                    disabled={props.enableState}/>
+                <StyleDatePicker>
+                    <DatePicker
+                        className={`${styles.DisplayOption} ${styles.inputStyle}`}
+                        onChange={props.setInitValue}
+                        selected={props.inputValues['initDate']}
+                        showTimeSelect
+                        dateFormat="Pp"
+                        minDate={new Date()}
+                        placeholderText="Seleccione una fecha de inicio"
+                        disabled={props.enableState}/>
+                </StyleDatePicker>
             </Form.Group>
             <Form.Group as={Col}>
-                <Form.Label>Fecha de Finalización</Form.Label>
-                <DatePicker 
-                    className={`${styles.DisplayOption} ${styles.inputStyle}`}
-                    onChange={props.setEndValue}
-                    selected={props.inputValues['endDate']}
-                    showTimeSelect
-                    dateFormat="Pp"
-                    minDate={props.inputValues['initDate']}
-                    disabled={(!props.inputValues['initDate'] || props.enableState)}
-                    placeholderText="Seleccione una fecha de Fin"/>
+                <Form.Label className={`${styles.DisplayOption}`}>Fecha de Finalización</Form.Label>
+                <StyleDatePicker>
+                    <DatePicker 
+                        className={`${styles.DisplayOption} ${styles.inputStyle}`}
+                        onChange={props.setEndValue}
+                        selected={props.inputValues['endDate']}
+                        showTimeSelect
+                        dateFormat="Pp"
+                        minDate={props.inputValues['initDate']}
+                        disabled={(!props.inputValues['initDate'] || props.enableState)}
+                        placeholderText="Seleccione una fecha de Fin"/>
+                </StyleDatePicker>
             </Form.Group>
         </Row>
     </Aux>

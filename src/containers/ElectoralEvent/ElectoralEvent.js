@@ -11,6 +11,7 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import * as actions from '../../store/actions/index';
 import { eventStates } from '../../constants/eventStates';
 import { compareValues } from '../../store/utility'
+import CandidatesModalEV from '../../components/ElectoralEvent/CandidatesModalEV/CandidatesModalEV';
 
 class ElectoralEvent extends Component {
 
@@ -28,7 +29,9 @@ class ElectoralEvent extends Component {
         },
         modalMessage: '',
         enableState: false,
-        modalCreateBtn: false
+        modalCreateBtn: false,
+        isShowCandidatesModal: false,
+        selectedElectoralEvet: null
     }
 
     setInitDate = (date) => {
@@ -208,6 +211,21 @@ class ElectoralEvent extends Component {
 
     }
 
+    setModalCandidates = (payload) => {
+        this.setState( prevState => ({
+            ...prevState,
+            isShowCandidatesModal: !this.state.isShowCandidatesModal,
+            selectedElectoralEvet: this.props.fetch.find( event => event.id === payload.id)
+        }) )
+    }
+
+    modalCandidatesHandler = () => {
+        this.setState( prevState => ({
+            ...prevState,
+            isShowCandidatesModal: !this.state.isShowCandidatesModal
+        }))
+    }
+
     render(){
 
         let RedirectComponent = this.props.isAuthed ?
@@ -223,7 +241,8 @@ class ElectoralEvent extends Component {
                     theadArray={this.state.theaderTable}
                     payloadArray={this.props.events.sort(compareValues('id'))}
                     consultHandler={this.consultHandler}
-                    changeStatus={this.handleChangeStatus}/> 
+                    changeStatus={this.handleChangeStatus}
+                    candidates={this.setModalCandidates}/> 
             );
         }
 
@@ -256,6 +275,17 @@ class ElectoralEvent extends Component {
                         enableState={this.state.enableState}/>
                 </AllModal>
                 {RedirectComponent}
+                {
+                    this.state.selectedElectoralEvet 
+                    ?
+                    <CandidatesModalEV 
+                        modalHandler={this.modalCandidatesHandler}
+                        showModal={this.state.isShowCandidatesModal}
+                        electoralEvent={this.state.selectedElectoralEvet}
+                        users={this.props.users}/>
+                    : null
+                }
+                
             </Aux>
         )
     }
@@ -267,7 +297,8 @@ const mapStateToProps = state => {
         events: state.central.events,
         fetch: state.central.fetch,
         isLoading: state.central.isLoading,
-        message: state.central.message
+        message: state.central.message,
+        users: state.user.users,
     }
 }
 

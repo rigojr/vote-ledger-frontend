@@ -2,6 +2,7 @@ import React from 'react';
 
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
+import { PDFDownloadLink } from "@react-pdf/renderer";
 
 import Form from 'react-bootstrap/Form';
 
@@ -56,6 +57,25 @@ const AllModal = ( props ) => (
                 </Button>
                 :
                 null
+            }
+
+            {
+              props.pdf ? 
+              <PDFDownloadLink
+                fileName={props.pdf.fileName}
+                document={props.pdf.document}
+                style={{
+                  textDecoration: "none",
+                  padding: "10px",
+                  color: "#4a4a4a",
+                  backgroundColor: "#f2f2f2",
+                  border: "1px solid #4a4a4a"
+                }}>
+                {
+                  ({ blob, url, loading, error }) =>
+                  loading ? "Loading document..." : "Download Pdf"
+                }
+              </PDFDownloadLink> : null
             }
 
         </Modal.Footer>

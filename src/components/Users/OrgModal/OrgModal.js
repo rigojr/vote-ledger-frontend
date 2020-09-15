@@ -47,7 +47,7 @@ const OrgModal = (props) => {
             </Row>
             <Row>
                 <Form.Group as={Col} className={`${styles.alertContainer}`}>
-                    <p className={`${styles.alertMessage}`}><b>Organizaciones Electorales Registrados</b></p>
+                    <p className={`${styles.alertMessage}`}><b>Organizaciones Electorales Registradas</b></p>
                 </Form.Group>
             </Row>
             <StyledRow>
