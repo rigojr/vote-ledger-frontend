@@ -63,17 +63,10 @@ const AllModal = ( props ) => (
               props.pdf ? 
               <PDFDownloadLink
                 fileName={props.pdf.fileName}
-                document={props.pdf.document}
-                style={{
-                  textDecoration: "none",
-                  padding: "10px",
-                  color: "#4a4a4a",
-                  backgroundColor: "#f2f2f2",
-                  border: "1px solid #4a4a4a"
-                }}>
+                document={props.pdf.document}>
                 {
                   ({ blob, url, loading, error }) =>
-                  loading ? "Loading document..." : "Download Pdf"
+                  loading ? "Cargando Documento..." : "Descargar Pdf"
                 }
               </PDFDownloadLink> : null
             }
