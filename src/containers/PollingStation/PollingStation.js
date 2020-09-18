@@ -11,6 +11,7 @@ import CardMessage from '../../components/Layout/CardMessage/CardMessage';
 import InfraHeader from '../../components/Layout/InfraHeader/InfraHeader';
 import * as actions from '../../store/actions/index';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import ActInitModalPDF from '../../components/PollingStation/ActInitModalPDF/ActInitModalPDF';
 
 class PollingStation extends Component {
 
@@ -33,6 +34,8 @@ class PollingStation extends Component {
         modalCreateBtn: false,
         modalUpdateBtn: false,
         UpdateBoolean: false,
+        isShowingModalAct: false,
+        PDFContent: {}
     }
 
     componentDidMount () {
@@ -198,7 +201,7 @@ class PollingStation extends Component {
     enablePollingStationHandler = async ( payload ) => {
         const tempRawElectoralEvent = this.props.fetch.find( fetch => fetch.id === this.state.selectElectoralEvent )
         const tempRawPollingStation = tempRawElectoralEvent.record.pollingStations[payload.id]
-        if( confirm(`La mesa electoral de Id ${payload.id} cambiar su estado a ${tempRawPollingStation.habilitada == '0' ? 'Habilitado': 'Inhabilitado'}. ¿Desea Continuar?`) ){ // eslint-disable-line no-eval
+        if( confirm(`La mesa electoral de Id ${payload.id} cambiar su estado a ${tempRawPollingStation.habilitada == '0' ? 'Habilitado': 'Inhabilitado'}. ¿Desea Continuar?`) ){ 
             await this.setState(
                 {form: {
                     id: tempRawPollingStation.id,
@@ -270,6 +273,27 @@ class PollingStation extends Component {
         }
     }
 
+    modalAct = () => {
+        this.setState( prevState => ({
+            ...prevState,
+            isShowingModalAct: !this.state.isShowingModalAct
+        }))
+    }
+
+    initAct = ( payload ) => {
+        const tempRawElectoralEvent = this.props.fetch.find( fetch => fetch.id == this.state.selectElectoralEvent )
+        const pollingStationData = tempRawElectoralEvent.record.pollingStations[payload.id]
+        const tempPDFData = {
+            ...pollingStationData,
+            state: tempRawElectoralEvent.state
+        }
+        this.setState( prevState => ({
+            ...prevState,
+            isShowingModalAct: !this.state.isShowingModalAct,
+            PDFContent: tempPDFData
+        }))
+    }
+
     render(){
 
         let PollingStationMessage = this.state.showMessage ?
@@ -285,7 +309,8 @@ class PollingStation extends Component {
                 deleteChange={true}
                 deleteAction={false}
                 pollingStation={true}
-                enableHandler={this.enablePollingStationHandler}/>)
+                enableHandler={this.enablePollingStationHandler}
+                initAct={this.initAct}/>)
 
         if(this.state.pollingStations.length <= 0)
             ComponentAllTable = <CardMessage messageTitle="No existen mesas electorales registradas"/>
@@ -349,10 +374,19 @@ class PollingStation extends Component {
             :
         <Redirect from="/polling-station" to="/login"/>;
 
+        const ActInitModal = (
+            this.state.selectElectoralEvent !== '' ?
+            <ActInitModalPDF 
+                modalHandler={this.modalAct}
+                showModal={this.state.isShowingModalAct}
+                data={this.state.PDFContent}/> : null
+        )
+
         return(
             <Aux>
                 {PollingStationComponent}
                 {RedirectComponent}
+                {ActInitModal}
             </Aux>
         )
     }

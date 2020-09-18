@@ -111,6 +111,15 @@ const AllTable = ( props ) => {
                                                                     </Dropdown.Item>  :
                                                                     null
                                                                 }
+                                                                {
+                                                                    props.initAct ? 
+                                                                    <Dropdown.Item 
+                                                                        as="button"
+                                                                        onClick={ () => props.initAct(payload)}>
+                                                                        Acta
+                                                                    </Dropdown.Item>  :
+                                                                    null
+                                                                }
                                                         </DropdownButton>
                                                     </td>
                                                 </tr> 

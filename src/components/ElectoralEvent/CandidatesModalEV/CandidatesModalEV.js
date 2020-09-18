@@ -21,8 +21,6 @@ const StyledRow = styled(Row)`
     margin: 0px;
 `
 
-const tableTheadArray = [""]
-
 const CandidatesModalEV = (props) => {
     
     const electionsRaw = props.electoralEvent.record.elections
