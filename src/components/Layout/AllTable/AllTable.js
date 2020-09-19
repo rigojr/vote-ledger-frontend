@@ -112,10 +112,10 @@ const AllTable = ( props ) => {
                                                                     null
                                                                 }
                                                                 {
-                                                                    props.initAct ? 
+                                                                    props.initAct || props.esc ? 
                                                                     <Dropdown.Item 
                                                                         as="button"
-                                                                        onClick={ () => props.initAct(payload)}>
+                                                                        onClick={ props.initAct ? () => props.initAct(payload) : () => props.esc(payload) }>
                                                                         Acta
                                                                     </Dropdown.Item>  :
                                                                     null
