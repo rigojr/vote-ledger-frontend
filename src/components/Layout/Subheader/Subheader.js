@@ -9,6 +9,7 @@ import SearchInput from './SearchInput/SearchInput';
 import CreateBtn from './CreateBtn/CreateBtn';
 import TitlePage from './TitlePage/TitlePage';
 import Dropdown from './DropdownBtn/DropdownBtn';
+import { PDFDownloadLink } from "@react-pdf/renderer";
 
 const subheader = ( props ) => {
 
@@ -64,6 +65,22 @@ const subheader = ( props ) => {
                                     onClick={ () => props.batchModal() }
                                     alt="Carga en lote de usuarios"
                                     title="Carga en lote de usuarios"/> : null
+                            }
+                            {
+                                props.pdf ?
+                                (
+                                    <PDFDownloadLink
+                                        fileName={props.pdf.fileName}
+                                        document={props.pdf.document}
+                                        className={styles.PDFIcon}>
+                                        <img 
+                                            src={process.env.PUBLIC_URL + 'pdf-file.png'}
+                                            className={styles.RefreshIcon}
+                                            alt="Exportar lista en PDF"
+                                            title="Exportar lista en PDF"/> 
+                                    </PDFDownloadLink>
+                                )
+                                : null
                             }
                         </Row>
                     </Container>

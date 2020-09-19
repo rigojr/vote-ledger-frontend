@@ -10,6 +10,8 @@ import ContentBatchModal from '../../components/Users/UserBatchModal/UserBatchMo
 import AllTable from '../../components/Layout/AllTable/AllTable';
 import AllModal from '../../components/Layout/Modal/AllModal';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import PDF from '../../components/PDF/PDF';
+import UsersPDF from '../../components/PDF/UsersPDF/UsersPDF';
 import * as actions from '../../store/actions/index';
 
 class User extends Component {
@@ -349,6 +351,7 @@ class User extends Component {
         <Redirect from="/Dashboard" to="/login"/>;
 
         let UsersTableComponent = <Spinner/>;
+        let pdf = null;
 
         if (!this.props.isLoading){
             UsersTableComponent = (
@@ -362,6 +365,16 @@ class User extends Component {
                     pollingStation={true}
                     enableHandler={this.enableUserHandler}/>
             );
+            const tempPDF = (
+                <PDF title={'Electores registrados en el sistema'}>
+                    <UsersPDF 
+                        users={this.props.fetch}/>
+                </PDF>
+            )
+            pdf = {
+                fileName: 'usuarios.pdf',
+                document: tempPDF
+            }
         }
 
         return(
@@ -376,7 +389,8 @@ class User extends Component {
                     showModal={this.createModal}
                     onChange={this.handleOnInputSearchChange}
                     updateHandler={this.props.onFetchUsers}
-                    batchModal={this.batchModal}/>
+                    batchModal={this.batchModal}
+                    pdf={pdf}/>
                 {UsersTableComponent}
                 <AllModal
                     showModal={this.modalHandler}

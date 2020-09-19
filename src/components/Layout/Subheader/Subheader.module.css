@@ -23,3 +23,7 @@
     margin: auto;
     cursor: pointer;
 }
+
+.PDFIcon {
+    display: inherit;
+}
