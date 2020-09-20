@@ -98,9 +98,16 @@ class ElectoralEvent extends Component {
                 this.state.form.endDate === null ||
                 this.state.form.eventName === '')
             ){
-                this.setOnCreate(null, null);
-                this.setState( { enableState: true} );
-                setTimeout(this.cleanModalHandler,3000);
+                const tempDate = new Date()
+                tempDate.setDate( this.state.form.initDate.getDate() + 47 )
+                console.log(tempDate)
+                if( tempDate <= this.state.form.endDate){
+                    this.setOnCreate(null, null);
+                    this.setState( { enableState: true} );
+                    setTimeout(this.cleanModalHandler,3000);
+                } else {
+                    alert(`La fecha de fin debe ser mayor por 47 días continuos que la fecha de inicio`)
+                }
             } else {
                 alert(`Termine de ingresar los datos`)
             }
@@ -290,7 +297,8 @@ class ElectoralEvent extends Component {
                         setEndValue={this.setEndDate}
                         setEvent={this.setEventCode}
                         inputValues={this.state.form}
-                        enableState={this.state.enableState}/>
+                        enableState={this.state.enableState}
+                        create={this.state.modalCreateBtn}/>
                 </AllModal>
                 {RedirectComponent}
                 {
