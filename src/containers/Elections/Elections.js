@@ -11,6 +11,7 @@ import CardMessage from '../../components/Layout/CardMessage/CardMessage';
 import InfraHeader from '../../components/Layout/InfraHeader/InfraHeader';
 import * as actions from '../../store/actions/index';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import { canCreateUpdate } from '../../store/utility';
 import CandiateModalInput from '../../components/Candidates/CandidatesModalInput/CandidatesModalInput'
 
 class Elections extends Component {
@@ -42,7 +43,8 @@ class Elections extends Component {
         modalUpdateBtn: false,
         UpdateBoolean: false,
         candidateModal: false,
-        selectedElection: {}
+        selectedElection: {},
+        FullDataEV: {}
     }
 
     componentDidMount () {
@@ -170,26 +172,30 @@ class Elections extends Component {
         }
 
     createElectionHandler = () => {
-        if( this.state.elections.findIndex( election => election.id === this.state.form.id ) === -1 ){
-            if(
-                !(
-                    this.state.form.id === '' ||
-                    this.state.form.desc === '' ||
-                    this.state.form.name === '' ||
-                    this.state.form.school === ''
-                )
-            ){
-                this.setOnCreate(this.props.fetch.find( fetch => fetch.id === this.state.selectElectoralEvent ))
-                this.setModalMessage("Enviando información al Blockchain");
-                this.setState( { enableState: true, UpdateBoolean: false} );
-                setTimeout(this.cleanModalHandler,3000);
-                setTimeout(() => this.modalHandler( false, false ),3000);
-                setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
-            }else{
-                alert(`Termine de ingresar los datos`)
+        if( canCreateUpdate([this.state.FullDataEV]) ){
+            if( this.state.elections.findIndex( election => election.id === this.state.form.id ) === -1 ){
+                if(
+                    !(
+                        this.state.form.id === '' ||
+                        this.state.form.desc === '' ||
+                        this.state.form.name === '' ||
+                        this.state.form.school === ''
+                    )
+                ){
+                    this.setOnCreate(this.props.fetch.find( fetch => fetch.id === this.state.selectElectoralEvent ))
+                    this.setModalMessage("Enviando información al Blockchain");
+                    this.setState( { enableState: true, UpdateBoolean: false} );
+                    setTimeout(this.cleanModalHandler,3000);
+                    setTimeout(() => this.modalHandler( false, false ),3000);
+                    setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
+                }else{
+                    alert(`Termine de ingresar los datos`)
+                }
+            } else {
+                alert(`El id ${this.state.form.id} ya existe`)
             }
         } else {
-            alert(`El id ${this.state.form.id} ya existe`)
+            alert("El estado del evento electoral no permite realizar ninguna actualización a los registros.")
         }
     }
 
@@ -217,7 +223,8 @@ class Elections extends Component {
             {
                 showMessage: tempShowMessage,
                 showTable: tempShowTable,
-                selectElectoralEvent: ElectoralEvent
+                selectElectoralEvent: ElectoralEvent,
+                FullDataEV: this.props.fetch.find( fetch => fetch.id === ElectoralEvent )
             }
         );
         this.setLocalElections(ElectoralEvent)
@@ -239,16 +246,21 @@ class Elections extends Component {
     }
 
     updateModal = ( selectElection ) => {
-        this.modalHandler( false, true)
-        this.setState( prevState => ({
-            ...prevState,
-            UpdateBoolean: true,
-            enableState: false,
-            form: {
-                ...selectElection,
-                faculty: selectElection['school']
-            }
-        }))
+        if( canCreateUpdate([this.state.FullDataEV]) ){
+            this.modalHandler( false, true)
+            this.setState( prevState => ({
+                ...prevState,
+                UpdateBoolean: true,
+                enableState: false,
+                form: {
+                    ...selectElection,
+                    faculty: selectElection['school']
+                }
+            }))
+        } else {
+            alert("El estado del evento electoral no permite realizar ninguna actualización a los registros.")
+        }
+        
     }
 
     updateHandler = () => {

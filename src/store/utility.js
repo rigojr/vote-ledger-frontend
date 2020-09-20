@@ -1,3 +1,5 @@
+import {eventStates} from '../constants/eventStates';
+
 export const updateObject = (oldObject, updatedProperties) => {
     return {
         ...oldObject,
@@ -87,4 +89,15 @@ export const compareValues = (key, order = 'asc') => {
       fetch: fetchTemp
     }
 
+  }
+
+  export const areThereElection = ElectoralEvents => {
+    return ElectoralEvents.every( electoralEvent => electoralEvent.state !== 'Elección' )
+  }
+
+  export const canCreateUpdate = ElectoralEvents => {
+    const afterElection = ["Convocatoria", "Inscripción", "Auditoría", "Finalizado"]
+    return ElectoralEvents.every( electoralEvent => 
+      afterElection.every( e => e !== electoralEvent.state)
+    )
   }

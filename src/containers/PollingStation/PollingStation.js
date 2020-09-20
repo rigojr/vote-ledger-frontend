@@ -12,6 +12,7 @@ import InfraHeader from '../../components/Layout/InfraHeader/InfraHeader';
 import * as actions from '../../store/actions/index';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import ActInitModalPDF from '../../components/PollingStation/ActInitModalPDF/ActInitModalPDF';
+import { canCreateUpdate } from '../../store/utility';
 
 class PollingStation extends Component {
 
@@ -35,7 +36,8 @@ class PollingStation extends Component {
         modalUpdateBtn: false,
         UpdateBoolean: false,
         isShowingModalAct: false,
-        PDFContent: {}
+        PDFContent: {},
+        FullDataEV: {}
     }
 
     componentDidMount () {
@@ -164,24 +166,28 @@ class PollingStation extends Component {
     }
 
     createHandler = () => {
-        if( this.state.pollingStations.findIndex( pollingStation => pollingStation.id === this.state.form.id) ){
-            if(
-                !(
-                    this.state.form.id === '' ||
-                    this.state.form.name === ''
-                )
-            ){
-                this.setOnCreate(this.props.fetch.find( fetch => fetch.id === this.state.selectElectoralEvent ), 0, "0")
-                this.setModalMessage("Enviando información al Blockchain");
-                this.setState( { enableState: true, UpdateBoolean: false } );
-                this.setModalMessage("Guardado con éxito!");
-                setTimeout(this.cleanModalHandler,3000);
-                setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
+        if( canCreateUpdate([this.state.FullDataEV]) ){
+            if( this.state.pollingStations.findIndex( pollingStation => pollingStation.id === this.state.form.id) ){
+                if(
+                    !(
+                        this.state.form.id === '' ||
+                        this.state.form.name === ''
+                    )
+                ){
+                    this.setOnCreate(this.props.fetch.find( fetch => fetch.id === this.state.selectElectoralEvent ), 0, "0")
+                    this.setModalMessage("Enviando información al Blockchain");
+                    this.setState( { enableState: true, UpdateBoolean: false } );
+                    this.setModalMessage("Guardado con éxito!");
+                    setTimeout(this.cleanModalHandler,3000);
+                    setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
+                }
+            }else{
+                alert(`El id ${this.state.form.id} ya existe`)
             }
-        }else{
-            alert(`El id ${this.state.form.id} ya existe`)
+        } else {
+            console.log("1")
+            alert("El estado del evento electoral no permite realizar ninguna actualización a los registros.")
         }
-        
     }
 
     consultHanlder = (select) => {
@@ -221,7 +227,8 @@ class PollingStation extends Component {
             {
                 showMessage: tempShowMessage,
                 showTable: tempShowTable,
-                selectElectoralEvent: ElectoralEvent
+                selectElectoralEvent: ElectoralEvent,
+                FullDataEV: this.props.fetch.find( fetch => fetch.id === ElectoralEvent )
             }
         );
         const pollingStationsTemp = [];
@@ -245,15 +252,19 @@ class PollingStation extends Component {
     }
 
     updateModal = ( selectPollingStations ) => {
-        this.modalHandler( false, true)
-        this.setState( prevState => ({
-            ...prevState,
-            UpdateBoolean: true,
-            enableState: false,
-            form: {
-                ...selectPollingStations
-            }
-        }))
+        if( canCreateUpdate([this.state.FullDataEV]) ){
+            this.modalHandler( false, true)
+            this.setState( prevState => ({
+                ...prevState,
+                UpdateBoolean: true,
+                enableState: false,
+                form: {
+                    ...selectPollingStations
+                }
+            }))
+        } else {
+            alert("El estado del evento electoral no permite realizar ninguna actualización a los registros.")
+        }
     }
 
     updateHandler = () => {

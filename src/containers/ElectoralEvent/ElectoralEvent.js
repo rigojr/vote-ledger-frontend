@@ -100,7 +100,6 @@ class ElectoralEvent extends Component {
             ){
                 const tempDate = new Date()
                 tempDate.setDate( this.state.form.initDate.getDate() + 47 )
-                console.log(tempDate)
                 if( tempDate <= this.state.form.endDate){
                     this.setOnCreate(null, null);
                     this.setState( { enableState: true} );

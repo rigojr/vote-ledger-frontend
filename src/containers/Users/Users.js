@@ -12,6 +12,7 @@ import AllModal from '../../components/Layout/Modal/AllModal';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import PDF from '../../components/PDF/PDF';
 import UsersPDF from '../../components/PDF/UsersPDF/UsersPDF';
+import { areThereElection } from '../../store/utility';
 import * as actions from '../../store/actions/index';
 
 class User extends Component {
@@ -43,6 +44,8 @@ class User extends Component {
             modalUpdateBtn: false,
             selectedTypeOfUser: true,
             isBatchModal: false,
+            isPDFRender: false,
+            pdf: {}
         };
     }
 
@@ -115,7 +118,8 @@ class User extends Component {
         this.setState ( { 
             userPassword:"", 
             selectedTypeOfUser: true,
-            inputTypeOfUser: false
+            inputTypeOfUser: false,
+            pdf :{}
         } );
     }
 
@@ -195,9 +199,14 @@ class User extends Component {
     }
 
     createModal = () => {
-        this.modalHandler( true, false);
-        this.cleanModalHandler();
+        if( areThereElection( this.props.electoralEvents ) ){
+            this.modalHandler( true, false);
+            this.cleanModalHandler();
+        } else {
+            alert("Existe un evento electoral en proceso de elección, los cambios o registros estarán inhabilitado hasta que no existan procesos de elección activos.")
+        }
     }
+        
 
     cleanModalHandler = () => {
         this.setEnableInput( false );
@@ -214,23 +223,29 @@ class User extends Component {
         this.setState( { 
             form: selectUser,
             selectedTypeOfUser: adminBoolean,
-            inputTypeOfUser: true
+            inputTypeOfUser: true,
+            pdf :{}
         } );
     }
 
 
     updateModal = ( selectUser ) => {
-        let adminBoolean = false;
-        if( this.props.fetch.find( user => user.id === selectUser.id).type === "admin")
-            adminBoolean = true;
-        this.modalHandler( false, true);
-        this.setEnableInput( false );
-        this.setState( prevState => ({
-            ...prevState, 
-            form: {...prevState.form, ...selectUser},
-            selectedTypeOfUser: adminBoolean,
-            inputTypeOfUser: true
-        }) );
+        if( areThereElection(this.props.electoralEvents) ){
+            let adminBoolean = false;
+            if( this.props.fetch.find( user => user.id === selectUser.id).type === "admin")
+                adminBoolean = true;
+            this.modalHandler( false, true);
+            this.setEnableInput( false );
+            this.setState( prevState => ({
+                ...prevState, 
+                form: {...prevState.form, ...selectUser},
+                selectedTypeOfUser: adminBoolean,
+                inputTypeOfUser: true,
+                pdf :{},
+            }) );
+        } else {
+            alert("Existe un evento electoral en proceso de elección, los cambios o registros estarán inhabilitado hasta que no existan procesos de elección activos.")
+        }
     }
 
     updateHandler = () => {
@@ -250,7 +265,8 @@ class User extends Component {
         this.setState( { 
             showModal: showModalUpdated,
             modalCreateBtn: create,
-            modalUpdateBtn: update
+            modalUpdateBtn: update,
+            pdf :{},
         } );
     }
 
@@ -277,6 +293,7 @@ class User extends Component {
                         adminBoolean = true;
                     this.setState( { 
                         selectedTypeOfUser: adminBoolean,
+                        pdf :{},
                     } );
                 }
             }
@@ -309,7 +326,7 @@ class User extends Component {
                     school: tempRawUser.school,
                     email: tempRawUser.email,
                     type: tempRawUser.type
-                }}
+                }, pdf :{}}
             )
             this.setOnCreate(tempRawUser.voteRecord, tempRawUser.password, tempRawUser.status === '0' ? '1': '0')
         }
@@ -318,7 +335,8 @@ class User extends Component {
     batchModal = () => {
         this.setState( prevState => ({
             ...prevState,
-            isBatchModal: !prevState.isBatchModal
+            isBatchModal: !prevState.isBatchModal,
+            pdf :{}
         }))
     }
 
@@ -341,6 +359,22 @@ class User extends Component {
         }
         this.props.onCreateUser(JSON.stringify(user));
         });   
+    }
+    
+    genPDF = () => {
+        const tempPDF = (
+            <PDF title={'Electores registrados en el sistema'}>
+                <UsersPDF 
+                    users={this.props.fetch}/>
+            </PDF>
+        )
+        this.setState( prevState => ({
+            ...prevState,
+            pdf :{
+                fileName: 'usuarios.pdf',
+                document: tempPDF
+            }
+        }))
     }
 
     render(){
@@ -365,16 +399,6 @@ class User extends Component {
                     pollingStation={true}
                     enableHandler={this.enableUserHandler}/>
             );
-            const tempPDF = (
-                <PDF title={'Electores registrados en el sistema'}>
-                    <UsersPDF 
-                        users={this.props.fetch}/>
-                </PDF>
-            )
-            pdf = {
-                fileName: 'usuarios.pdf',
-                document: tempPDF
-            }
         }
 
         return(
@@ -390,7 +414,8 @@ class User extends Component {
                     onChange={this.handleOnInputSearchChange}
                     updateHandler={this.props.onFetchUsers}
                     batchModal={this.batchModal}
-                    pdf={pdf}/>
+                    pdf={this.state.pdf}
+                    genpdf={this.genPDF}/>
                 {UsersTableComponent}
                 <AllModal
                     showModal={this.modalHandler}
@@ -429,7 +454,8 @@ const mapStateToProps = state => {
     return{
         users: state.user.users,
         fetch: state.user.fetch,
-        isLoading: state.user.isLoading
+        isLoading: state.user.isLoading,
+        electoralEvents: state.central.fetch
     }
 }
 

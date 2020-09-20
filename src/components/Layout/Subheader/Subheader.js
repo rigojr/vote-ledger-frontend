@@ -82,6 +82,19 @@ const subheader = ( props ) => {
                                 )
                                 : null
                             }
+                            {
+                                props.genpdf ?
+                                (
+
+                                    <img 
+                                        src={process.env.PUBLIC_URL + 'cloud-computing.png'}
+                                        className={styles.RefreshIcon}
+                                        onClick={() => props.genpdf()}
+                                        alt="Generar lista en PDF"
+                                        title="Generar lista en PDF"/> 
+                                )
+                                : null
+                            }
                         </Row>
                     </Container>
                 </Col>
