@@ -46,10 +46,6 @@ const DataTable = styled.Text`
     padding: 5px 0px;
 `
 
-const MainContainer = styled.View`
-    margin: 10px 0px;
-`
-
 const EscPDF = (props) => {
 
     const arrayPolling = Object.keys(props.electoralEvent.record.pollingStations)
