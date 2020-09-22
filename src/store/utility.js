@@ -101,3 +101,7 @@ export const compareValues = (key, order = 'asc') => {
       afterElection.every( e => e !== electoralEvent.state)
     )
   }
+
+  export const canShowEsc = (ElectoralEvent, StateArray) => {
+    return StateArray.every( e => e !== ElectoralEvent.state)
+  }

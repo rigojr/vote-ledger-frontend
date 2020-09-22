@@ -10,6 +10,7 @@ import Dropdown from 'react-bootstrap/Dropdown'
 
 import Aux from '../../../hoc/Aux';
 import styles from './AllTable.module.css';
+import { canShowEsc } from '../../../store/utility'
 
 const AllTable = ( props ) => {
 
@@ -112,10 +113,19 @@ const AllTable = ( props ) => {
                                                                     null
                                                                 }
                                                                 {
-                                                                    props.initAct || props.esc ? 
+                                                                    props.initAct ? 
                                                                     <Dropdown.Item 
                                                                         as="button"
-                                                                        onClick={ props.initAct ? () => props.initAct(payload) : () => props.esc(payload) }>
+                                                                        onClick={ () => props.initAct(payload) }>
+                                                                        Acta
+                                                                    </Dropdown.Item>  :
+                                                                    null
+                                                                }
+                                                                {
+                                                                    (props.esc && !(canShowEsc(payload, ["Escrutinio", "Adjudicación", "Finalizado"])) ) ? 
+                                                                    <Dropdown.Item 
+                                                                        as="button"
+                                                                        onClick={ () => props.esc(payload) }>
                                                                         Acta
                                                                     </Dropdown.Item>  :
                                                                     null
