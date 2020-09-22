@@ -96,7 +96,7 @@ export const compareValues = (key, order = 'asc') => {
   }
 
   export const canCreateUpdate = ElectoralEvents => {
-    const afterElection = ["Convocatoria", "Inscripción", "Auditoría", "Finalizado"]
+    const afterElection = ["Elección", "Escrutinio", "Adjudicación", "Finalizado"]
     return ElectoralEvents.every( electoralEvent => 
       afterElection.every( e => e !== electoralEvent.state)
     )
@@ -104,4 +104,9 @@ export const compareValues = (key, order = 'asc') => {
 
   export const canShowEsc = (ElectoralEvent, StateArray) => {
     return StateArray.every( e => e !== ElectoralEvent.state)
+  }
+
+  export const candidatesNull = (Elections) => {
+    const keys = Object.keys(Elections)
+    return keys.every( key => Elections[key].Candidatos !== null )
   }

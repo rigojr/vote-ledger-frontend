@@ -185,7 +185,6 @@ class PollingStation extends Component {
                 alert(`El id ${this.state.form.id} ya existe`)
             }
         } else {
-            console.log("1")
             alert("El estado del evento electoral no permite realizar ninguna actualización a los registros.")
         }
     }

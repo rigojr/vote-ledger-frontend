@@ -10,7 +10,7 @@ import CreateModal from '../../components/ElectoralEvent/ElectoralEventCreateMod
 import Spinner from '../../components/UI/Spinner/Spinner';
 import * as actions from '../../store/actions/index';
 import { eventStates } from '../../constants/eventStates';
-import { compareValues } from '../../store/utility'
+import { compareValues, candidatesNull } from '../../store/utility'
 import CandidatesModalEV from '../../components/ElectoralEvent/CandidatesModalEV/CandidatesModalEV';
 import EscModal from '../../components/ElectoralEvent/EscModal/EscModal';
 
@@ -202,16 +202,21 @@ class ElectoralEvent extends Component {
         const newIndex = eventStates.indexOf(payload['state']) + 1;
         if( newIndex < eventStates.length){
             if (confirm(`El Evento Electoral de Id ${payload['id']} cambiara su estado de ${payload['state']} a ${eventStates[newIndex]}. ${payload['state'] === 'Inscripción' ? 'Por favor, recuerde actualizar el padrón electoral antes de abandonar el proceso de inscripción' : '' }¿Desea continuar?`)){ // eslint-disable-line no-eval
-                await this.setState(
-                    {form: {
-                        initDate: new Date(payload['initDate']),
-                        endDate: new Date(payload['endDate']),
-                        eventCode: payload['id'],
-                        state: eventStates[newIndex],
-                        eventName: payload['eventName'],
-                    }}
-                )
-                this.setOnCreate(eventRaw.record.elections, eventRaw.record.pollingStations)
+                if( eventRaw.state !== 'Inscripción' || candidatesNull(eventRaw.record.elections)){
+                    await this.setState(
+                        {form: {
+                            initDate: new Date(payload['initDate']),
+                            endDate: new Date(payload['endDate']),
+                            eventCode: payload['id'],
+                            state: eventStates[newIndex],
+                            eventName: payload['eventName'],
+                        }}
+                    )
+                    this.setOnCreate(eventRaw.record.elections, eventRaw.record.pollingStations)
+                }
+                else{
+                    alert("Error, el evento electoral tiene elecciones sin candidatos registrados");
+                }
             }
         } else {
             alert("Error, el evento electoral ya está fnializado");
