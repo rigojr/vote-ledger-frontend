@@ -46,41 +46,49 @@ const CandidatesModalEV = (props) => {
             modalTitile={pdfTitle}
             pdf={pdf}>
                 <CandidatesContainer>
-                
                 {
-                    electionsKeys.map( key => {
+                    electionsKeys > 0 ?
+                        (electionsKeys.map( key => {
 
-                        let electionContent = (
+                            let electionContent = (
+                                <StyledRow>
+                                    <Form.Group as={Col} className={`${styles.alertContainer}`}>
+                                        <p className={`${styles.alertMessage}`}>
+                                            <b>{`La elección ${key} - ${electionsRaw[key].nombre} no posee candidatos registrados`}</b>
+                                        </p>
+                                    </Form.Group>
+                                </StyledRow>
+                            )
+
+                            if(electionsRaw[key].Candidatos) {
+                                electionContent = (
+                                    <StyledRow>
+                                        <Form.Group as={Col} className={`${styles.alertContainer}`}>
+                                            <p className={`${styles.alertMessage}`}>
+                                                <b>{`Candidatos registrados para la elección ${key} - ${electionsRaw[key].nombre} - ${electionsRaw[key].tipoeleccion}`}</b>
+                                            </p>
+                                        </Form.Group>
+                                        <CandidatesTable
+                                            candidates={electionsRaw[key].Candidatos}
+                                            users={props.users}/>
+                                    </StyledRow>
+                                )
+                            }
+
+                            return (
+                                <Aux key={key}>
+                                    {electionContent}
+                                </Aux>
+                            )
+                        } )) : (
                             <StyledRow>
                                 <Form.Group as={Col} className={`${styles.alertContainer}`}>
                                     <p className={`${styles.alertMessage}`}>
-                                        <b>{`La elección ${key} - ${electionsRaw[key].nombre} no posee candidatos registrados`}</b>
+                                        <b>No existen elecciones registradas</b>
                                     </p>
                                 </Form.Group>
                             </StyledRow>
                         )
-
-                        if(electionsRaw[key].Candidatos) {
-                            electionContent = (
-                                <StyledRow>
-                                    <Form.Group as={Col} className={`${styles.alertContainer}`}>
-                                        <p className={`${styles.alertMessage}`}>
-                                            <b>{`Candidatos registrados para la elección ${key} - ${electionsRaw[key].nombre} - ${electionsRaw[key].tipoeleccion}`}</b>
-                                        </p>
-                                    </Form.Group>
-                                    <CandidatesTable
-                                        candidates={electionsRaw[key].Candidatos}
-                                        users={props.users}/>
-                                </StyledRow>
-                            )
-                        }
-
-                        return (
-                            <Aux key={key}>
-                                {electionContent}
-                            </Aux>
-                        )
-                    } )
                 }
 
                 </CandidatesContainer>
