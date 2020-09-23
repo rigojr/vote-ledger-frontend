@@ -108,5 +108,7 @@ export const compareValues = (key, order = 'asc') => {
 
   export const candidatesNull = (Elections) => {
     const keys = Object.keys(Elections)
+    if(!(keys.length > 0))
+      return false
     return keys.every( key => Elections[key].Candidatos !== null )
   }

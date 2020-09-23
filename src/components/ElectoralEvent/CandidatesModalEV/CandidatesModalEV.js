@@ -47,7 +47,7 @@ const CandidatesModalEV = (props) => {
             pdf={pdf}>
                 <CandidatesContainer>
                 {
-                    electionsKeys > 0 ?
+                    electionsKeys.length > 0 ?
                         (electionsKeys.map( key => {
 
                             let electionContent = (

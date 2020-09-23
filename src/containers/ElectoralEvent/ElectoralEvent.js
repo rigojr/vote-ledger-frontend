@@ -215,7 +215,7 @@ class ElectoralEvent extends Component {
                     this.setOnCreate(eventRaw.record.elections, eventRaw.record.pollingStations)
                 }
                 else{
-                    alert("Error, el evento electoral tiene elecciones sin candidatos registrados");
+                    alert("Error, el evento electoral no tiene elecciones, candidatos y/o mesas electorales registradas");
                 }
             }
         } else {

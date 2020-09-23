@@ -119,7 +119,7 @@ const EscModal = (props) => {
                                                         <tbody
                                                             className={stylesTable.UserTbody}>
                                                             {
-                                                                election.Candidatos.map( candidato => {
+                                                                election.Candidatos ? election.Candidatos.map( candidato => {
                                                                     const user = props.users.find( user => user.id === candidato.idusuario)
                                                                     votos =+ candidato.votos
                                                                     return (
@@ -130,7 +130,7 @@ const EscModal = (props) => {
                                                                                 <td>{candidato.votos}</td>
                                                                         </tr>
                                                                     )
-                                                                })
+                                                                }) : <tr>Error, no existen candidatos</tr>
                                                             }
                                                             <tr className={stylesTable.UserTr}>
                                                                 <td><b>Votos Totales</b></td>

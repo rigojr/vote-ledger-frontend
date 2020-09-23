@@ -88,7 +88,7 @@ const EscPDF = (props) => {
                                     <HeaderTable style={styles.column}>Votos</HeaderTable>
                                 </HeaderTContainer>
                                 {
-                                    election.Candidatos.map( candidato => {
+                                    election.Candidatos ? election.Candidatos.map( candidato => {
                                         const user = props.users.find( user => user.id === candidato.idusuario)
                                         votos =+ candidato.votos
                                         return (
@@ -97,7 +97,7 @@ const EscPDF = (props) => {
                                                     <DataTable style={styles.column}>{candidato.votos}</DataTable>
                                             </DataTContainer>
                                         )
-                                    })
+                                    }) : <DataTContainer><DataTable>Error, no existen candidatos</DataTable></DataTContainer>
                                 }
                                 <HeaderTContainer style={styles.tabelHeader}>
                                     <HeaderTable style={styles.column}>Votos Totales</HeaderTable>
