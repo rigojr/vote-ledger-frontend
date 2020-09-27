@@ -184,11 +184,16 @@ class User extends Component {
                     this.state.form.password === ''
                 )
             ){
-                this.setModalMessage("Enviando información al Blockchain");
-                this.setEnableInput( true );
-                this.setEnableInputTypeOf( true );
-                this.setOnCreate(null, null, "1");
-                setTimeout(this.cleanModalHandler,3000);
+                if( this.state.form.password.length > 8){
+                    this.setModalMessage("Enviando información al Blockchain");
+                    this.setEnableInput( true );
+                    this.setEnableInputTypeOf( true );
+                    this.setOnCreate(null, null, "1");
+                    setTimeout(this.cleanModalHandler,3000);
+                }
+                else {
+                    alert("Error, el password debe tener + 8 caracteres")
+                }
             } else {
                 alert(`Termine de ingresar los datos`)
             }
@@ -253,10 +258,16 @@ class User extends Component {
         if(this.state.form.password === ''){
             this.setOnCreate(rawUser.voteRercord, rawUser.password, rawUser.status)
         }else{
-            this.setOnCreate(rawUser.voteRercord, null, rawUser.status)
+            if( this.state.form.password.length > 8)
+                {
+                    this.setOnCreate(rawUser.voteRercord, null, rawUser.status)
+                    this.cleanModalHandler()
+                    this.modalHandler(false,false)
+                }
+            else
+                alert("Error, el password debe tener + 8 caracteres")
         }
-        this.cleanModalHandler()
-        this.modalHandler(false,false)
+        
     }
 
     modalHandler = ( create, update ) => {
@@ -317,7 +328,7 @@ class User extends Component {
 
     enableUserHandler = async (payload) => {
         const tempRawUser = this.props.fetch.find( fetch => fetch.id === payload.id )
-        if( confirm(`El usuario de CI ${payload.id} cambiará su estado a ${tempRawUser.status === '0' ? 'Habilitado': 'Inhabilitado'}. ¿Desea Continuar?`) ){ // eslint-disable-line no-eval
+        if( confirm(`El usuario de CI ${payload.id} cambiará su estado a ${tempRawUser.status === '0' ? 'Habilitado': 'Inhabilitado'}. ¿Desea Continuar?`) ){
             await this.setState(
                 {form: {
                     id: tempRawUser.id,
