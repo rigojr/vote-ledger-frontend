@@ -32,13 +32,22 @@ class Layout extends Component {
     }
 
     createOrgHandler = () => {
-        this.setState( prevState => ({
-            ...prevState,
-            formElectoralOrg: {
-                name: ''
-            },
-        }) )
-        this.props.onCreateElectoralOrg(this.state.formElectoralOrg.name)
+        if( this.state.formElectoralOrg.name !== "" ){
+            if( this.props.electoralOrg.findIndex( org => org ===  this.state.formElectoralOrg.name) === -1 ){
+                this.setState( prevState => ({
+                    ...prevState,
+                    formElectoralOrg: {
+                        name: ''
+                    },
+                }) )
+                this.props.onCreateElectoralOrg(this.state.formElectoralOrg.name)
+            } else {
+                alert("Error, la organización ya existe")
+            }
+        } else {
+            alert("Error, no deje espacios vacios")
+        }
+        
     }
 
     showModalHandler = () => {
