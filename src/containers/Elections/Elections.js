@@ -350,7 +350,7 @@ class Elections extends Component {
             const user = this.props.users.find( user => user.id === this.state.formCandidates.id)
             const rawEvent = this.props.fetch.find( event => event.id === this.state.selectElectoralEvent)
             const rawCandidates = rawEvent.record.elections[this.state.selectedElection.id].Candidatos
-            if(user){
+            if(user && user.status === "1"){
                 if(rawCandidates && rawCandidates.find( candidato => candidato.idusuario === this.state.formCandidates.id)){
                     alert(`CI ${this.state.formCandidates.id} ya es un candidato registrado`)
                 }else{
@@ -372,7 +372,7 @@ class Elections extends Component {
                     }))
                 }
             }else{
-                alert(`CI ${this.state.formCandidates.id} no es un usuario registrado`)
+                alert(`El usuario con el CI ${this.state.formCandidates.id}, no es un usuario registrado o se encuentra inhabilitado`)
             }
         }else{
             alert('No deje espacios vacios/Seleccione una Organización Electoral')
@@ -490,7 +490,7 @@ const mapStateToProps = state => {
         events: state.central.events,
         isLoading: state.central.isLoading,
         message: state.central.message,
-        users: state.user.users,
+        users: state.user.fetch,
         electoralOrg: state.user.electoralOrg
     }
 }
