@@ -350,29 +350,39 @@ class Elections extends Component {
             const user = this.props.users.find( user => user.id === this.state.formCandidates.id)
             const rawEvent = this.props.fetch.find( event => event.id === this.state.selectElectoralEvent)
             const rawCandidates = rawEvent.record.elections[this.state.selectedElection.id].Candidatos
-            if(user && user.status === "1"){
-                if(rawCandidates && rawCandidates.find( candidato => candidato.idusuario === this.state.formCandidates.id)){
-                    alert(`CI ${this.state.formCandidates.id} ya es un candidato registrado`)
+            const electionsKeys = Object.keys(rawEvent.record.elections)
+            const isValidToRegister = electionsKeys.every( key => {
+                if(rawEvent.record.elections[key].Candidatos)
+                    return rawEvent.record.elections[key].Candidatos.every( candidate => candidate.idusuario !== this.state.formCandidates.id)
+                return true
+            })
+            if( isValidToRegister ){
+                if(user && user.status === "1" ){
+                    if(rawCandidates && rawCandidates.find( candidato => candidato.idusuario === this.state.formCandidates.id)){
+                        alert(`CI ${this.state.formCandidates.id} ya es un candidato registrado`)
+                    }else{
+                        let tempCandidates = this.state.selectedElection.Candidatos
+                        if(!tempCandidates)
+                            tempCandidates = []
+                        this.setOnCreateCandidates(rawEvent,user.id)
+                        tempCandidates.push({ idusuario: this.state.formCandidates.id, votos: 0, organizacion: this.state.formCandidates.electoralOrg})
+                        this.setState( prevState => ({
+                            ...prevState,
+                            selectedElection: {
+                                ...this.state.selectedElection,
+                                Candidatos: tempCandidates
+                            },
+                            formCandidates: {
+                                ...prevState.formCandidates,
+                                id: '',
+                            }
+                        }))
+                    }
                 }else{
-                    let tempCandidates = this.state.selectedElection.Candidatos
-                    if(!tempCandidates)
-                        tempCandidates = []
-                    this.setOnCreateCandidates(rawEvent,user.id)
-                    tempCandidates.push({ idusuario: this.state.formCandidates.id, votos: 0, organizacion: this.state.formCandidates.electoralOrg})
-                    this.setState( prevState => ({
-                        ...prevState,
-                        selectedElection: {
-                            ...this.state.selectedElection,
-                            Candidatos: tempCandidates
-                        },
-                        formCandidates: {
-                            ...prevState.formCandidates,
-                            id: '',
-                        }
-                    }))
+                    alert(`El usuario con el CI ${this.state.formCandidates.id}, no es un usuario registrado o se encuentra inhabilitado`)
                 }
-            }else{
-                alert(`El usuario con el CI ${this.state.formCandidates.id}, no es un usuario registrado o se encuentra inhabilitado`)
+            } else {
+                alert(`El usuario con el CI ${this.state.formCandidates.id}, ya esta registrado en una eleccion para este evento electoral`)
             }
         }else{
             alert('No deje espacios vacios/Seleccione una Organización Electoral')
