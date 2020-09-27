@@ -1,4 +1,5 @@
-import {eventStates} from '../constants/eventStates';
+import {schools} from '../constants/schools';
+import { schoolsCES, schoolsIng, schoolsHE, schoolsD, schoolsT} from '../constants/schoolsFaculties';
 
 export const updateObject = (oldObject, updatedProperties) => {
     return {
@@ -111,4 +112,132 @@ export const compareValues = (key, order = 'asc') => {
     if(!(keys.length > 0))
       return false
     return keys.every( key => Elections[key].Candidatos !== null )
+  }
+
+  export const SchoolToFaculty = (School) => {
+    switch (School) {
+        case "Administración y Contaduría":
+            return "Ciencias Económicas y Sociales";
+            
+        case "Civil":
+            return "Ingeniería"
+        case "Ciencias Sociales":
+            return "Ciencias Económicas y Sociales";
+            
+        case "Comunicación Social":
+            return "Humanidades y Educación";
+            
+        case "Derecho":
+            return "Derecho";
+            
+        case "Educación":
+            return "Humanidades y Educación";
+            
+        case "Economía":
+            return "Ciencias Económicas y Sociales";
+            
+        case "Filosofía":
+            return "Humanidades y Educación";
+            
+        case "Industrial":
+            return "Ingeniería";
+            
+        case "Informática":
+            return "Ingeniería";
+            
+        case "Letras":
+            return "Humanidades y Educación";
+            
+        case "Psicología":
+            return "Humanidades y Educación";
+            
+        case "Telecomunicaciones":
+            return "Ingeniería";
+            
+        case "Teología":
+            return "Teología";
+    
+    }
+  }
+
+  export const electionsWithUCAB = (Elections) => {
+    const keys = Object.keys(Elections)
+    return keys.every( key =>  Elections[key].escuela !== "UCAB" )
+  }
+
+  export const countSchools = (PollingStations) => {
+    const keys = Object.keys(PollingStations)
+
+     return keys.reduce(
+      (counter, key) => {
+        const acum = counter
+        acum[PollingStations[key].escuela] = (acum[PollingStations[key].escuela] || 0) + 1
+        return acum
+      },
+      [{}])
+
+  }
+
+  export const pollingStationsWithUCAB = (PollingStations) => {
+    const occurencesArrayObj = countSchools(PollingStations)
+    return schools.length === (Object.keys(occurencesArrayObj).length - 1)
+  }
+
+  export const validateFacultiesSchools = ( Elections, PollingStations ) => {
+    const ElectionsKeys = Object.keys(Elections)
+    return ElectionsKeys.every( key => {
+      if(Elections[key].tipoeleccion === 'Consejo de Facultad'){
+        const occurencesArrayObj = Object.keys(countSchools(PollingStations))
+        switch (Elections[key].escuela) {
+          case 'Ciencias Económicas y Sociales':
+            return schoolsCES.every( school => occurencesArrayObj.includes(school))
+          case 'Ingeniería':
+            return schoolsIng.every( school => occurencesArrayObj.includes(school))
+          case 'Humanidades y Educación':
+            return schoolsHE.every( school => occurencesArrayObj.includes(school))
+          case 'Derecho':
+            return schoolsD.every( school => occurencesArrayObj.includes(school))
+          case 'Teología':
+            return schoolsT.every( school => occurencesArrayObj.includes(school))
+        }
+      } else {
+        return true
+      }
+    })
+  }
+
+  export const validateSchools = ( Elections, PollingStations  ) => {
+    const ElectionsKeys = Object.keys(Elections)
+    return ElectionsKeys.every( key => {
+      if(Elections[key].tipoeleccion === 'Consejo de Escuela'){
+        const occurencesArrayObj = Object.keys(countSchools(PollingStations))
+        return occurencesArrayObj.includes(Elections[key].escuela)
+      } else {
+        return true
+      }
+    })
+  }
+
+
+  export const validateElectoralEvent = (ElectoralEvent) => {
+    const ElectionsKeys = Object.keys(ElectoralEvent.record.elections)
+    const PollingStations = Object.keys(ElectoralEvent.record.pollingStations)
+
+    if( !(ElectionsKeys.length > 0) || !(PollingStations.length > 0))
+      return { validate: false, message: "Error, no existen mesas electorales y/o elecciones registradas para el evento electoral"}
+    
+    if( !(candidatesNull(ElectoralEvent.record.elections)) )
+      return { validate: false, message: "Error, no existen candidatos registrados para 1 o más elecciones del evento electoral" }
+
+    if( !(electionsWithUCAB(ElectoralEvent.record.elections)) )
+      if( !pollingStationsWithUCAB(ElectoralEvent.record.pollingStations) )
+        return { validate: false, message: "Error, existe una elección para la UCAB. Por lo tanto, debe existir una mesa electoral por escuela"}
+
+    if( !validateFacultiesSchools( ElectoralEvent.record.elections, ElectoralEvent.record.pollingStations ))
+      return { validate: false, message: "Error, una o más elecciones de tipo facultad no tienen la cantidad necesaria de mesas electorales por escuelas" }
+
+    if( !validateSchools( ElectoralEvent.record.elections, ElectoralEvent.record.pollingStations ))
+      return { validate: false, message: "Error, una o más elecciones de tipo escuela no tienen la cantidad necesaria de mesas electorales por la escuela" }
+
+    return {validate: false, message: "Puede pasar"}
   }

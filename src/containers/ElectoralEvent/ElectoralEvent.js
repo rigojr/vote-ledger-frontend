@@ -10,7 +10,7 @@ import CreateModal from '../../components/ElectoralEvent/ElectoralEventCreateMod
 import Spinner from '../../components/UI/Spinner/Spinner';
 import * as actions from '../../store/actions/index';
 import { eventStates } from '../../constants/eventStates';
-import { compareValues, candidatesNull } from '../../store/utility'
+import { compareValues, validateElectoralEvent } from '../../store/utility'
 import CandidatesModalEV from '../../components/ElectoralEvent/CandidatesModalEV/CandidatesModalEV';
 import EscModal from '../../components/ElectoralEvent/EscModal/EscModal';
 
@@ -200,9 +200,11 @@ class ElectoralEvent extends Component {
     handleChangeStatus =  async (payload) => {
         const eventRaw = this.props.fetch.find( event => event.id === payload.id);
         const newIndex = eventStates.indexOf(payload['state']) + 1;
+        
         if( newIndex < eventStates.length){
             if (confirm(`El Evento Electoral de Id ${payload['id']} cambiara su estado de ${payload['state']} a ${eventStates[newIndex]}. ${payload['state'] === 'Inscripción' ? 'Por favor, recuerde actualizar el padrón electoral antes de abandonar el proceso de inscripción' : '' }¿Desea continuar?`)){ // eslint-disable-line no-eval
-                if( eventRaw.state !== 'Inscripción' || candidatesNull(eventRaw.record.elections)){
+                const returnObject = validateElectoralEvent(eventRaw);
+                if( eventRaw.state !== 'Inscripción' || returnObject.validate){
                     await this.setState(
                         {form: {
                             initDate: new Date(payload['initDate']),
@@ -215,7 +217,7 @@ class ElectoralEvent extends Component {
                     this.setOnCreate(eventRaw.record.elections, eventRaw.record.pollingStations)
                 }
                 else{
-                    alert("Error, el evento electoral no tiene elecciones, candidatos y/o mesas electorales registradas");
+                    alert(returnObject.message);
                 }
             }
         } else {
