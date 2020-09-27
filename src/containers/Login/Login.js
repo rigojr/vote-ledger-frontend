@@ -38,14 +38,14 @@ class Login extends Component {
     authLogicRedirection = () =>{
         if( this.state.form.ci !== '' && this.state.form.password !== ''){
             const user = this.props.users.find( user => user.id === this.state.form.ci )
-            if( user ){
+            if( user && user.type === "admin"){
                 this.props.onLogin( 
                     this.state.form.ci, 
                     sha256(this.state.form.password),  
                     user
                     )
             } else {
-                alert('El usuario no existe en el sistema, valide los datos ingresados.')
+                alert('Error, el usuario no existe / el tipo de usuario no puede hacer login')
             }
         } else {
             alert(`Termine de ingresaro los datos`)
@@ -140,7 +140,7 @@ class Login extends Component {
 const mapStateToProps = state => {
     return{
         isLoading: state.user.isLoading,
-        users: state.user.users,
+        users: state.user.fetch,
         isLoggin: state.login.isLoading,
         failMessage: state.login.failMessage,
         authenticated: state.login.authenticated
