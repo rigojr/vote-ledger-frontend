@@ -16,6 +16,7 @@ import styled from 'styled-components'
 const ErrorMessage = styled.p`
     text-align: center;
     color: red;
+    padding-top: 20px;
 `
 
 class Login extends Component {
@@ -101,7 +102,8 @@ class Login extends Component {
                         </Form.Group>
                         <Button 
                             variant="primary" 
-                            onClick={this.authLogicRedirection}>
+                            onClick={this.authLogicRedirection}
+                            autoFocus>
                             Ingresar
                         </Button>
                     </Form>
