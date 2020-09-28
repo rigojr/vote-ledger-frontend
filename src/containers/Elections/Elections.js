@@ -161,7 +161,7 @@ class Elections extends Component {
                     descripcion: this.state.form.desc,
                     escuela: orgTemp,
                     id: this.state.form.id,
-                    maximovotos: this.state.form.typeElection === 'Consejo Universitario' ? '3' : '2',
+                    maximovotos: this.state.form.typeElection === 'Consejo Universitario' ? 3 : 2,
                     tipoeleccion: this.state.form.typeElection,
                     nombre: this.state.form.name
                 }

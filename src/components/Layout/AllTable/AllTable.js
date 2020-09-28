@@ -8,6 +8,14 @@ import Table from 'react-bootstrap/Table';
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 
+import styled from 'styled-components'
+
+const StyledTd = styled.td`
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+`
+
 import Aux from '../../../hoc/Aux';
 import styles from './AllTable.module.css';
 import { canShowEsc } from '../../../store/utility'
@@ -49,7 +57,7 @@ const AllTable = ( props ) => {
                                                         Object.values(payload).map(
                                                             (e, index) => {
                                                                 if( payload.id )
-                                                                    return <td key={`${index}+${payload.id}`}>{e}</td>
+                                                                    return <StyledTd key={`${index}+${payload.id}`}>{e}</StyledTd>
                                                             }
                                                                 
                                                         )
