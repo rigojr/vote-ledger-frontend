@@ -241,3 +241,13 @@ export const compareValues = (key, order = 'asc') => {
 
     return {validate: false, message: "Puede pasar"}
   }
+
+  export const itBelong = ( user, election) => {
+    if(election.tipoeleccion === "Consejo Universitario")
+      return true
+    if(election.tipoeleccion === "Consejo de Facultad"){
+      return election.escuela === user.faculty
+    } else {
+      return election.escuela === user.school
+    }
+  }

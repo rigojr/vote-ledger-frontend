@@ -11,7 +11,7 @@ import CardMessage from '../../components/Layout/CardMessage/CardMessage';
 import InfraHeader from '../../components/Layout/InfraHeader/InfraHeader';
 import * as actions from '../../store/actions/index';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import { canCreateUpdate } from '../../store/utility';
+import { canCreateUpdate, itBelong} from '../../store/utility';
 import CandiateModalInput from '../../components/Candidates/CandidatesModalInput/CandidatesModalInput'
 
 class Elections extends Component {
@@ -357,33 +357,37 @@ class Elections extends Component {
                         return rawEvent.record.elections[key].Candidatos.every( candidate => candidate.idusuario !== this.state.formCandidates.id)
                     return true
                 })
-                if( isRegister && user.type !== "admin" ){
-                    if(user && user.status === "1" ){
-                        if(rawCandidates && rawCandidates.find( candidato => candidato.idusuario === this.state.formCandidates.id)){
-                            alert(`CI ${this.state.formCandidates.id} ya es un candidato registrado`)
+                if( itBelong(user, rawEvent.record.elections[this.state.selectedElection.id]) ){
+                    if( isRegister && user.type !== "admin" ){
+                        if(user && user.status === "1" ){
+                            if(rawCandidates && rawCandidates.find( candidato => candidato.idusuario === this.state.formCandidates.id)){
+                                alert(`CI ${this.state.formCandidates.id} ya es un candidato registrado`)
+                            }else{
+                                let tempCandidates = this.state.selectedElection.Candidatos
+                                if(!tempCandidates)
+                                    tempCandidates = []
+                                this.setOnCreateCandidates(rawEvent,user.id)
+                                tempCandidates.push({ idusuario: this.state.formCandidates.id, votos: 0, organizacion: this.state.formCandidates.electoralOrg})
+                                this.setState( prevState => ({
+                                    ...prevState,
+                                    selectedElection: {
+                                        ...this.state.selectedElection,
+                                        Candidatos: tempCandidates
+                                    },
+                                    formCandidates: {
+                                        ...prevState.formCandidates,
+                                        id: '',
+                                    }
+                                }))
+                            }
                         }else{
-                            let tempCandidates = this.state.selectedElection.Candidatos
-                            if(!tempCandidates)
-                                tempCandidates = []
-                            this.setOnCreateCandidates(rawEvent,user.id)
-                            tempCandidates.push({ idusuario: this.state.formCandidates.id, votos: 0, organizacion: this.state.formCandidates.electoralOrg})
-                            this.setState( prevState => ({
-                                ...prevState,
-                                selectedElection: {
-                                    ...this.state.selectedElection,
-                                    Candidatos: tempCandidates
-                                },
-                                formCandidates: {
-                                    ...prevState.formCandidates,
-                                    id: '',
-                                }
-                            }))
+                            alert(`El usuario con el CI ${this.state.formCandidates.id}, no es un usuario registrado o se encuentra inhabilitado`)
                         }
-                    }else{
-                        alert(`El usuario con el CI ${this.state.formCandidates.id}, no es un usuario registrado o se encuentra inhabilitado`)
+                    } else {
+                        alert(`El usuario con el CI ${this.state.formCandidates.id}, ya esta registrado o no es de tipo elector`)
                     }
                 } else {
-                    alert(`El usuario con el CI ${this.state.formCandidates.id}, ya esta registrad o no es de tipo elector`)
+                    alert("Error, el usuario no pertenece a la organización que gestiona la elección")
                 }
             }else{
                 alert('No deje espacios vacios/Seleccione una Organización Electoral')
