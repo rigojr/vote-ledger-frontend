@@ -239,7 +239,7 @@ export const compareValues = (key, order = 'asc') => {
     if( !validateSchools( ElectoralEvent.record.elections, ElectoralEvent.record.pollingStations ))
       return { validate: false, message: "Error, una o más elecciones de tipo escuela no tienen la cantidad necesaria de mesas electorales por la escuela" }
 
-    return {validate: false, message: "Puede pasar"}
+    return {validate: true, message: "Puede pasar"}
   }
 
   export const itBelong = ( user, election) => {
