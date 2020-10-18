@@ -311,7 +311,7 @@ class User extends Component {
             if(!found)
                 alert("Usuario con el ID " + this.state.search + ", no fue encontrado");
         }else{
-            alert("Error en la búsqueda, verifique entradas y conexión con el back");
+            alert("Error en la búsqueda, verifique entradas y conexión con el Blockchain");
         }
     }
 

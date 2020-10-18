@@ -180,6 +180,8 @@ class PollingStation extends Component {
                     this.setModalMessage("Guardado con éxito!");
                     setTimeout(this.cleanModalHandler,3000);
                     setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
+                } else {
+                    alert("Error, termine de ingresar los datos")
                 }
             }else{
                 alert(`El id ${this.state.form.id} ya existe`)

@@ -221,7 +221,7 @@ class ElectoralEvent extends Component {
                 }
             }
         } else {
-            alert("Error, el evento electoral ya está fnializado");
+            alert("Error, el evento electoral ya está finalizado");
         }
 
     }

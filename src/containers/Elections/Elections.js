@@ -384,7 +384,7 @@ class Elections extends Component {
                             alert(`El usuario con el CI ${this.state.formCandidates.id}, no es un usuario registrado o se encuentra inhabilitado`)
                         }
                     } else {
-                        alert(`El usuario con el CI ${this.state.formCandidates.id}, ya esta registrado o no es de tipo elector`)
+                        alert(`El usuario con el CI ${this.state.formCandidates.id}, no es de tipo elector`)
                     }
                 } else {
                     alert("Error, el usuario no pertenece a la organización que gestiona la elección")
