@@ -357,6 +357,7 @@ class Elections extends Component {
                         return rawEvent.record.elections[key].Candidatos.every( candidate => candidate.idusuario !== this.state.formCandidates.id)
                     return true
                 })
+                console.log(isRegister)
                 if( itBelong(user, rawEvent.record.elections[this.state.selectedElection.id]) ){
                     if( isRegister && user.type !== "admin" ){
                         if(user && user.status === "1" ){
@@ -384,7 +385,7 @@ class Elections extends Component {
                             alert(`El usuario con el CI ${this.state.formCandidates.id}, no es un usuario registrado o se encuentra inhabilitado`)
                         }
                     } else {
-                        alert(`El usuario con el CI ${this.state.formCandidates.id}, no es de tipo elector`)
+                        alert(`El usuario con el CI ${this.state.formCandidates.id}, no es de tipo elector o ya esta registrado como candidato`)
                     }
                 } else {
                     alert("Error, el usuario no pertenece a la organización que gestiona la elección")
