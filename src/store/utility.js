@@ -1,5 +1,6 @@
 import {schools} from '../constants/schools';
 import { schoolsCES, schoolsIng, schoolsHE, schoolsD, schoolsT} from '../constants/schoolsFaculties';
+import queryVoteServices from '../services/queryVote';
 
 export const updateObject = (oldObject, updatedProperties) => {
     return {
@@ -250,4 +251,71 @@ export const compareValues = (key, order = 'asc') => {
     } else {
       return election.escuela === user.school
     }
+  }
+
+  export const countVotes = async (electoralEvent) => {
+    const electionsKeys = Object.keys(electoralEvent.record.elections)
+    const pollingStatiosKeys = Object.keys(electoralEvent.record.pollingStations)
+    const pollingStationAcum = []
+    const candidateAcum = []
+
+    for (const pollingStationkey of pollingStatiosKeys) {
+      const pollingStation = electoralEvent.record.pollingStations[pollingStationkey]
+      for (const electionKey of electionsKeys) {
+        const candidatos = electoralEvent.record.elections[electionKey].Candidatos
+        for (const candidato of candidatos) {
+          await queryVoteServices()
+            .getCountVotes(
+                electoralEvent.id,
+                electionKey,
+                pollingStationkey,
+                candidato.idusuario
+            )
+            .then( response => {
+                const candidateIndex = 
+                  candidateAcum.findIndex( candidateData => candidateData.idusuario === candidato.idusuario)
+                if(candidateIndex === -1){
+                  candidateAcum.push({
+                    idusuario: candidato.idusuario,
+                    votes: 0 
+                  })
+                }
+                else{
+                  const toSum = isNaN(response.data.mensaje) ? 0 : parseInt(response.data.mensaje)
+                  candidateAcum[candidateIndex] = {
+                    idusuario: candidato.idusuario,
+                    votes: candidateAcum[candidateIndex].votes + toSum
+                  }
+                }
+                
+            })
+        }
+
+        await queryVoteServices().getCountVotes(
+          electoralEvent.id,
+          electionKey,
+          pollingStationkey,
+          null
+          )
+        .then( response => {
+              const pollingStationIndex = 
+                pollingStationAcum.findIndex( pollingStationData => pollingStationData.id === pollingStation.id)
+              if(pollingStationIndex === -1){
+                pollingStationAcum.push({
+                  id: pollingStation.id,
+                  votes: 0 
+                })
+              }
+              else{
+                const toSum = isNaN(response.data.mensaje) ? 0 : parseInt(response.data.mensaje)
+                pollingStationAcum[pollingStationIndex] = {
+                  id: pollingStation.id,
+                  votes: pollingStationAcum[pollingStationIndex].votes + toSum
+                }
+              }
+        })
+
+      }
+    }
+    return await { candidates: candidateAcum, pollingStations: pollingStationAcum }
   }

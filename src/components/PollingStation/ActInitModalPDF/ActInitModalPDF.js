@@ -16,6 +16,8 @@ const StyledRow = styled(Row)`
 
 const ActInitModalPDF = (props) => {
 
+    const newVotes = props.responsePDFModal.pollingStations.find( polling => polling.id === props.data.id).votes
+
     const pdfTitle = `Acta de ${props.data.state === 'Auditoría' ? 'Inicio' : 'Votación' }`
 
     const title = `Mesa electoral "${props.data.id} - ${props.data.nombre}"`
@@ -23,7 +25,7 @@ const ActInitModalPDF = (props) => {
     const vote = `Registro de votos: ${props.data.votantes}`
     const status = `Estatus: ${props.data.habilitada === "0" ? 'Inhabilitada' : 'Habilitada' }`
     
-    const PDFInfo = [title,school,vote,status]
+    const PDFInfo = [title,school,newVotes,status]
 
     const tempPDF = (
         <PDF title={pdfTitle}>
@@ -60,7 +62,7 @@ const ActInitModalPDF = (props) => {
                     <StyledRow>
                         <Form.Group as={Col} className={`${styles.alertContainer}`}>
                             <p className={`${styles.alertMessage}`}>
-                                <b>{vote}</b>
+                                <b>{newVotes}</b>
                             </p>
                         </Form.Group>
                     </StyledRow>

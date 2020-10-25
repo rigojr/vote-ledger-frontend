@@ -12,7 +12,8 @@ import InfraHeader from '../../components/Layout/InfraHeader/InfraHeader';
 import * as actions from '../../store/actions/index';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import ActInitModalPDF from '../../components/PollingStation/ActInitModalPDF/ActInitModalPDF';
-import { canCreateUpdate } from '../../store/utility';
+import { canCreateUpdate, countVotes } from '../../store/utility';
+import ModalMessage from '../../components/UI/ModalMessage/ModalMessage';
 
 class PollingStation extends Component {
 
@@ -37,7 +38,9 @@ class PollingStation extends Component {
         UpdateBoolean: false,
         isShowingModalAct: false,
         PDFContent: {},
-        FullDataEV: {}
+        FullDataEV: {},
+        isLoadingPDFModal: false,
+        responsePDFModal: null
     }
 
     componentDidMount () {
@@ -221,6 +224,32 @@ class PollingStation extends Component {
 
     }
 
+    setPDFModal = (payload) => {
+        const electoralEvent = this.props.fetch.find( event => event.id === payload)
+        this.setState( prevState => ({
+            ...prevState,
+            isLoadingPDFModal: true
+        }))
+        countVotes(electoralEvent)
+        .then( response => {
+            this.setState( prevState => ({
+                ...prevState,
+                isShowEscModal: !this.state.isShowEscModal,
+                selectedElectoralEvet: electoralEvent,
+                isLoadingPDFModal: false,
+                responsePDFModal: response
+            }) )
+            console.log(response)
+        })
+        .catch( err => {
+            this.setState( prevState => ({
+                ...prevState,
+                isLoadingPDFModal: false,
+                responsePDFModal: null
+            }) )
+        })
+    }
+
     selectElectoralEventHandler = ( ElectoralEvent ) => {
         const tempShowMessage = false;
         const tempShowTable = true;
@@ -249,7 +278,7 @@ class PollingStation extends Component {
             ...prevState,
             pollingStations: pollingStationsTemp
         }))
-
+        this.setPDFModal(ElectoralEvent)
     }
 
     updateModal = ( selectPollingStations ) => {
@@ -386,19 +415,22 @@ class PollingStation extends Component {
             :
         <Redirect from="/polling-station" to="/login"/>;
 
-        const ActInitModal = (
-            this.state.selectElectoralEvent !== '' ?
-            <ActInitModalPDF 
-                modalHandler={this.modalAct}
-                showModal={this.state.isShowingModalAct}
-                data={this.state.PDFContent}/> : null
-        )
-
         return(
             <Aux>
                 {PollingStationComponent}
                 {RedirectComponent}
-                {ActInitModal}
+                {
+                    this.state.selectElectoralEvent !== '' && this.state.responsePDFModal ?
+                    <ActInitModalPDF 
+                        modalHandler={this.modalAct}
+                        showModal={this.state.isShowingModalAct}
+                        data={this.state.PDFContent}
+                        responsePDFModal={this.state.responsePDFModal}/> : 
+                            this.state.isLoadingPDFModal && this.state.isShowingModalAct ?
+                            <ModalMessage>
+                                <Spinner/>
+                            </ModalMessage> : null
+                }
             </Aux>
         )
     }
