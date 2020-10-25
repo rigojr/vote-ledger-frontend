@@ -39,11 +39,14 @@ const DataTContainer = styled.View`
     display: flex;
     justify-content: space-around;
     flex-direction: row;
+    font-size: 12px;
 `
 
 const DataTable = styled.Text`
-    font-size: 14px;
+    font-size: 12px;
     padding: 5px 0px;
+    width: 100%;
+    margin: 0px;
 `
 
 const EscPDF = (props) => {
@@ -59,20 +62,20 @@ const EscPDF = (props) => {
                     <HeaderTable style={styles.column}>Votantes</HeaderTable>
                 </HeaderTContainer>
                     {
-                        arrayPolling.map( key => {
-                            const pollingStation = props.electoralEvent.record.pollingStations[key]
-                            totalVotantes =+ pollingStation.votantes
+                        props.responseEscModal.pollingStations.map( polling => {
+                            const pollingStation = props.electoralEvent.record.pollingStations[polling.id]
+                            totalVotantes += polling.votes
                             return(
-                                <DataTContainer key={key} style={styles.tabelHeader}>
+                                <DataTContainer key={pollingStation.id} style={styles.tabelHeader}>
                                     <DataTable style={styles.column}>{`${pollingStation.id} - ${pollingStation.nombre}`}</DataTable>
-                                    <DataTable style={styles.column}>{pollingStation.votantes}</DataTable>
+                                    <DataTable style={styles.column}>{polling.votes / 2}</DataTable>
                                 </DataTContainer>
                             )
                         } )
                     }
                 <DataTContainer style={styles.tabelHeader}>
                     <DataTable style={styles.column}>Votantes Totales</DataTable>
-                    <DataTable style={styles.column}>{totalVotantes}</DataTable>
+                    <DataTable style={styles.column}>{totalVotantes / 2}</DataTable>
                 </DataTContainer>
                 {
                     arrayElection.map( key =>{
@@ -89,12 +92,13 @@ const EscPDF = (props) => {
                                 </HeaderTContainer>
                                 {
                                     election.Candidatos ? election.Candidatos.map( candidato => {
-                                        const user = props.users.find( user => user.id === candidato.idusuario)
-                                        votos =+ candidato.votos
+                                        const userInfo = props.users.find( user => user.id === candidato.idusuario)
+                                        const userVote = props.responseEscModal.candidates.find( candidate => candidate.idusuario === candidato.idusuario )
+                                        votos += userVote.votes
                                         return (
-                                            <DataTContainer key={user.name} style={styles.tabelHeader}>
-                                                    <DataTable style={styles.column}>{`${user.name}`}</DataTable>
-                                                    <DataTable style={styles.column}>{candidato.votos}</DataTable>
+                                            <DataTContainer key={userInfo.name} style={styles.tabelHeader}>
+                                                    <DataTable style={styles.column}>{`${userInfo.name}`}</DataTable>
+                                                    <DataTable style={styles.column}>{userVote.votes}</DataTable>
                                             </DataTContainer>
                                         )
                                     }) : <DataTContainer><DataTable>Error, no existen candidatos</DataTable></DataTContainer>

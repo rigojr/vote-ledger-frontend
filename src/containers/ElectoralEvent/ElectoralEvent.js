@@ -10,9 +10,10 @@ import CreateModal from '../../components/ElectoralEvent/ElectoralEventCreateMod
 import Spinner from '../../components/UI/Spinner/Spinner';
 import * as actions from '../../store/actions/index';
 import { eventStates } from '../../constants/eventStates';
-import { compareValues, validateElectoralEvent } from '../../store/utility'
+import { compareValues, validateElectoralEvent, countVotes } from '../../store/utility';
 import CandidatesModalEV from '../../components/ElectoralEvent/CandidatesModalEV/CandidatesModalEV';
 import EscModal from '../../components/ElectoralEvent/EscModal/EscModal';
+import ModalMessage from '../../components/UI/ModalMessage/ModalMessage';
 
 class ElectoralEvent extends Component {
 
@@ -34,6 +35,9 @@ class ElectoralEvent extends Component {
         isShowCandidatesModal: false,
         selectedElectoralEvet: null,
         isShowEscModal: false,
+        pollingStationVotes: [],
+        isLoadingEscModal: false,
+        responseEscModal: null
     }
 
     setInitDate = (date) => {
@@ -242,11 +246,30 @@ class ElectoralEvent extends Component {
     }
 
     setModalEsc = (payload) => {
+        const electoralEvent = this.props.fetch.find( event => event.id === payload.id)
         this.setState( prevState => ({
             ...prevState,
-            isShowEscModal: !this.state.isShowEscModal,
-            selectedElectoralEvet: this.props.fetch.find( event => event.id === payload.id)
-        }) )
+            isLoadingEscModal: true
+        }))
+        countVotes(electoralEvent)
+        .then( response => {
+            this.setState( prevState => ({
+                ...prevState,
+                isShowEscModal: !this.state.isShowEscModal,
+                selectedElectoralEvet: electoralEvent,
+                isLoadingEscModal: false,
+                responseEscModal: response
+            }) )
+            console.log(response)
+        })
+        .catch( err => {
+            this.setState( prevState => ({
+                ...prevState,
+                isLoadingEscModal: false,
+                responseEscModal: null
+            }) )
+        })
+        
     }
 
     modalEsc = () => {
@@ -316,13 +339,25 @@ class ElectoralEvent extends Component {
                             showModal={this.state.isShowCandidatesModal}
                             electoralEvent={this.state.selectedElectoralEvet}
                             users={this.props.users}/>
-                        <EscModal 
-                            modalHandler={this.modalEsc}
-                            showModal={this.state.isShowEscModal}
-                            electoralEvent={this.state.selectedElectoralEvet}
-                            users={this.props.users}/>
+                            {
+                                this.state.responseEscModal ? 
+                                <EscModal 
+                                    modalHandler={this.modalEsc}
+                                    showModal={this.state.isShowEscModal}
+                                    electoralEvent={this.state.selectedElectoralEvet}
+                                    users={this.props.users}
+                                    responseEscModal={this.state.responseEscModal}/>
+                                : null
+                            }
+                        
                     </Aux>
                     : null
+                }
+                {
+                    this.state.isLoadingEscModal ?
+                        <ModalMessage>
+                            <Spinner/>
+                        </ModalMessage> : null
                 }
                 
             </Aux>
