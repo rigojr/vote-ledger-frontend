@@ -1,6 +1,6 @@
 .UsersCard{
     padding: 20px;
-    width: 90%;
+    width: 60%;
     margin: auto;
     margin-top: 40px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -22,7 +22,8 @@
 }
 
 .UserTbody{
-    max-height: 400px;
+    min-height: 400px;
+    max-height: 500px;
     display: block;
     overflow-y: scroll;
 }
