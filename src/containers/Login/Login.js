@@ -40,11 +40,16 @@ class Login extends Component {
         if( this.state.form.ci !== '' && this.state.form.password !== ''){
             const user = this.props.users.find( user => user.id === this.state.form.ci )
             if( user && user.type === "admin"){
-                this.props.onLogin( 
-                    this.state.form.ci, 
-                    sha256(this.state.form.password),  
-                    user
-                    )
+                const shaPassword = sha256(this.state.form.password)
+                if( shaPassword === user.password ){
+                    this.props.onLogin( 
+                        this.state.form.ci, 
+                        shaPassword,  
+                        user
+                        )
+                } else {
+                    alert("Error, la contraseña es incorrecta")
+                }
             } else {
                 alert('Error, el usuario no existe / el tipo de usuario no puede hacer login')
             }
@@ -107,10 +112,6 @@ class Login extends Component {
                             Ingresar
                         </Button>
                     </Form>
-                    {
-                        this.props.failMessage === '' ? null
-                        : <ErrorMessage>{this.props.failMessage}</ErrorMessage>
-                    }
                 </Card>
         )
 
