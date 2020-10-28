@@ -41,14 +41,18 @@ class Login extends Component {
             const user = this.props.users.find( user => user.id === this.state.form.ci )
             if( user && user.type === "admin"){
                 const shaPassword = sha256(this.state.form.password)
-                if( shaPassword === user.password ){
-                    this.props.onLogin( 
-                        this.state.form.ci, 
-                        shaPassword,  
-                        user
-                        )
+                if( user.status === '1' ){
+                    if( shaPassword === user.password ){
+                        this.props.onLogin( 
+                            this.state.form.ci, 
+                            shaPassword,  
+                            user
+                            )
+                    } else {
+                        alert("Error, la contraseña es incorrecta")
+                    }
                 } else {
-                    alert("Error, la contraseña es incorrecta")
+                    alert("Error, el usuario esta inhabilitado")
                 }
             } else {
                 alert('Error, el usuario no existe / el tipo de usuario no puede hacer login')
