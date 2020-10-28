@@ -62,14 +62,14 @@ const ActInitModalPDF = (props) => {
                     <StyledRow>
                         <Form.Group as={Col} className={`${styles.alertContainer}`}>
                             <p className={`${styles.alertMessage}`}>
-                                <b>{newVotes}</b>
+                                <b>Registro de votos: {newVotes}</b>
                             </p>
                         </Form.Group>
                     </StyledRow>
                     <StyledRow>
                         <Form.Group as={Col} className={`${styles.alertContainer}`}>
                             <p className={`${styles.alertMessage}`}>
-                                <b>{status}</b>
+                                {status}
                             </p>
                         </Form.Group>
                     </StyledRow>

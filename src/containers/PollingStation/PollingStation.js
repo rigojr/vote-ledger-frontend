@@ -37,7 +37,7 @@ class PollingStation extends Component {
         modalUpdateBtn: false,
         UpdateBoolean: false,
         isShowingModalAct: false,
-        PDFContent: {},
+        PDFContent: null,
         FullDataEV: {},
         isLoadingPDFModal: false,
         responsePDFModal: null
@@ -420,7 +420,7 @@ class PollingStation extends Component {
                 {PollingStationComponent}
                 {RedirectComponent}
                 {
-                    this.state.selectElectoralEvent !== '' && this.state.responsePDFModal ?
+                    this.state.selectElectoralEvent !== '' && this.state.responsePDFModal && this.state.PDFContent ?
                     <ActInitModalPDF 
                         modalHandler={this.modalAct}
                         showModal={this.state.isShowingModalAct}
