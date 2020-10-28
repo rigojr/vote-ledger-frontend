@@ -378,7 +378,7 @@ class PollingStation extends Component {
             PollingStationComponent = (
                 <Aux>
                     <SubHeader 
-                        subHeaderTitle="Mesas Electorales del Sistema"
+                        subHeaderTitle="Mesas Electorales"
                         searchHandler={this.searchHandler}
                         btnName="Eventos Electorales"
                         btnPayload={this.props.events}

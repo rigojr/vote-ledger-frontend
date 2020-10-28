@@ -456,7 +456,7 @@ class Elections extends Component {
             ElectionComponent = (
                 <Aux>
                     <SubHeader 
-                        subHeaderTitle="Elecciones del Sistema"
+                        subHeaderTitle="Elecciones"
                         searchHandler={this.searchHandler}
                         btnName="Eventos Electorales"
                         btnPayload={this.props.events}
