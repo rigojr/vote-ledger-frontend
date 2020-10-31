@@ -32,7 +32,6 @@ const EscModal = (props) => {
     const pdfTitle = `Acta de Escrutinio del Evento Electoral ${props.electoralEvent.id} - ${props.electoralEvent.eventName}`
     const arrayPolling = Object.keys(props.electoralEvent.record.pollingStations)
     const arrayElection = Object.keys(props.electoralEvent.record.elections)
-    console.log(props.responseEscModal)
     const tempPDF = (
         <PDF title={pdfTitle}>
             <EscPDF 

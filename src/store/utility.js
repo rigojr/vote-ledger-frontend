@@ -274,20 +274,19 @@ export const compareValues = (key, order = 'asc') => {
             .then( response => {
                 const candidateIndex = 
                   candidateAcum.findIndex( candidateData => candidateData.idusuario === candidato.idusuario)
+                  const toSum = isNaN(response.data.mensaje) ? 0 : parseInt(response.data.mensaje)
                 if(candidateIndex === -1){
                   candidateAcum.push({
                     idusuario: candidato.idusuario,
-                    votes: 0 
+                    votes: toSum
                   })
                 }
                 else{
-                  const toSum = isNaN(response.data.mensaje) ? 0 : parseInt(response.data.mensaje)
                   candidateAcum[candidateIndex] = {
                     idusuario: candidato.idusuario,
                     votes: candidateAcum[candidateIndex].votes + toSum
                   }
                 }
-                
             })
         }
 
@@ -300,14 +299,14 @@ export const compareValues = (key, order = 'asc') => {
         .then( response => {
               const pollingStationIndex = 
                 pollingStationAcum.findIndex( pollingStationData => pollingStationData.id === pollingStation.id)
+                const toSum = isNaN(response.data.mensaje) ? 0 : parseInt(response.data.mensaje)
               if(pollingStationIndex === -1){
                 pollingStationAcum.push({
                   id: pollingStation.id,
-                  votes: 0 
+                  votes: toSum
                 })
               }
               else{
-                const toSum = isNaN(response.data.mensaje) ? 0 : parseInt(response.data.mensaje)
                 pollingStationAcum[pollingStationIndex] = {
                   id: pollingStation.id,
                   votes: pollingStationAcum[pollingStationIndex].votes + toSum
