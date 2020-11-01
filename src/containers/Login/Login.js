@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom'
 
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
@@ -11,13 +11,8 @@ import Aux from '../../hoc/Aux'
 import * as actions from '../../store/actions/index'
 import { sha256 } from 'js-sha256'
 import Spinner from '../../components/UI/Spinner/Spinner'
-import styled from 'styled-components'
-
-const ErrorMessage = styled.p`
-    text-align: center;
-    color: red;
-    padding-top: 20px;
-`
+import ModalMessage from '../../components/UI/ModalMessage/ModalMessage'
+import { ErrorMessage } from '../../constants/cssProperties'
 
 class Login extends Component {
 
@@ -27,7 +22,8 @@ class Login extends Component {
             form: {
                 ci: '',
                 password: '',
-            }
+            },
+            modalWarning: null
          };
     }
 
@@ -37,6 +33,7 @@ class Login extends Component {
 
 
     authLogicRedirection = () =>{
+        let modalWarning = null
         if( this.state.form.ci !== '' && this.state.form.password !== ''){
             const user = this.props.users.find( user => user.id === this.state.form.ci )
             if( user && user.type === "admin"){
@@ -49,18 +46,22 @@ class Login extends Component {
                             user
                             )
                     } else {
-                        alert("Error, la contraseña es incorrecta")
+                        modalWarning = "Error, la contraseña es incorrecta"
                     }
                 } else {
-                    alert("Error, el usuario esta inhabilitado")
+                    modalWarning = "Error, el usuario esta inhabilitado"
                 }
             } else {
-                alert('Error, el usuario no existe / el tipo de usuario no puede hacer login')
+                modalWarning = 'Error, el usuario no existe / el tipo de usuario no puede hacer login'
             }
         } else {
-            alert(`Termine de ingresaro los datos`)
+            modalWarning = `Termine de ingresaro los datos`
         }
         this.cleanLoginForm()
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
     cleanLoginForm = () => {
@@ -138,6 +139,14 @@ class Login extends Component {
                     this.props.isLoggin ? <Spinner /> : null
                 }
                 {redirectDashBoard}
+                {
+                    this.state.modalWarning ? 
+                        <ModalMessage
+                            modalHandler={() => this.setState( prevState => ({...prevState, modalWarning: null}))}
+                            modalTitile={"Error"}>
+                            <ErrorMessage>{ this.state.modalWarning }</ErrorMessage>
+                        </ModalMessage> : null
+                }
             </Aux>
         )
     }

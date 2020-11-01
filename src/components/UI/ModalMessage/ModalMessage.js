@@ -12,7 +12,10 @@ const ModalMessage = (props) => {
 
     return (
         <AllModal
-            modalBoolean={true}>
+            modalBoolean={true}
+            showModal={props.modalHandler}
+            modalTitile={props.modalTitile}
+            small={true}>
             <MainContainer>
                 {props.children}
             </MainContainer>

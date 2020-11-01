@@ -14,6 +14,7 @@ import { compareValues, validateElectoralEvent, countVotes } from '../../store/u
 import CandidatesModalEV from '../../components/ElectoralEvent/CandidatesModalEV/CandidatesModalEV';
 import EscModal from '../../components/ElectoralEvent/EscModal/EscModal';
 import ModalMessage from '../../components/UI/ModalMessage/ModalMessage';
+import { ErrorMessage } from '../../constants/cssProperties';
 
 class ElectoralEvent extends Component {
 
@@ -36,7 +37,8 @@ class ElectoralEvent extends Component {
         selectedElectoralEvet: null,
         isShowEscModal: false,
         isLoadingEscModal: false,
-        responseEscModal: null
+        responseEscModal: null,
+        modalWarning: null
     }
 
     setInitDate = (date) => {
@@ -94,6 +96,7 @@ class ElectoralEvent extends Component {
     }
 
     createHandler = () => {
+        let modalWarning = null
         if( this.props.events.findIndex( (event) => event.id === this.state.form.eventCode) == -1 ){
             if(
                 !(this.state.form.eventCode === '' ||
@@ -108,15 +111,18 @@ class ElectoralEvent extends Component {
                     this.setState( { enableState: true} );
                     setTimeout(this.cleanModalHandler,3000);
                 } else {
-                    alert(`La fecha de fin debe ser mayor por 47 días continuos que la fecha de inicio`)
+                    modalWarning =`La fecha de fin debe ser mayor por 47 días continuos que la fecha de inicio`
                 }
             } else {
-                alert(`Termine de ingresar los datos`)
+                modalWarning = `Termine de ingresar los datos`
             }
         } else {
-            alert(`El id ${this.state.form.eventCode} ya existe`)
+            modalWarning = `El id ${this.state.form.eventCode} ya existe`
         }
-        
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
     consultModal = ( selectUser ) => {
@@ -164,6 +170,7 @@ class ElectoralEvent extends Component {
 
     searchHandler = () => {
         let found = false;
+        let modalWarning = null
         if(this.props.events && !(this.state.search == '')){
             for (let i in this.props.events) {
                 if(this.state.search === this.props.events[i].id){
@@ -185,10 +192,14 @@ class ElectoralEvent extends Component {
                 }
             }
             if(!found)
-                alert("Evento Electoral con el Código " + this.state.search + ", no fue encontrado");
+                modalWarning = "Evento Electoral con el Código " + this.state.search + ", no fue encontrado"
         }else{
-            alert("Error en la búsqueda, verifique entradas y conexión con el back");
+            modalWarning = "Error en la búsqueda, verifique entradas y conexión con el back"
         }
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
     searchModal = () => {
@@ -203,7 +214,7 @@ class ElectoralEvent extends Component {
     handleChangeStatus =  async (payload) => {
         const eventRaw = this.props.fetch.find( event => event.id === payload.id);
         const newIndex = eventStates.indexOf(payload['state']) + 1;
-        
+        let modalWarning = null
         if( newIndex < eventStates.length){
             if (confirm(`El Evento Electoral de Id ${payload['id']} cambiara su estado de ${payload['state']} a ${eventStates[newIndex]}. ${payload['state'] === 'Inscripción' ? 'Por favor, recuerde actualizar el padrón electoral antes de abandonar el proceso de inscripción' : '' }¿Desea continuar?`)){ // eslint-disable-line no-eval
                 const returnObject = validateElectoralEvent(eventRaw);
@@ -220,13 +231,16 @@ class ElectoralEvent extends Component {
                     this.setOnCreate(eventRaw.record.elections, eventRaw.record.pollingStations)
                 }
                 else{
-                    alert(returnObject.message);
+                    modalWarning = returnObject.message
                 }
             }
         } else {
-            alert("Error, el evento electoral ya está finalizado");
+            modalWarning = "Error, el evento electoral ya está finalizado"
         }
-
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
     setModalCandidates = (payload) => {
@@ -248,18 +262,17 @@ class ElectoralEvent extends Component {
         const electoralEvent = this.props.fetch.find( event => event.id === payload.id)
         this.setState( prevState => ({
             ...prevState,
-            isLoadingEscModal: true
+            isLoadingEscModal: true,
+            selectedElectoralEvet: electoralEvent,
         }))
+        this.modalEsc()
         countVotes(electoralEvent)
         .then( response => {
             this.setState( prevState => ({
                 ...prevState,
-                isShowEscModal: !this.state.isShowEscModal,
-                selectedElectoralEvet: electoralEvent,
                 isLoadingEscModal: false,
                 responseEscModal: response
             }) )
-            console.log(response)
         })
         .catch( err => {
             this.setState( prevState => ({
@@ -274,7 +287,8 @@ class ElectoralEvent extends Component {
     modalEsc = () => {
         this.setState( prevState => ({
             ...prevState,
-            isShowEscModal: !this.state.isShowEscModal
+            isShowEscModal: !this.state.isShowEscModal,
+            responseEscModal: null
         }) )
     }
 
@@ -346,16 +360,22 @@ class ElectoralEvent extends Component {
                                     electoralEvent={this.state.selectedElectoralEvet}
                                     users={this.props.users}
                                     responseEscModal={this.state.responseEscModal}/>
-                                : null
+                                : this.state.isShowEscModal && this.state.isLoadingEscModal ?
+                                    <ModalMessage
+                                        modalHandler={ () => this.setState( prevState => ({...prevState, isLoadingEscModal: false, isShowEscModal: false})) }>
+                                        <Spinner/>
+                                    </ModalMessage> : null
                             }
                         
                     </Aux>
                     : null
                 }
                 {
-                    this.state.isLoadingEscModal ?
-                        <ModalMessage>
-                            <Spinner/>
+                    this.state.modalWarning ? 
+                        <ModalMessage
+                            modalHandler={() => this.setState( prevState => ({...prevState, modalWarning: null}))}
+                            modalTitile={"Error"}>
+                            <ErrorMessage>{ this.state.modalWarning }</ErrorMessage>
                         </ModalMessage> : null
                 }
                 

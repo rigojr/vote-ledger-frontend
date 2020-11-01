@@ -7,7 +7,8 @@ import Footer from './Footer/Footer';
 import AllModal from '../Layout/Modal/AllModal';
 import OrgModalContent from '../Users/OrgModal/OrgModal';
 import * as actions from '../../store/actions/index';
-
+import ModalMessage from '../../components/UI/ModalMessage/ModalMessage';
+import { ErrorMessage } from '../../constants/cssProperties';
 
 class Layout extends Component {
 
@@ -17,6 +18,7 @@ class Layout extends Component {
             formElectoralOrg: {
                 name: ''
             },
+            modalWarning: null
          };
     }
 
@@ -32,6 +34,7 @@ class Layout extends Component {
     }
 
     createOrgHandler = () => {
+        let modalWarning = null
         if( this.state.formElectoralOrg.name !== "" ){
             if( this.props.electoralOrg.findIndex( org => org ===  this.state.formElectoralOrg.name) === -1 ){
                 this.setState( prevState => ({
@@ -42,17 +45,30 @@ class Layout extends Component {
                 }) )
                 this.props.onCreateElectoralOrg(this.state.formElectoralOrg.name)
             } else {
-                alert("Error, la organización ya existe")
+                modalWarning = "Error, la organización ya existe"
             }
         } else {
-            alert("Error, no deje espacios vacios")
+            modalWarning = "Error, no deje espacios vacios"
         }
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning,
+            formElectoralOrg: {
+                name: ''
+            },
+        }))
         
     }
 
     showModalHandler = () => {
         this.props.onFetchElectoralOrg()
         this.props.onModalOrgShow()
+        this.setState( prevState => ({
+            ...prevState,
+            formElectoralOrg: {
+                name: ''
+            },
+        }))
     }
     
     render(){
@@ -83,6 +99,14 @@ class Layout extends Component {
                             isLoading={this.props.isLoading}
                             electoralOrg={this.props.electoralOrg}/>
                 </AllModal>
+                {
+                    this.state.modalWarning ? 
+                        <ModalMessage
+                            modalHandler={() => this.setState( prevState => ({...prevState, modalWarning: null}))}
+                            modalTitile={"Error"}>
+                            <ErrorMessage>{ this.state.modalWarning }</ErrorMessage>
+                        </ModalMessage> : null
+                }
             </Aux>
         )
     }

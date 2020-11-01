@@ -13,6 +13,8 @@ import * as actions from '../../store/actions/index';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import { canCreateUpdate, itBelong} from '../../store/utility';
 import CandiateModalInput from '../../components/Candidates/CandidatesModalInput/CandidatesModalInput'
+import ModalMessage from '../../components/UI/ModalMessage/ModalMessage';
+import { ErrorMessage } from '../../constants/cssProperties';
 
 class Elections extends Component {
 
@@ -44,7 +46,8 @@ class Elections extends Component {
         UpdateBoolean: false,
         candidateModal: false,
         selectedElection: {},
-        FullDataEV: {}
+        FullDataEV: {},
+        modalWarning: null
     }
 
     componentDidMount () {
@@ -89,6 +92,7 @@ class Elections extends Component {
 
     searchHandler = () => {
         let found = false;
+        let modalWarning = null
         if(this.state.elections){
             if(this.state.showTable){
                 for (let i in this.state.elections) {
@@ -111,13 +115,17 @@ class Elections extends Component {
                     }
                 }
                 if(!found)
-                    alert("Evento Electoral con el Código " + this.state.search + ", no fue encontrado");
+                    modalWarning = "Elección con el Código " + this.state.search + ", no fue encontrado"
             } else {
-                alert("Por favor, seleccione un evento electoral para buscar.");
+                modalWarning = "Por favor, seleccione un evento electoral para buscar."
             }
         }else{
-            alert("Error en la búsqueda, verifique entradas y conexión con el back");
+            modalWarning = "Error en la búsqueda, verifique entradas y conexión con el back"
         }
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
     handleOnInputSearchChange = (event) => {
@@ -172,6 +180,7 @@ class Elections extends Component {
         }
 
     createElectionHandler = () => {
+        let modalWarning = null
         if( canCreateUpdate([this.state.FullDataEV]) ){
             if( this.state.elections.findIndex( election => election.id === this.state.form.id ) === -1 ){
                 if(
@@ -189,14 +198,18 @@ class Elections extends Component {
                     setTimeout(() => this.modalHandler( false, false ),3000);
                     setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
                 }else{
-                    alert(`Termine de ingresar los datos`)
+                    modalWarning = `Termine de ingresar los datos`
                 }
             } else {
-                alert(`El id ${this.state.form.id} ya existe`)
+                modalWarning = `El id ${this.state.form.id} ya existe`
             }
         } else {
-            alert("El estado del evento electoral no permite realizar ninguna actualización a los registros.")
+            modalWarning = "El estado del evento electoral no permite realizar ninguna actualización a los registros."
         }
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
     consultHanlder = (select) => {
@@ -246,6 +259,7 @@ class Elections extends Component {
     }
 
     updateModal = ( selectElection ) => {
+        let modalWarning = null
         if( canCreateUpdate([this.state.FullDataEV]) ){
             this.modalHandler( false, true)
             this.setState( prevState => ({
@@ -258,12 +272,16 @@ class Elections extends Component {
                 }
             }))
         } else {
-            alert("El estado del evento electoral no permite realizar ninguna actualización a los registros.")
+            modalWarning = "El estado del evento electoral no permite realizar ninguna actualización a los registros."
         }
-        
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
     updateHandler = () => {
+        let modalWarning = null
         if(
             !(
                 this.state.form.desc === '' ||
@@ -276,8 +294,12 @@ class Elections extends Component {
             setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
             setTimeout( () => this.modalHandler(false,false), 3000 )
         }else{
-            alert(`Termine de ingresar los datos`)
+            modalWarning = `Termine de ingresar los datos`
         }
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
     setValueCandidates = (e) => {
@@ -346,6 +368,7 @@ class Elections extends Component {
     }
 
     setCandidate = () => {
+        let modalWarning = null
         const rawEvent = this.props.fetch.find( event => event.id === this.state.selectElectoralEvent)
         if(rawEvent.state === "Inscripción"){
             if(this.state.formCandidates.id !== '' && this.state.formCandidates.electoralOrg.length > 0){
@@ -357,12 +380,11 @@ class Elections extends Component {
                         return rawEvent.record.elections[key].Candidatos.every( candidate => candidate.idusuario !== this.state.formCandidates.id)
                     return true
                 })
-                console.log(isRegister)
-                if( itBelong(user, rawEvent.record.elections[this.state.selectedElection.id]) ){
-                    if( isRegister && user.type !== "admin" ){
-                        if(user && user.status === "1" ){
+                if(user && user.status === "1" ){
+                    if( itBelong(user, rawEvent.record.elections[this.state.selectedElection.id]) ){
+                        if( isRegister && user.type !== "admin" ){
                             if(rawCandidates && rawCandidates.find( candidato => candidato.idusuario === this.state.formCandidates.id)){
-                                alert(`CI ${this.state.formCandidates.id} ya es un candidato registrado`)
+                                modalWarning = `CI ${this.state.formCandidates.id} ya es un candidato registrado`
                             }else{
                                 let tempCandidates = this.state.selectedElection.Candidatos
                                 if(!tempCandidates)
@@ -382,21 +404,24 @@ class Elections extends Component {
                                 }))
                             }
                         }else{
-                            alert(`El usuario con el CI ${this.state.formCandidates.id}, no es un usuario registrado o se encuentra inhabilitado`)
+                            modalWarning = `El usuario con el CI ${this.state.formCandidates.id}, no es de tipo elector o ya esta registrado como candidato`
                         }
                     } else {
-                        alert(`El usuario con el CI ${this.state.formCandidates.id}, no es de tipo elector o ya esta registrado como candidato`)
+                        modalWarning = "Error, el usuario no pertenece a la organización que gestiona la elección"
                     }
                 } else {
-                    alert("Error, el usuario no pertenece a la organización que gestiona la elección")
+                    modalWarning = `El usuario con el CI ${this.state.formCandidates.id}, no es un usuario registrado o se encuentra inhabilitado`
                 }
             }else{
-                alert('No deje espacios vacios/Seleccione una Organización Electoral')
+                modalWarning = 'No deje selección/espacios vacíos'
             }
         } else {
-            alert('Error, el estado del evento electoral es diferente a Inscripción')
+            modalWarning = 'Error, el estado del evento electoral es diferente a Inscripción'
         }
-        
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
 
@@ -498,6 +523,14 @@ class Elections extends Component {
             <Aux>
                 {ElectionComponent}
                 {RedirectComponent}
+                {
+                    this.state.modalWarning ? 
+                        <ModalMessage
+                            modalHandler={() => this.setState( prevState => ({...prevState, modalWarning: null}))}
+                            modalTitile={"Error"}>
+                            <ErrorMessage>{ this.state.modalWarning }</ErrorMessage>
+                        </ModalMessage> : null
+                }
             </Aux>
         )
     }

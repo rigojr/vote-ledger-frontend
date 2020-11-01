@@ -14,6 +14,7 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import ActInitModalPDF from '../../components/PollingStation/ActInitModalPDF/ActInitModalPDF';
 import { canCreateUpdate, countVotes } from '../../store/utility';
 import ModalMessage from '../../components/UI/ModalMessage/ModalMessage';
+import { ErrorMessage } from '../../constants/cssProperties';
 
 class PollingStation extends Component {
 
@@ -118,7 +119,8 @@ class PollingStation extends Component {
 
     searchHandler = () => {
         let found = false;
-        if(this.state.pollingStations){
+        let modalWarning = null
+        if(this.state.pollingStations && this.state.search !== ''){
             if(this.state.showTable){
                 for (let i in this.state.pollingStations) {
                     if(this.state.search === this.state.pollingStations[i].id){
@@ -137,13 +139,17 @@ class PollingStation extends Component {
                     }
                 }
                 if(!found)
-                    alert("Evento Electoral con el Código " + this.state.search + ", no fue encontrado");
+                    modalWarning = "Evento Electoral con el Código " + this.state.search + ", no fue encontrado"
             } else {
-                alert("Por favor, seleccione un evento electoral para buscar.");
+                modalWarning = "Por favor, seleccione un evento electoral para buscar."
             }
         }else{
-            alert("Error en la búsqueda, verifique entradas y conexión con el back");
+            modalWarning = "Error en la búsqueda, verifique entradas y conexión con el back"
         }
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
     searchModal = () => {
@@ -169,6 +175,7 @@ class PollingStation extends Component {
     }
 
     createHandler = () => {
+        let modalWarning = null
         if( canCreateUpdate([this.state.FullDataEV]) ){
             if( this.state.pollingStations.findIndex( pollingStation => pollingStation.id === this.state.form.id) ){
                 if(
@@ -184,14 +191,18 @@ class PollingStation extends Component {
                     setTimeout(this.cleanModalHandler,3000);
                     setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
                 } else {
-                    alert("Error, termine de ingresar los datos")
+                    modalWarning = "Error, termine de ingresar los datos"
                 }
             }else{
-                alert(`El id ${this.state.form.id} ya existe`)
+                modalWarning = `El id ${this.state.form.id} ya existe`
             }
         } else {
-            alert("El estado del evento electoral no permite realizar ninguna actualización a los registros.")
+            modalWarning = "El estado del evento electoral no permite realizar ninguna actualización a los registros."
         }
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
     consultHanlder = (select) => {
@@ -239,7 +250,6 @@ class PollingStation extends Component {
                 isLoadingPDFModal: false,
                 responsePDFModal: response
             }) )
-            console.log(response)
         })
         .catch( err => {
             this.setState( prevState => ({
@@ -258,7 +268,8 @@ class PollingStation extends Component {
                 showMessage: tempShowMessage,
                 showTable: tempShowTable,
                 selectElectoralEvent: ElectoralEvent,
-                FullDataEV: this.props.fetch.find( fetch => fetch.id === ElectoralEvent )
+                FullDataEV: this.props.fetch.find( fetch => fetch.id === ElectoralEvent ),
+                responsePDFModal: null
             }
         );
         const pollingStationsTemp = [];
@@ -282,6 +293,7 @@ class PollingStation extends Component {
     }
 
     updateModal = ( selectPollingStations ) => {
+        let modalWarning = null
         if( canCreateUpdate([this.state.FullDataEV]) ){
             this.modalHandler( false, true)
             this.setState( prevState => ({
@@ -293,11 +305,16 @@ class PollingStation extends Component {
                 }
             }))
         } else {
-            alert("El estado del evento electoral no permite realizar ninguna actualización a los registros.")
+            modalWarning = "El estado del evento electoral no permite realizar ninguna actualización a los registros."
         }
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
     updateHandler = () => {
+        let modalWarning = null
         if(
             !(
                 this.state.form.name === ''
@@ -310,8 +327,12 @@ class PollingStation extends Component {
             setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
             setTimeout( () => this.modalHandler(false,false), 3000 )
         }else{
-            alert(`Termine de ingresar los datos`)
+            modalWarning = `Termine de ingresar los datos`
         }
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
     modalAct = () => {
@@ -427,9 +448,18 @@ class PollingStation extends Component {
                         data={this.state.PDFContent}
                         responsePDFModal={this.state.responsePDFModal}/> : 
                             this.state.isLoadingPDFModal && this.state.isShowingModalAct ?
-                            <ModalMessage>
+                            <ModalMessage
+                                modalHandler={this.modalAct}>
                                 <Spinner/>
                             </ModalMessage> : null
+                }
+                {
+                    this.state.modalWarning ? 
+                        <ModalMessage
+                            modalHandler={() => this.setState( prevState => ({...prevState, modalWarning: null}))}
+                            modalTitile={"Error"}>
+                            <ErrorMessage>{ this.state.modalWarning }</ErrorMessage>
+                        </ModalMessage> : null
                 }
             </Aux>
         )
