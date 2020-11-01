@@ -14,6 +14,8 @@ import PDF from '../../components/PDF/PDF';
 import UsersPDF from '../../components/PDF/UsersPDF/UsersPDF';
 import { areThereElection } from '../../store/utility';
 import * as actions from '../../store/actions/index';
+import ModalMessage from '../../components/UI/ModalMessage/ModalMessage'
+import { ErrorMessage } from '../../constants/cssProperties'
 
 class User extends Component {
 
@@ -45,7 +47,8 @@ class User extends Component {
             selectedTypeOfUser: true,
             isBatchModal: false,
             isPDFRender: false,
-            pdf: {}
+            pdf: {},
+            modalWarning: null
         };
     }
 
@@ -171,6 +174,7 @@ class User extends Component {
     }
 
     createHandler = async () => {
+        let modalWarning = null
         if( this.props.users.findIndex( user => user.id === this.state.form.id) === -1 ){
                 await this.setFaculty(this.state.form.school);
                 await this.setAdminLabel();
@@ -192,24 +196,32 @@ class User extends Component {
                     setTimeout(this.cleanModalHandler,3000);
                 }
                 else {
-                    alert("Error, el password debe tener + 8 caracteres")
+                    modalWarning = "Error, el password debe tener + 8 caracteres"
                 }
             } else {
-                alert(`Termine de ingresar los datos`)
+                modalWarning = `Termine de ingresar los datos`
             }
         }else {
-            alert(`El id ${this.state.form.id} ya existe`)
+            modalWarning = `El id ${this.state.form.id} ya existe`
         }
-        
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
     createModal = () => {
+        let modalWarning = null
         if( areThereElection( this.props.electoralEvents ) ){
             this.modalHandler( true, false);
             this.cleanModalHandler();
         } else {
-            alert("Existe un evento electoral en proceso de elección, los cambios o registros estarán inhabilitado hasta que no existan procesos de elección activos.")
+            modalWarning = "Existe un evento electoral en proceso de elección, los cambios o registros estarán inhabilitado hasta que no existan procesos de elección activos."
         }
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
         
 
@@ -235,6 +247,7 @@ class User extends Component {
 
 
     updateModal = ( selectUser ) => {
+        let modalWarning = null
         if( areThereElection(this.props.electoralEvents) ){
             let adminBoolean = false;
             if( this.props.fetch.find( user => user.id === selectUser.id).type === "admin")
@@ -249,11 +262,16 @@ class User extends Component {
                 pdf :{},
             }) );
         } else {
-            alert("Existe un evento electoral en proceso de elección, los cambios o registros estarán inhabilitado hasta que no existan procesos de elección activos.")
+            modalWarning = "Existe un evento electoral en proceso de elección, los cambios o registros estarán inhabilitado hasta que no existan procesos de elección activos."
         }
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
     updateHandler = () => {
+        let modalWarning = null
         const rawUser = this.props.fetch.find( user => user.id === this.state.form.id)
         if(this.state.form.password === ''){
             this.setOnCreate(rawUser.voteRercord, rawUser.password, rawUser.status)
@@ -265,8 +283,12 @@ class User extends Component {
                     this.modalHandler(false,false)
                 }
             else
-                alert("Error, el password debe tener + 8 caracteres")
+                modalWarning = "Error, el password debe tener + 8 caracteres"
         }
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
         
     }
 
@@ -283,6 +305,7 @@ class User extends Component {
 
     searchHandler = () => {
         let found = false;
+        let modalWarning = null
         if(this.props.fetch && !(this.state.search == '')){
             for (let i in this.props.users) {
                 if(this.state.search === this.props.fetch[i].id){
@@ -309,10 +332,14 @@ class User extends Component {
                 }
             }
             if(!found)
-                alert("Usuario con el ID " + this.state.search + ", no fue encontrado");
+                modalWarning = "Usuario con el ID " + this.state.search + ", no fue encontrado"
         }else{
-            alert("Error en la búsqueda, verifique entradas y conexión con el Blockchain");
+            modalWarning = "Error en la búsqueda, verifique entradas y conexión con el Blockchain"
         }
+        this.setState( prevState => ({
+            ...prevState,
+            modalWarning
+        }))
     }
 
     searchModal = () => {
@@ -455,6 +482,14 @@ class User extends Component {
                             initBatchProcess={this.batchProcessHandler}/>
                 </AllModal>
                 {RedirectComponent}
+                {
+                    this.state.modalWarning ? 
+                        <ModalMessage
+                            modalHandler={() => this.setState( prevState => ({...prevState, modalWarning: null}))}
+                            modalTitile={"Error"}>
+                            <ErrorMessage>{ this.state.modalWarning }</ErrorMessage>
+                        </ModalMessage> : null
+                }
             </Aux>
         )
     }
