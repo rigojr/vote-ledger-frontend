@@ -48,7 +48,8 @@ class User extends Component {
             isBatchModal: false,
             isPDFRender: false,
             pdf: {},
-            modalWarning: null
+            modalWarning: null,
+            modalInfo: null
         };
     }
 
@@ -396,7 +397,14 @@ class User extends Component {
             status: data[index][5]
         }
         this.props.onCreateUser(JSON.stringify(user));
-        });   
+        });
+
+        this.setState( prevState => ({
+            ...prevState,
+            isBatchModal: !prevState.isBatchModal,
+            modalWarning: 'El padrón electoral ha sido actualizado con éxito',
+            modalInfo: 'Información'
+        }))
     }
     
     genPDF = () => {
@@ -411,7 +419,9 @@ class User extends Component {
             pdf :{
                 fileName: 'usuarios.pdf',
                 document: tempPDF
-            }
+            },
+            modalWarning: 'El PDF de los usuarios ha sido creado con éxito',
+            modalInfo: 'Información'
         }))
     }
 
@@ -485,8 +495,8 @@ class User extends Component {
                 {
                     this.state.modalWarning ? 
                         <ModalMessage
-                            modalHandler={() => this.setState( prevState => ({...prevState, modalWarning: null}))}
-                            modalTitile={"Error"}>
+                            modalHandler={() => this.setState( prevState => ({...prevState, modalWarning: null, modalInfo: null}))}
+                            modalTitile={ !this.state.modalInfo ? "Error" : this.state.modalInfo}>
                             <ErrorMessage>{ this.state.modalWarning }</ErrorMessage>
                         </ModalMessage> : null
                 }
