@@ -257,12 +257,14 @@ export const compareValues = (key, order = 'asc') => {
     const electionsKeys = Object.keys(electoralEvent.record.elections)
     const pollingStatiosKeys = Object.keys(electoralEvent.record.pollingStations)
     const pollingStationAcum = []
+    const pollingStationCount = []
     const candidateAcum = []
 
     for (const pollingStationkey of pollingStatiosKeys) {
       const pollingStation = electoralEvent.record.pollingStations[pollingStationkey]
       for (const electionKey of electionsKeys) {
         const candidatos = electoralEvent.record.elections[electionKey].Candidatos
+        const electionType = electoralEvent.record.elections[electionKey].tipoeleccion !== "Consejo Universitario"
         for (const candidato of candidatos) {
           await queryVoteServices()
             .getCountVotes(
@@ -300,10 +302,18 @@ export const compareValues = (key, order = 'asc') => {
               const pollingStationIndex = 
                 pollingStationAcum.findIndex( pollingStationData => pollingStationData.id === pollingStation.id)
                 const toSum = isNaN(response.data.mensaje) ? 0 : parseInt(response.data.mensaje)
+                const voters2 = electionType ? toSum : 0
+                const voters3 = !electionType ? toSum : 0
               if(pollingStationIndex === -1){
                 pollingStationAcum.push({
                   id: pollingStation.id,
                   votes: toSum
+                })
+                pollingStationCount.push({
+                  id: pollingStation.id,
+                  voters2: voters2,
+                  voters3: voters3,
+                  voters: 0
                 })
               }
               else{
@@ -311,10 +321,26 @@ export const compareValues = (key, order = 'asc') => {
                   id: pollingStation.id,
                   votes: pollingStationAcum[pollingStationIndex].votes + toSum
                 }
+                pollingStationCount[pollingStationIndex] = {
+                  id: pollingStation.id,
+                  voters2: pollingStationCount[pollingStationIndex].voters2 + voters2,
+                  voters3: pollingStationCount[pollingStationIndex].voters3 + voters3,
+                  voters: 0
+                }
               }
         })
 
       }
     }
-    return await { candidates: candidateAcum, pollingStations: pollingStationAcum }
+
+    pollingStationCount.forEach( (polling, index) => {
+      pollingStationCount[index] = {
+        id: polling.id,
+        voters2: polling.voters2,
+        voters3: polling.voters3,
+        voters: (polling.voters2 / 2) + (polling.voters3 / 3)
+      }
+    } )
+
+    return await { candidates: candidateAcum, pollingStations: pollingStationAcum, pollingStationCount: pollingStationCount }
   }

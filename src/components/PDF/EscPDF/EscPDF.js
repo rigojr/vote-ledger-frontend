@@ -62,20 +62,20 @@ const EscPDF = (props) => {
                     <HeaderTable style={styles.column}>Votantes</HeaderTable>
                 </HeaderTContainer>
                     {
-                        props.responseEscModal.pollingStations.map( polling => {
+                        props.responseEscModal.pollingStationCount.map( polling => {
                             const pollingStation = props.electoralEvent.record.pollingStations[polling.id]
-                            totalVotantes += polling.votes
+                            totalVotantes += polling.voters
                             return(
                                 <DataTContainer key={pollingStation.id} style={styles.tabelHeader}>
                                     <DataTable style={styles.column}>{`${pollingStation.id} - ${pollingStation.nombre}`}</DataTable>
-                                    <DataTable style={styles.column}>{polling.votes / 2}</DataTable>
+                                    <DataTable style={styles.column}>{polling.voters}</DataTable>
                                 </DataTContainer>
                             )
                         } )
                     }
                 <DataTContainer style={styles.tabelHeader}>
                     <DataTable style={styles.column}>Votantes Totales</DataTable>
-                    <DataTable style={styles.column}>{totalVotantes / 2}</DataTable>
+                    <DataTable style={styles.column}>{totalVotantes}</DataTable>
                 </DataTContainer>
                 {
                     arrayElection.map( key =>{

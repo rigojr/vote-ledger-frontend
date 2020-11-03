@@ -32,6 +32,7 @@ const EscModal = (props) => {
     const pdfTitle = `Acta de Escrutinio del Evento Electoral ${props.electoralEvent.id} - ${props.electoralEvent.eventName}`
     const arrayPolling = Object.keys(props.electoralEvent.record.pollingStations)
     const arrayElection = Object.keys(props.electoralEvent.record.elections)
+
     const tempPDF = (
         <PDF title={pdfTitle}>
             <EscPDF 
@@ -70,22 +71,22 @@ const EscModal = (props) => {
                                 <tbody
                                     className={stylesTable.UserTbody}>
                                     {
-                                        props.responseEscModal.pollingStations.map( polling => {
+                                        props.responseEscModal.pollingStationCount.map( polling => {
                                             const pollingStation = props.electoralEvent.record.pollingStations[polling.id]
-                                            totalVotantes += polling.votes
+                                            totalVotantes += polling.voters
                                             return (
                                                 <tr
                                                     className={stylesTable.UserTr}
                                                     key={pollingStation.id}>
                                                         <td>{`${pollingStation.id} - ${pollingStation.nombre}`}</td>
-                                                        <td>{polling.votes / 2}</td>
+                                                        <td>{polling.voters}</td>
                                                 </tr>
                                             )
                                         })
                                     }
                                     <tr className={stylesTable.UserTr}>
                                         <td><b>Votantes Totales</b></td>
-                                        <td><b>{totalVotantes / 2}</b></td>
+                                        <td><b>{totalVotantes}</b></td>
                                     </tr>
                                 </tbody>
                         </Table>
