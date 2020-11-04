@@ -349,7 +349,5 @@ export const compareValues = (key, order = 'asc') => {
     const name = RegExp(/^[a-zA-Z ]{2,30}$/) 
     const email = RegExp(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/) 
     const number = RegExp(/^\d+$/)
-    console.log(userData)
-    console.log(name.test(userData.name),email.test(userData.email),number.test(userData.id))
     return name.test(userData.name) && email.test(userData.email) && number.test(userData.id)
   }

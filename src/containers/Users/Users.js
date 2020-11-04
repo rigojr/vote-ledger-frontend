@@ -274,7 +274,7 @@ class User extends Component {
     updateHandler = () => {
         let modalWarning = null
         const rawUser = this.props.fetch.find( user => user.id === this.state.form.id)
-        if(this.state.form.password === ''){
+        if(this.state.form.password === '' && validateUserData(this.state.form) ){
             this.setOnCreate(rawUser.voteRercord, rawUser.password, rawUser.status)
         }else{
             if( this.state.form.password.length > 8 && validateUserData(this.state.form) )
