@@ -12,7 +12,7 @@ import AllModal from '../../components/Layout/Modal/AllModal';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import PDF from '../../components/PDF/PDF';
 import UsersPDF from '../../components/PDF/UsersPDF/UsersPDF';
-import { areThereElection } from '../../store/utility';
+import { areThereElection, validateUserData } from '../../store/utility';
 import * as actions from '../../store/actions/index';
 import ModalMessage from '../../components/UI/ModalMessage/ModalMessage'
 import { ErrorMessage } from '../../constants/cssProperties'
@@ -189,7 +189,7 @@ class User extends Component {
                     this.state.form.password === ''
                 )
             ){
-                if( this.state.form.password.length > 8){
+                if( this.state.form.password.length > 8 && validateUserData(this.state.form) ){
                     this.setModalMessage("Enviando información al Blockchain");
                     this.setEnableInput( true );
                     this.setEnableInputTypeOf( true );
@@ -197,7 +197,7 @@ class User extends Component {
                     setTimeout(this.cleanModalHandler,3000);
                 }
                 else {
-                    modalWarning = "Error, el password debe tener + 8 caracteres"
+                    modalWarning = "Error, el password debe ser de + de 8 caracteres, revise el correo, nombre y CI."
                 }
             } else {
                 modalWarning = `Termine de ingresar los datos`
@@ -277,14 +277,14 @@ class User extends Component {
         if(this.state.form.password === ''){
             this.setOnCreate(rawUser.voteRercord, rawUser.password, rawUser.status)
         }else{
-            if( this.state.form.password.length > 8)
+            if( this.state.form.password.length > 8 && validateUserData(this.state.form) )
                 {
                     this.setOnCreate(rawUser.voteRercord, null, rawUser.status)
                     this.cleanModalHandler()
                     this.modalHandler(false,false)
                 }
             else
-                modalWarning = "Error, el password debe tener + 8 caracteres"
+                modalWarning = "Error, el password debe ser de + de 8 caracteres, revise el correo, nombre y CI."
         }
         this.setState( prevState => ({
             ...prevState,
