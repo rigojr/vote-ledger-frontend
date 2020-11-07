@@ -391,7 +391,7 @@ const mapStateToProps = state => {
         fetch: state.central.fetch,
         isLoading: state.central.isLoading,
         message: state.central.message,
-        users: state.user.users,
+        users: state.user.fetch,
     }
 }
 

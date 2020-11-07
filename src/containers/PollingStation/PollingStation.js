@@ -184,12 +184,18 @@ class PollingStation extends Component {
                         this.state.form.name === ''
                     )
                 ){
-                    this.setOnCreate(this.props.fetch.find( fetch => fetch.id === this.state.selectElectoralEvent ), 0, "0")
-                    this.setModalMessage("Enviando información al Blockchain");
-                    this.setState( { enableState: true, UpdateBoolean: false } );
-                    this.setModalMessage("Guardado con éxito!");
-                    setTimeout(this.cleanModalHandler,3000);
-                    setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
+                    const electoralEvent = this.props.fetch.find( fetch => fetch.id === this.state.selectElectoralEvent )
+                    const pollingKeys = Object.keys(electoralEvent.record.pollingStations)
+                    if( electoralEvent && pollingKeys.findIndex( polling => electoralEvent.record.pollingStations[polling].escuela === this.state.form.school) === -1 ){
+                        this.setOnCreate(electoralEvent, 0, "0")
+                        this.setModalMessage("Enviando información al Blockchain");
+                        this.setState( { enableState: true, UpdateBoolean: false } );
+                        this.setModalMessage("Guardado con éxito!");
+                        setTimeout(this.cleanModalHandler,3000);
+                        setTimeout( () => this.setLocalElections(this.state.selectElectoralEvent), 3000)
+                    } else {
+                        modalWarning = `Error, ya existe una mesa electoral para la escuela ${this.state.form.school}`
+                    }
                 } else {
                     modalWarning = "Error, termine de ingresar los datos"
                 }

@@ -11,6 +11,7 @@ import stylesTable from '../../Layout/AllTable/AllTable.module.css';
 import PDF from '../../PDF/PDF';
 import Aux from '../../../hoc/Aux';
 import EscPDF from '../../PDF/EscPDF/EscPDF';
+import {countVotantes} from '../../../store/utility';
 
 const StyledRow = styled(Row)`
     margin: 0px;
@@ -32,7 +33,6 @@ const EscModal = (props) => {
     const pdfTitle = `Acta de Escrutinio del Evento Electoral ${props.electoralEvent.id} - ${props.electoralEvent.eventName}`
     const arrayPolling = Object.keys(props.electoralEvent.record.pollingStations)
     const arrayElection = Object.keys(props.electoralEvent.record.elections)
-
     const tempPDF = (
         <PDF title={pdfTitle}>
             <EscPDF 
@@ -73,13 +73,14 @@ const EscModal = (props) => {
                                     {
                                         props.responseEscModal.pollingStationCount.map( polling => {
                                             const pollingStation = props.electoralEvent.record.pollingStations[polling.id]
-                                            totalVotantes += polling.voters
+                                            const votantes = countVotantes(props.users, props.electoralEvent.id, pollingStation.escuela)
+                                            totalVotantes += votantes
                                             return (
                                                 <tr
                                                     className={stylesTable.UserTr}
                                                     key={pollingStation.id}>
                                                         <td>{`${pollingStation.id} - ${pollingStation.nombre}`}</td>
-                                                        <td>{polling.voters}</td>
+                                                        <td>{votantes}</td>
                                                 </tr>
                                             )
                                         })

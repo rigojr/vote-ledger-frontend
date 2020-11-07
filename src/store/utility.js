@@ -302,8 +302,8 @@ export const compareValues = (key, order = 'asc') => {
               const pollingStationIndex = 
                 pollingStationAcum.findIndex( pollingStationData => pollingStationData.id === pollingStation.id)
                 const toSum = isNaN(response.data.mensaje) ? 0 : parseInt(response.data.mensaje)
-                const voters2 = electionType ? toSum : 0
-                const voters3 = !electionType ? toSum : 0
+                const voters2 = electionType ? toSum / 2 : 0
+                const voters3 = !electionType ? toSum / 3 : 0
               if(pollingStationIndex === -1){
                 pollingStationAcum.push({
                   id: pollingStation.id,
@@ -338,7 +338,7 @@ export const compareValues = (key, order = 'asc') => {
         id: polling.id,
         voters2: polling.voters2,
         voters3: polling.voters3,
-        voters: (polling.voters2 / 2) + (polling.voters3 / 3)
+        voters: (polling.voters2) + (polling.voters3)
       }
     } )
 
@@ -350,4 +350,13 @@ export const compareValues = (key, order = 'asc') => {
     const email = RegExp(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/) 
     const number = RegExp(/^\d+$/)
     return name.test(userData.name) && email.test(userData.email) && number.test(userData.id)
+  }
+
+  export const countVotantes = (users, electoralEventId, pollingStationSchool) => {
+    let count = 0
+    users.forEach(user => {
+      if(user.school === pollingStationSchool && user.voteRercord[electoralEventId])
+        count++
+    });
+    return count
   }
