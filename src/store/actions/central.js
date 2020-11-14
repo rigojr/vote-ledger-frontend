@@ -35,11 +35,12 @@ export const fetch = ( ) => {
             const fetch = [];
             const events = [];
             const jsonData = JSON.parse(response.data.mensaje);
-            for( let key in jsonData){
-                const data = parseRawData(jsonData[key].Record)
-                fetch.push({...data.fetch})
-                events.push({...data.event})
-            }
+            if(jsonData[0].Key)
+                for( let key in jsonData){
+                    const data = parseRawData(jsonData[key].Record)
+                    fetch.push({...data.fetch})
+                    events.push({...data.event})
+                }
             dispatch( fetchSuccessEvents( fetch, events ) );
         })
         .catch( error => console.log(error));
