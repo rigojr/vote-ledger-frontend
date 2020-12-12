@@ -121,7 +121,7 @@ const AllTable = ( props ) => {
                                                                     null
                                                                 }
                                                                 {
-                                                                    props.initAct ? 
+                                                                    props.initAct && props.enableActa ? 
                                                                     <Dropdown.Item 
                                                                         as="button"
                                                                         onClick={ () => props.initAct(payload) }>

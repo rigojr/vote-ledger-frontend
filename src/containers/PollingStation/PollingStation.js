@@ -228,7 +228,7 @@ class PollingStation extends Component {
     enablePollingStationHandler = async ( payload ) => {
         const tempRawElectoralEvent = this.props.fetch.find( fetch => fetch.id === this.state.selectElectoralEvent )
         const tempRawPollingStation = tempRawElectoralEvent.record.pollingStations[payload.id]
-        if( confirm(`La mesa electoral de Id ${payload.id} cambiar su estado a ${tempRawPollingStation.habilitada == '0' ? 'Habilitado': 'Inhabilitado'}. ¿Desea Continuar?`) ){ 
+        if( confirm(`La mesa electoral de Id ${payload.id} cambiará su estado a ${tempRawPollingStation.habilitada == '0' ? 'Habilitado': 'Inhabilitado'}. ¿Desea Continuar?`) ){ 
             await this.setState(
                 {form: {
                     id: tempRawPollingStation.id,
@@ -263,6 +263,7 @@ class PollingStation extends Component {
                 isLoadingPDFModal: false,
                 responsePDFModal: null
             }) )
+            setTimeout( () => alert('Error, las elecciones necesitan candidatos para que las actas puedan ser emitidas.') , 1000)
         })
     }
 
@@ -378,7 +379,8 @@ class PollingStation extends Component {
                 deleteAction={false}
                 pollingStation={true}
                 enableHandler={this.enablePollingStationHandler}
-                initAct={this.initAct}/>)
+                initAct={this.initAct}
+                enableActa={this.state.responsePDFModal}/>)
 
         if(this.state.pollingStations.length <= 0)
             ComponentAllTable = <CardMessage messageTitle="No existen mesas electorales registradas"/>

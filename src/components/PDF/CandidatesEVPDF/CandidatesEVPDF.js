@@ -1,6 +1,7 @@
 import React from 'react';
 import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
 import styled from '@react-pdf/styled-components';
+import { Table, TableHeader, TableCell, DataTableCell, TableBody } from '@david.kucsai/react-pdf-table'
 
 import Aux from '../../../hoc/Aux';
 
@@ -25,7 +26,8 @@ const StyledTitleElection = styled.Text`
     font-size: 16px;
     padding-bottom: 10px;
     font-weight: bold;
-    color: #434099
+    color: #434099;
+    text-align: center;
 `
 
 const CandidateInfo = styled.Text`
@@ -75,27 +77,36 @@ const CandidatesEVPDF = (props) => (
                             <StyledTitleElection>
                                     {`Candidatos registrados para la elección ${key} - ${props.electionsRaw[key].nombre} - ${props.electionsRaw[key].tipoeleccion}`}
                             </StyledTitleElection>
-                            <HeaderTContainer style={styles.tabelHeader}>
-                                <HeaderTable style={styles.column}>CI</HeaderTable>
-                                <HeaderTable style={styles.column}>Nombre</HeaderTable>
-                                <HeaderTable style={styles.column}>Facultad</HeaderTable>
-                                <HeaderTable style={styles.column}>Escuela</HeaderTable>
-                                <HeaderTable style={styles.column}>Organización/es</HeaderTable>
-                            </HeaderTContainer>
-                            {
-                                props.electionsRaw[key].Candidatos.map( candidate => {
-                                    const tempUser = props.users.find( user => user.id === candidate.idusuario )
-                                    return (
-                                        <DataTContainer key={tempUser.name} style={styles.tabelHeader}>
-                                            <DataTable style={styles.column}>{tempUser.id}</DataTable>
-                                            <DataTable style={styles.column}>{tempUser.name}</DataTable>
-                                            <DataTable style={styles.column}>{tempUser.faculty}</DataTable>
-                                            <DataTable style={styles.column}>{tempUser.school}</DataTable>
-                                            <DataTable style={styles.column}>{candidate.organizacion.map( org => org)}</DataTable>
-                                        </DataTContainer>
-                                    )
-                                })
-                            }
+                            <Table data={props.electionsRaw[key].Candidatos}>
+                                <TableHeader style={styles.tabelHeader}>
+                                    <TableCell><HeaderTable style={styles.column}>CI</HeaderTable></TableCell>
+                                    <TableCell><HeaderTable style={styles.column}>Nombre</HeaderTable></TableCell>
+                                    <TableCell><HeaderTable style={styles.column}>Facultad</HeaderTable></TableCell>
+                                    <TableCell><HeaderTable style={styles.column}>Escuela</HeaderTable></TableCell>
+                                    <TableCell><HeaderTable style={styles.column}>Organización/es</HeaderTable></TableCell>
+                                </TableHeader>
+                                <TableBody>
+                                    <DataTableCell getContent={ (r) => <DataTable style={styles.column}>{props.users.find( user => user.id === r.idusuario ).id}</DataTable>}/>
+                                    <DataTableCell getContent={ (r) => <DataTable style={styles.column}>{props.users.find( user => user.id === r.idusuario ).name}</DataTable>}/>
+                                    <DataTableCell getContent={ (r) => <DataTable style={styles.column}>{props.users.find( user => user.id === r.idusuario ).faculty}</DataTable>}/>
+                                    <DataTableCell getContent={ (r) => <DataTable style={styles.column}>{props.users.find( user => user.id === r.idusuario ).school}</DataTable>}/>
+                                    <DataTableCell getContent={ (r) => <DataTable style={styles.column}>{r.organizacion.map( (org,i) => <Text>{org}{r.organizacion.length > 1 && i !== (r.organizacion.length - 1) ? ',': ''}</Text>)}</DataTable>}/>
+                                </TableBody>
+                                {/* {
+                                    props.electionsRaw[key].Candidatos.map( candidate => {
+                                        const tempUser = props.users.find( user => user.id === candidate.idusuario )
+                                        return (
+                                            <DataTContainer key={tempUser.name} style={styles.tabelHeader}>
+                                                <DataTable style={styles.column}>{tempUser.id}</DataTable>
+                                                <DataTable style={styles.column}>{tempUser.name}</DataTable>
+                                                <DataTable style={styles.column}>{tempUser.faculty}</DataTable>
+                                                <DataTable style={styles.column}>{tempUser.school}</DataTable>
+                                        <DataTable style={styles.column}>{candidate.organizacion.map( (org,i) => <Text>{org}{candidate.organizacion.length > 1 && i !== (candidate.organizacion.length - 1) ? ',': ''}</Text>)}</DataTable>
+                                            </DataTContainer>
+                                        )
+                                    })
+                                } */}
+                            </Table>
                         </StyledView>
                     )
                 }

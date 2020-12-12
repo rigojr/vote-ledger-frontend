@@ -22,10 +22,10 @@ const ActInitModalPDF = (props) => {
 
     const title = `Mesa electoral "${props.data.id} - ${props.data.nombre}"`
     const school = `Escuela que la gestiona: ${props.data.escuela}`
-    const vote = `Registro de votos: ${props.data.votantes}`
+    const vote = `Registro de votos: ${newVotes}`
     const status = `Estatus: ${props.data.habilitada === "0" ? 'Inhabilitada' : 'Habilitada' }`
     
-    const PDFInfo = [title,school,newVotes,status]
+    const PDFInfo = [title,school,vote,status]
 
     const tempPDF = (
         <PDF title={pdfTitle}>
@@ -34,7 +34,7 @@ const ActInitModalPDF = (props) => {
     )
 
     const pdf = {
-        fileName: "actaVotacion.pdf",
+        fileName: pdfTitle,
         document: tempPDF
     }
     
