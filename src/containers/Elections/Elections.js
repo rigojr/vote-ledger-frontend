@@ -120,7 +120,7 @@ class Elections extends Component {
                 modalWarning = "Por favor, seleccione un evento electoral para buscar."
             }
         }else{
-            modalWarning = "Error en la búsqueda, verifique entradas y conexión con el back"
+            modalWarning = "Error en la búsqueda, verifique entradas y conexión con el Blockchain"
         }
         this.setState( prevState => ({
             ...prevState,

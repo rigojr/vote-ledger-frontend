@@ -194,7 +194,7 @@ class ElectoralEvent extends Component {
             if(!found)
                 modalWarning = "Evento Electoral con el Código " + this.state.search + ", no fue encontrado"
         }else{
-            modalWarning = "Error en la búsqueda, verifique entradas y conexión con el back"
+            modalWarning = "Error en la búsqueda, verifique entradas y conexión con el Blockchain"
         }
         this.setState( prevState => ({
             ...prevState,
@@ -216,7 +216,7 @@ class ElectoralEvent extends Component {
         const newIndex = eventStates.indexOf(payload['state']) + 1;
         let modalWarning = null
         if( newIndex < eventStates.length){
-            if (confirm(`El Evento Electoral de Id ${payload['id']} cambiara su estado de ${payload['state']} a ${eventStates[newIndex]}. ${payload['state'] === 'Inscripción' ? 'Por favor, recuerde actualizar el padrón electoral antes de abandonar el proceso de inscripción' : '' }¿Desea continuar?`)){ // eslint-disable-line no-eval
+            if (confirm(`El Evento Electoral de Id ${payload['id']} cambiará su estado de ${payload['state']} a ${eventStates[newIndex]}. ${payload['state'] === 'Inscripción' ? 'Por favor, recuerde actualizar el padrón electoral antes de abandonar el proceso de inscripción' : '' } ¿Desea continuar?`)){ // eslint-disable-line no-eval
                 const returnObject = validateElectoralEvent(eventRaw);
                 if( eventRaw.state !== 'Inscripción' || returnObject.validate){
                     await this.setState(

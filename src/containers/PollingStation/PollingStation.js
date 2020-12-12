@@ -139,12 +139,12 @@ class PollingStation extends Component {
                     }
                 }
                 if(!found)
-                    modalWarning = "Evento Electoral con el Código " + this.state.search + ", no fue encontrado"
+                    modalWarning = "Mesa Electoral con el Código " + this.state.search + ", no fue encontrado"
             } else {
                 modalWarning = "Por favor, seleccione un evento electoral para buscar."
             }
         }else{
-            modalWarning = "Error en la búsqueda, verifique entradas y conexión con el back"
+            modalWarning = "Error en la búsqueda, verifique entradas y conexión con el Blockchain"
         }
         this.setState( prevState => ({
             ...prevState,

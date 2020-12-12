@@ -197,7 +197,7 @@ class User extends Component {
                     setTimeout(this.cleanModalHandler,3000);
                 }
                 else {
-                    modalWarning = "Error, el password debe ser de + de 8 caracteres, revise el correo, nombre y CI."
+                    modalWarning = "Error, la contraseña debe ser de + de 8 caracteres, revise el correo, nombre y CI."
                 }
             } else {
                 modalWarning = `Termine de ingresar los datos`
@@ -420,7 +420,7 @@ class User extends Component {
                 fileName: 'usuarios.pdf',
                 document: tempPDF
             },
-            modalWarning: 'El PDF de los usuarios ha sido creado con éxito',
+            modalWarning: 'El PDF de los electores ha sido creado con éxito',
             modalInfo: 'Información'
         }))
     }
