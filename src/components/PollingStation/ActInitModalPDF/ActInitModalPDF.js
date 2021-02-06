@@ -16,7 +16,9 @@ const StyledRow = styled(Row)`
 
 const ActInitModalPDF = (props) => {
 
-    const newVotes = props.responsePDFModal.pollingStations.find( polling => polling.id === props.data.id).votes
+    const tempPolling = props.responsePDFModal.pollingStations.find( polling => polling.id === props.data.id)
+
+    const newVotes = tempPolling ?  tempPolling.votes : 0
 
     const pdfTitle = `Acta de ${props.data.state === 'Auditoría' ? 'Inicio' : 'Votación' }`
 
