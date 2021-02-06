@@ -61,7 +61,7 @@ const usercreatemodal = ( props ) => (
                 <Form.Label>Tipo de Usuario</Form.Label>
                 <Form.Check
                     type="radio"
-                    label="Comisión Electoral"
+                    label="Administrador"
                     id="ceRadios"
                     name="inputRadios"
                     onChange={ () => props.tagLabel('admin') }
